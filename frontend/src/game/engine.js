@@ -29,6 +29,8 @@ export class TennisEngine {
     this.marks = [];
     this.cheer = 0;
     this.faults = 0;
+    this.frames = [];
+    this.replays = true;
     this.startedAt = Date.now();
     this.setupPoint();
   }
@@ -55,6 +57,8 @@ export class TennisEngine {
     this.isServe = true;
     this.rally = 0;
     this.trail = [];
+    this.frames = [];
+    this.bigPoint = null;
     this.state = "serve";
     this.stateT = 0;
   }
@@ -79,6 +83,7 @@ export class TennisEngine {
   }
 
   pressShot(id) {
+    if (this.state === "replay") return this.endReplay();
     if (this.state === "serve" && this.server === 0) return this.playerServeInput();
     if (this.state !== "rally") return;
     const p = this.p;
@@ -205,10 +210,15 @@ export class TennisEngine {
     this.stateT += dt;
     this.cheer = Math.max(0, this.cheer - dt * 0.6);
     this.marks = this.marks.filter((m) => (m.life -= dt * 0.25) > 0);
+    if (this.state === "replay") return this.stepReplay(dtReal);
     this.updatePlayer(dt);
     this.updateAI(dt);
     this.updateBall(dt);
-    if (this.state === "pointOver" && this.stateT > 1.8) this.setupPoint();
+    if (this.state === "rally" || (this.state === "pointOver" && this.stateT < 0.8)) this.record();
+    if (this.state === "pointOver" && this.stateT > 1.8) {
+      if (this.bigPoint && this.replays && this.frames.length > 30) this.startReplay();
+      else this.setupPoint();
+    }
     if (this.state === "faultPause" && this.stateT > 1.1) this.setupPoint();
     if (this.state === "matchPending" && this.stateT > 2.2) { this.state = "matchOver"; this.emit({ type: "matchEnd", result: this.result() }); }
   }
@@ -344,8 +354,39 @@ export class TennisEngine {
     const call = scoreCall(this.score, events, this.names, winner);
     this.emit({ type: "call", text: reason, sub: call, winner });
     audio.say(`${reason}. ${call}`);
+    this.bigPoint = reason === "Ace" ? "Ace" : this.rally >= 6 ? `${this.rally}-shot rally` : null;
     this.state = events.includes("match") ? "matchPending" : "pointOver";
     this.stateT = 0;
+  }
+
+  record() {
+    const { ball: b, p, a } = this;
+    this.frames.push({ b: { x: b.x, y: b.y, z: b.z }, p: { x: p.x, z: p.z, swing: p.swing, side: p.side }, a: { x: a.x, z: a.z, swing: a.swing, side: a.side } });
+    if (this.frames.length > 720) this.frames.shift();
+  }
+
+  startReplay() {
+    this.state = "replay";
+    this.frames = this.frames.slice(-300);
+    this.replayI = 0;
+    this.emit({ type: "replay", on: true, label: this.bigPoint });
+  }
+
+  stepReplay(dtReal) {
+    this.replaySpeed = this.replayI > this.frames.length - 110 ? 0.35 : 1;
+    this.replayI += Math.min(dtReal, 0.034) * 60 * this.replaySpeed;
+    const i = Math.floor(this.replayI);
+    if (i >= this.frames.length) return this.endReplay();
+    const f = this.frames[i];
+    Object.assign(this.ball, f.b);
+    Object.assign(this.p, f.p);
+    Object.assign(this.a, f.a);
+    this.trail = this.frames.slice(Math.max(0, i - 12), i).map((x) => x.b);
+  }
+
+  endReplay() {
+    this.emit({ type: "replay", on: false });
+    this.setupPoint();
   }
 
   result() {

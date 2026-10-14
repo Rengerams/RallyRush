@@ -53,7 +53,7 @@ class MatchIn(BaseModel):
     won: bool
     difficulty: Literal["easy", "medium", "hard", "pro"]
     ai_style: Literal["baseline", "netrusher", "defensive", "aggressive"]
-    surface: Literal["hard", "clay", "grass"]
+    surface: Literal["hard", "clay", "grass", "artificial", "smashcourt"]
     match_format: Literal["quick", "standard"]
     sets: List[List[int]]
     duration_sec: int = 0

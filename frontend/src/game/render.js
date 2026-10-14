@@ -149,4 +149,19 @@ export function render(ctx, eng, W, H) {
   net(ctx, P, S);
   player(ctx, P, S, eng.p, eng.cfg.legend ? "#FFC828" : "#00F0FF", true, eng.names[0], eng.cfg.legend, eng.time);
   if (!ballFar) ball(ctx, P, S, eng);
+  if (eng.state === "replay") replayOverlay(ctx, W, H, eng.time, eng.replaySpeed);
+}
+
+function replayOverlay(ctx, W, H, t, speed) {
+  const bar = H * 0.05;
+  ctx.fillStyle = "rgba(0,0,0,0.75)";
+  ctx.fillRect(0, 0, W, bar);
+  ctx.fillRect(0, H - bar, W, bar);
+  ctx.fillStyle = "rgba(0,240,255,0.06)";
+  ctx.fillRect(0, bar, W, H - bar * 2);
+  ctx.fillStyle = Math.sin(t * 6) > 0 ? "#E05A47" : "rgba(224,90,71,0.3)";
+  ctx.beginPath(); ctx.arc(bar * 0.6, bar / 2, bar * 0.18, 0, 6.28); ctx.fill();
+  ctx.font = `800 ${bar * 0.5}px "JetBrains Mono", monospace`;
+  ctx.textAlign = "left"; ctx.textBaseline = "middle"; ctx.fillStyle = "#F1F5F9";
+  ctx.fillText(speed < 1 ? "REPLAY · SLOW-MO" : "REPLAY", bar * 0.95, bar / 2);
 }

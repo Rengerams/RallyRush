@@ -26,6 +26,8 @@
   --radius: 0.75rem;
 }
 
+html, body { overflow-x: hidden; }
+
 body {
   margin: 0;
   background: var(--bg);

@@ -2,7 +2,7 @@ export default function OptionGroup({ label, options, value, onChange, testPrefi
   return (
     <div>
       <p className="font-mono text-[11px] uppercase tracking-[0.25em] text-slate-500">{label}</p>
-      <div className={`mt-3 grid gap-2 grid-cols-2 ${cols === 3 ? "md:grid-cols-3" : cols === 2 ? "md:grid-cols-2" : "md:grid-cols-4"}`}>
+      <div className={`mt-3 grid gap-2 grid-cols-2 ${cols === 5 ? "md:grid-cols-5" : cols === 3 ? "md:grid-cols-3" : cols === 2 ? "md:grid-cols-2" : "md:grid-cols-4"}`}>
         {options.map((o) => {
           const active = o.id === value;
           return (

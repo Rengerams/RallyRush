@@ -35,15 +35,16 @@ export function solveShot(from, target, h, spin, minClear) {
   const dx = target.x - from.x;
   const dz = target.z - from.z;
   const dist = Math.hypot(dx, dz);
+  const clear = Math.min(minClear, 0.15 + Math.abs(from.z) * 0.35);
   let speed = h;
   let out = null;
-  for (let i = 0; i < 30; i++) {
+  for (let i = 0; i < 30 && speed > h * 0.4; i++) {
     const t = dist / speed;
     const vy = (-from.y + 0.5 * g * t * t) / t;
     out = { vx: dx / t, vy, vz: dz / t };
     const tn = Math.abs(from.z / out.vz);
     const yNet = from.y + vy * tn - 0.5 * g * tn * tn;
-    if (yNet >= COURT.netH + minClear) return out;
+    if (yNet >= COURT.netH + clear) return out;
     speed *= 0.93;
   }
   return out;

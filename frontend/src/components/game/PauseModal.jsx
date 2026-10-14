@@ -1,6 +1,6 @@
-import { Volume2, VolumeX, Mic, MicOff } from "lucide-react";
+import { Volume2, VolumeX, Mic, MicOff, Film } from "lucide-react";
 
-export default function PauseModal({ onResume, onRestart, onQuit, sound, voice, onSound, onVoice }) {
+export default function PauseModal({ onResume, onRestart, onQuit, sound, voice, onSound, onVoice, replays, onReplays }) {
   return (
     <div data-testid="pause-modal" className="absolute inset-0 z-30 flex items-center justify-center bg-[#0B0E14]/70 backdrop-blur-md">
       <div className="fade-up w-[320px] rounded-2xl border border-white/10 bg-[#121824] p-6">
@@ -18,6 +18,11 @@ export default function PauseModal({ onResume, onRestart, onQuit, sound, voice, 
           <button data-testid="pause-voice-toggle" onClick={onVoice} className="btn-ghost flex flex-1 items-center justify-center gap-2 rounded-lg py-2 text-sm">
             {voice ? <Mic size={16} /> : <MicOff size={16} />} Umpire
           </button>
+        </div>
+        <button data-testid="pause-replays-toggle" onClick={onReplays} className={`btn-ghost mt-2 flex w-full items-center justify-center gap-2 rounded-lg py-2 text-sm ${replays ? "text-[#00F0FF]" : "text-slate-500"}`}>
+          <Film size={16} /> Replays {replays ? "on" : "off"}
+        </button>
+        <div className="hidden">
         </div>
       </div>
     </div>

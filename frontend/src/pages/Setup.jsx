@@ -61,7 +61,7 @@ export default function Setup() {
         <section className="space-y-8">
           <OptionGroup label="AI difficulty" options={Object.values(DIFFICULTY).map((d) => ({ ...d, desc: `${Math.round(d.error * 100)}% error · ${d.move}x speed` }))} value={cfg.difficulty} onChange={(v) => set("difficulty", v)} testPrefix="setup-difficulty" />
           <OptionGroup label="AI play style" options={Object.values(STYLES)} value={cfg.style} onChange={(v) => set("style", v)} testPrefix="setup-style" />
-          <OptionGroup label="Court surface" cols={3} options={Object.values(SURFACES)} value={cfg.surface} onChange={(v) => set("surface", v)} testPrefix="setup-surface" />
+          <OptionGroup label="Court surface" cols={5} options={Object.values(SURFACES)} value={cfg.surface} onChange={(v) => set("surface", v)} testPrefix="setup-surface" />
           <OptionGroup label="Match format" cols={2} options={Object.values(FORMATS)} value={cfg.format} onChange={(v) => set("format", v)} testPrefix="setup-format" />
           <button type="button" data-testid="setup-start-match-btn" onClick={start}
             className="btn-volt w-full rounded-full py-5 font-display text-2xl font-black uppercase italic tracking-wide md:w-auto md:px-16">
