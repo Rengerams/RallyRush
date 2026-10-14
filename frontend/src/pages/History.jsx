@@ -1,0 +1,57 @@
+import { useEffect, useState } from "react";
+import { fetchMatches } from "@/lib/api";
+import { SURFACES, DIFFICULTY, STYLES, FORMATS } from "@/game/constants";
+
+function MatchCard({ m, i }) {
+  const surf = SURFACES[m.surface];
+  return (
+    <div data-testid={`history-match-${i}`} className="fade-up flex flex-wrap items-center gap-5 rounded-2xl border border-white/10 bg-[#121824] p-5" style={{ animationDelay: `${Math.min(i, 10) * 40}ms` }}>
+      <span className={`font-display w-24 text-3xl font-black uppercase italic ${m.won ? "text-[#DFFF00]" : "text-[#E05A47]"}`}>{m.won ? "Win" : "Loss"}</span>
+      <div className="min-w-[160px] flex-1">
+        <p className={`font-display text-2xl font-extrabold uppercase ${m.player_name.toLowerCase() === "renffr" ? "gold-shimmer" : ""}`}>{m.player_name}</p>
+        <p className="font-mono text-xs text-slate-500">vs {DIFFICULTY[m.difficulty].label} {STYLES[m.ai_style].label} · {FORMATS[m.match_format].label}</p>
+      </div>
+      <p className="font-mono text-xl font-bold">{m.sets.map((s) => `${s[0]}-${s[1]}`).join("  ")}</p>
+      <span className="flex items-center gap-2 font-mono text-xs text-slate-400"><span className="h-3 w-3 rounded-full" style={{ background: surf.color }} />{surf.label}</span>
+      <div className="flex gap-4 font-mono text-xs text-slate-400">
+        <span>Aces <b className="text-white">{m.stats.aces}</b></span>
+        <span>Rally <b className="text-white">{m.stats.longest_rally}</b></span>
+        <span>Perfect <b className="text-white">{m.stats.perfect_shots}</b></span>
+      </div>
+      <span className="font-mono text-[11px] text-slate-500">{new Date(m.created_at).toLocaleString()}</span>
+    </div>
+  );
+}
+
+export default function History() {
+  const [player, setPlayer] = useState("");
+  const [surface, setSurface] = useState("");
+  const [rows, setRows] = useState(null);
+
+  useEffect(() => {
+    const t = setTimeout(() => {
+      fetchMatches({ player: player || undefined, surface: surface || undefined }).then(setRows).catch(() => setRows([]));
+    }, 250);
+    return () => clearTimeout(t);
+  }, [player, surface]);
+
+  return (
+    <main className="mx-auto max-w-[1440px] px-5 py-10 lg:px-10">
+      <p className="font-mono text-xs uppercase tracking-[0.3em] text-[#00F0FF]">Archive</p>
+      <h1 className="font-display mt-2 text-5xl font-black uppercase italic sm:text-6xl">Match history</h1>
+      <div className="mt-8 flex flex-wrap gap-3">
+        <input data-testid="history-player-filter" placeholder="Filter by player" value={player} onChange={(e) => setPlayer(e.target.value)}
+          className="rounded-full border border-white/10 bg-[#121824] px-5 py-2.5 font-mono text-sm outline-none transition-colors focus:border-[#DFFF00]" />
+        {[["", "All"], ...Object.values(SURFACES).map((s) => [s.id, s.label])].map(([id, label]) => (
+          <button key={id || "all"} data-testid={`history-surface-${id || "all"}`} onClick={() => setSurface(id)}
+            className={`rounded-full px-4 py-2 font-mono text-xs uppercase tracking-[0.15em] transition-colors ${surface === id ? "bg-[#DFFF00] text-[#0B0E14]" : "btn-ghost text-slate-300"}`}>{label}</button>
+        ))}
+      </div>
+      <div className="mt-8 space-y-3">
+        {rows === null && <p className="text-slate-500">Loading…</p>}
+        {rows?.length === 0 && <p data-testid="history-empty" className="text-slate-500">No matches found.</p>}
+        {rows?.map((m, i) => <MatchCard key={m.id} m={m} i={i} />)}
+      </div>
+    </main>
+  );
+}
