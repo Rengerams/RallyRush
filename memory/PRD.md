@@ -65,6 +65,12 @@
 - Production frontend build compiled successfully; unit tests rerun 8/8. No mocked application APIs or integrations. No authentication required (`memory/test_credentials.md`).
 - Supplementary verification: `test_reports/iteration_4_followup.json`.
 
+## Documentation correction (2026-10-14)
+- User identified stale README wording: "A top-down 2D tennis game for the browser".
+- Updated the root README to describe the current Three.js/WebGL 3D game, cameras, adaptive effects, articulated models, keyboard/mouse controls, serving, replay speeds, saved stats and all five surfaces.
+- Replaced frontend Create React App boilerplate README with project-specific 3D frontend setup, Yarn commands and source layout.
+- Documentation-only change; gameplay code and prior test results remain unchanged. Checked descriptions against current implementation and scanned both READMEs for the obsolete description.
+
 ## Prioritized next actions / backlog
 - P0: No known functional blockers from targeted tests. User to try a match and give control-feel feedback; full natural long-play balancing remains useful.
 - P1: Higher-fidelity licensed/scanned player assets and animations if photorealism is required; current procedural athletes are not equivalent to professional sports-game models.
