@@ -1,13 +1,14 @@
 # RENFFR OPEN — Tennis Web App (rebuild of Unity TennisGame_Upgraded.zip)
 
 ## Original problem
-"unzip and review rebuild in a great web-app". Choices: single-player vs AI, modern 2D top-down court, leaderboard & match history in backend, keep original logic/upgrade experience, add user's name "renffr" in a special place.
+"unzip and review rebuild in a great web-app". Choices: single-player vs AI, leaderboard & match history in backend, keep original Unity mechanics/upgrade experience, add user's name "renffr". Initial 2D requirement was superseded by explicit always-3D gameplay, realistic-looking players, a clear court view, mouse controls and unrestricted pre-serve/receiving movement.
 
 ## Architecture
-- Frontend React + HTML5 Canvas engine + Three.js 3D view (`src/game/`: constants, physics, scoring, engine, render, audio; `src/game/three/`: ThreeView, stadium, parts)
+- Frontend React + custom JS tennis engine + Three.js WebGL (`src/game/`: constants, physics, scoring, engine, input, replay, audio; `src/game/three/`: ThreeView, stadium, parts, anatomy, player, animatePlayer). Legacy 2D renderer remains unused.
 - Pages: Home, Setup, Play, Leaderboard, History
 - Backend FastAPI + MongoDB: POST/GET /api/matches, GET /api/leaderboard (aggregation, rating by difficulty)
-- 2D/3D toggle on Play page with automatic FPS-based fallback to 2D for low-GPU devices
+- Always 3D on Play; reduced effects for low FPS, explicit retry error for unavailable/lost WebGL. No 2D toggle/fallback. Simulation stops while graphics are unavailable.
+- Match data now includes optional opponent_stats and rally_lengths (backward-compatible with older documents).
 
 ## Implemented (2026-06)
 - Ported ScoringSystem (deuce/adv, 6 games win by 2, best of 3) + tie-break, server rotation, Quick Set format
@@ -43,7 +44,31 @@
 - Added localStorage data validation in api.js `validateSetup()`
 - Added ESLint suppress comments with reasoning for all intentional minimal hook deps
 
-## Backlog
-- P1: Local 2-player / online multiplayer
-- P2: Player outfits/colors customization, achievements, mobile layout polish
-- P2: Additional 3D camera angles (behind player, top-down 3D)
+## Implemented (2026-10-14 — visual, replay & controls upgrade)
+- Replaced capsule avatars with articulated anatomical athletes: contoured torsos/limbs, facial details, hair/headbands, fabric-textured shirts/shorts, socks/shoes, hands, strung rackets, branded clothing and run/swing/serve poses. These are procedural characters, NOT photoreal scans or licensed pro likenesses.
+- Fixed obstructed court: removed side roofs crossing camera sightlines, default steady elevated baseline camera with optional broadcast camera. Larger gameplay area and transparent net improve visibility. Player names no longer truncate on the scoreboard.
+- Removed automatic 2D fallback per explicit user request. Effects/pixel ratio reduce instead; WebGL errors have retry and preserve simulation state.
+- Keyboard movement before serving, during toss, receiving, between points and fault pauses. Second serves retain player position. The tossed ball inherits movement rather than remaining artificially attached.
+- Retained 1–7 separate shot keys (explicit user choice); held keys prepare reachable returns, taps retain short input buffering. Added mouse following, explicit right-button aiming and left-button shot/held preparation. Keyboard overrides mouse targets; pause/blur/replay clear stale input.
+- Research informed controls: official Tennis Elbow 4 documentation and TopSpin 2K25 gameplay report. Rationale, sources and exact mapping in `memory/CONTROL_DESIGN.md`.
+- Serve status/toss-height timing meter, shot selection highlight, optional mouse following. Responsive scoreboard/serve HUD avoids overlap at 320px. Touch DPad captures and clears pointers correctly.
+- Timestamped interpolated replays with cinematic subject-framing camera, speed/progress, manual last-point replay, skip, and correct live-state restoration. Final-point automatic/manual replays return to results without re-awarding points or re-saving matches.
+- Completed match comparison charts, aces/winners/errors/double faults/perfect shots/longest rally/points, rally histogram/average and duration. Extended real backend persistence. Match history exposes saved breakdowns and remembers expanded rows across reloads. Retry button on save failure.
+- Surface mini-court preview updates colors/metrics for all five surfaces. Home copy corrected to 3D and five surfaces.
+- Added guard preventing buffered shots after a point is over.
+
+## Verification (2026-10-14)
+- Testing agent report: `test_reports/iteration_4.json`; 35/35 backend tests and 8/8 engine/input/replay unit tests passed. Agent confirmed 3D rendering, camera toggle, keyboard movement, RMB context suppression, held keys, serve meter, responsive widths, and API persistence.
+- Agent flagged history expansion persistence and outdated surface count. Both fixed and browser-verified; original report retained as historical evidence.
+- Main-agent browser checks after fixes: controlled match-point fixture -> automatic final replay -> result -> real backend save; manual replay skip and natural completion restore identical score/stats and save count stays unchanged. This was a controlled edge-case test, not a full naturally played match.
+- Browser checks verified prepared shot waits for reachable contact, dead points reject shots, and 320px scoreboard/serve meter do not overlap or horizontally overflow.
+- Production frontend build compiled successfully; unit tests rerun 8/8. No mocked application APIs or integrations. No authentication required (`memory/test_credentials.md`).
+- Supplementary verification: `test_reports/iteration_4_followup.json`.
+
+## Prioritized next actions / backlog
+- P0: No known functional blockers from targeted tests. User to try a match and give control-feel feedback; full natural long-play balancing remains useful.
+- P1: Higher-fidelity licensed/scanned player assets and animations if photorealism is required; current procedural athletes are not equivalent to professional sports-game models.
+- P1: Player outfit/color customization and achievements (not implemented).
+- P2: Local/online multiplayer, additional camera options, further touch polish.
+- P2: Tennis-rule fidelity refinements (e.g. foot faults/net-cord lets) and deeper long-match balancing.
+- Suggested enhancement: a practice court for serving and return timing with optional landing guides (not implemented).

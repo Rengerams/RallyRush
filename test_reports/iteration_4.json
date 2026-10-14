@@ -1,0 +1,64 @@
+{
+  "summary": "Completed backend + frontend regression testing for gameplay controls, 3D rendering mode, surfaces, history/leaderboard integration, and replay/input unit tests.",
+  "backend_issues": {
+    "critical": [],
+    "minor": []
+  },
+  "frontend_issues": {
+    "ui_bugs": [
+      {
+        "component": "History page match breakdown",
+        "issue": "Expanded match breakdown (<details>) does not persist after page reload.",
+        "selector": "[data-testid^='history-stats-']",
+        "priority": "MEDIUM"
+      }
+    ],
+    "integration_issues": [
+      {
+        "flow": "History breakdown persistence",
+        "issue": "After opening a breakdown row, reload resets it to collapsed state.",
+        "affected_selectors": [
+          "[data-testid^='history-stats-toggle-']",
+          "[data-testid^='history-stats-']"
+        ]
+      }
+    ],
+    "design_issues": [
+      {
+        "screen": "Home",
+        "issues": [
+          "Marketing card still says '3 surfaces' while setup/game now supports 5 surfaces."
+        ]
+      }
+    ]
+  },
+  "test_report_links": [
+    "/app/backend/tests/test_api_iteration5_regression.py",
+    "/app/frontend/src/game/__tests__/engine_replay_input.test.js",
+    "/app/test_reports/pytest/pytest_results_iteration5_backend.xml",
+    "/app/test_reports/pytest/pytest_results_iteration5_all_backend.xml"
+  ],
+  "action_items": [
+    "Persist history match breakdown expanded state across reload (e.g., localStorage by match id).",
+    "Update Home surface marketing copy to reflect 5 supported surfaces.",
+    "Main agent should run a manual long-play replay validation for final-point auto/manual replay edge cases (save/reaward/reset behavior)."
+  ],
+  "critical_code_review_comments": [
+    "Home.jsx feature copy is out of sync with current game capability (3 vs 5 surfaces).",
+    "Replay/final-point workflows are complex; only partial UI replay checks + unit replay lifecycle checks were automated this run."
+  ],
+  "updated_files": [
+    "/app/backend/tests/test_api_iteration5_regression.py",
+    "/app/frontend/src/game/__tests__/engine_replay_input.test.js",
+    "/app/test_reports/iteration_4.json"
+  ],
+  "success_rate": {
+    "backend": "100%",
+    "frontend": "82%"
+  },
+  "seed_data_creation": "Created TEST_/T5_* matches via backend tests for history/leaderboard verification.",
+  "retest_needed": true,
+  "should_main_agent_self_test": true,
+  "context_for_next_testing_agent": "Backend regression fully passing (35/35). Frontend verified: 3D-only canvas persists even with legacy localStorage renffr-view=2d, camera toggle works, keyboard movement works in serve/faultPause/pointOver, pause locks movement, RMB context menu prevented, serve meter visible, shot key hold/release works, responsive widths 320/768/1024/1440/1920 showed no horizontal overflow, leaderboard/history load. History breakdown persistence across reload failed. Unit tests added for replay lifecycle + movement/second-serve behavior.",
+  "rca of the issue": "History breakdown uses native <details> without persistence layer. Reload re-fetches rows and re-renders collapsed DOM, so expanded state is lost. Repro: open /history -> expand first available [data-testid^='history-stats-toggle-'] -> reload -> same row no longer has open attribute."
+}

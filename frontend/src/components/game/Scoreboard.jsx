@@ -1,11 +1,11 @@
 function Row({ name, labels, games, history, serving, idx, legend }) {
   return (
-    <div className="flex items-center gap-3 px-4 py-3" data-testid={`scoreboard-row-${idx}`}>
+    <div className="flex flex-wrap items-center gap-2 px-3 py-3" data-testid={`scoreboard-row-${idx}`}>
       <span className={`h-2 w-2 rounded-full ${serving ? "bg-[#DFFF00] shadow-[0_0_10px_#DFFF00]" : "bg-transparent"}`} data-testid={`scoreboard-server-${idx}`} />
-      <span className={`font-display flex-1 truncate text-xl font-extrabold uppercase ${legend ? "gold-shimmer" : ""}`}>{name}</span>
+      <span data-testid={`scoreboard-name-${idx}`} className={`font-display min-w-0 flex-1 break-words text-base font-extrabold uppercase ${legend ? "gold-shimmer" : ""}`}>{name}</span>
       {history.map((h, i) => <span key={`set-${i}-${h[0]}-${h[1]}`} className="w-6 text-center font-mono text-sm text-slate-500">{h[idx]}</span>)}
       <span data-testid={`scoreboard-games-${idx}`} className="w-7 text-center font-mono text-lg font-extrabold">{games[idx]}</span>
-      <span data-testid={`scoreboard-points-${idx}`} className="w-12 rounded bg-[#DFFF00] py-0.5 text-center font-mono text-lg font-extrabold text-[#0B0E14]">{labels[idx] || "\u00a0"}</span>
+      <span data-testid={`scoreboard-points-${idx}`} className="w-9 rounded bg-[#DFFF00] py-0.5 text-center font-mono text-lg font-extrabold text-[#0B0E14]">{labels[idx] || "\u00a0"}</span>
     </div>
   );
 }

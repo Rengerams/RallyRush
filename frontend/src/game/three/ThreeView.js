@@ -1,8 +1,10 @@
 import * as THREE from "three";
 import { buildStadium } from "./stadium";
-import { makePlayer, makeLabel } from "./parts";
+import { makeLabel } from "./parts";
+import { createAthlete } from "./player";
+import { animatePlayer } from "./animatePlayer";
 
-const BALL_R = 0.1;
+const BALL_R = 0.125;
 
 export class ThreeView {
   constructor(canvas, eng) {
@@ -11,9 +13,9 @@ export class ThreeView {
     this.renderer = new THREE.WebGLRenderer({ canvas, antialias: dpr < 2, powerPreference: "high-performance" });
     this.renderer.setPixelRatio(Math.min(dpr, 1.5));
     this.renderer.shadowMap.enabled = true;
-    this.renderer.shadowMap.type = THREE.PCFShadowMap;
+    this.renderer.shadowMap.type = THREE.PCFSoftShadowMap;
     this.renderer.toneMapping = THREE.ACESFilmicToneMapping;
-    this.renderer.toneMappingExposure = 1.1;
+    this.renderer.toneMappingExposure = 0.95;
 
     this.scene = new THREE.Scene();
     this.scene.background = new THREE.Color(0x071222);
@@ -21,8 +23,14 @@ export class ThreeView {
 
     /* 3/4 side-broadcast camera (side + behind player) */
     this.camera = new THREE.PerspectiveCamera(46, 1, 0.1, 200);
-    this.camPos = new THREE.Vector3(14, 13, 22);
-    this.camLook = new THREE.Vector3(0, 0, -5);
+    this.camPos = new THREE.Vector3(0, 19, 26);
+    this.camLook = new THREE.Vector3(0, 0, -1);
+    this.cameraTarget = new THREE.Vector3();
+    this.lookTarget = new THREE.Vector3();
+    this.raycaster = new THREE.Raycaster();
+    this.groundPlane = new THREE.Plane(new THREE.Vector3(0, 1, 0), 0);
+    this.pointerNDC = new THREE.Vector2();
+    this.pointerWorld = new THREE.Vector3();
 
     this.lights();
     this.stadium = buildStadium(this.scene, eng.surf);
@@ -30,11 +38,11 @@ export class ThreeView {
   }
 
   lights() {
-    this.scene.add(new THREE.HemisphereLight(0xb3d9ff, 0x0a1628, 1.4));
-    const sun = new THREE.DirectionalLight(0xfff8e7, 2.8);
+    this.scene.add(new THREE.HemisphereLight(0xdceeff, 0x536057, 1.6));
+    const sun = new THREE.DirectionalLight(0xfff8e7, 2.4);
     sun.position.set(-6, 24, 8);
     sun.castShadow = true;
-    sun.shadow.mapSize.set(1024, 1024);
+    sun.shadow.mapSize.set(2048, 2048);
     Object.assign(sun.shadow.camera, { left: -18, right: 18, top: 20, bottom: -20, near: 1, far: 60 });
     sun.shadow.bias = -0.0004;
     this.scene.add(sun);
@@ -51,10 +59,10 @@ export class ThreeView {
 
   createPlayers() {
     const e = this.eng;
-    this.pMesh = makePlayer(e.cfg.legend ? 0xffc828 : 0x00e5ff, e.cfg.legend);
+    this.pMesh = createAthlete(e.cfg.legend ? 0xffc828 : 0x21bbce, e.cfg.legend);
     this.pMesh.add(makeLabel(e.names[0], e.cfg.legend ? "#FFC828" : "#F5F5F5"));
-    this.aMesh = makePlayer(0xef5350, false);
-    this.aMesh.add(makeLabel(e.names[1], "#F5F5F5", 1.8));
+    this.aMesh = createAthlete(0xe84f49, false, true);
+    this.aMesh.add(makeLabel(e.names[1], "#F5F5F5"));
     this.scene.add(this.pMesh, this.aMesh);
   }
 
@@ -104,6 +112,23 @@ export class ThreeView {
     };
     this.reachRing = ring(2.5, 0x00e5ff);
     this.perfectRing = ring(1.04, 0xdfff00);
+    this.destinationRing = ring(0.28, 0xffffff);
+    this.aimRing = ring(0.38, 0xdfff00);
+  }
+
+  courtPoint(clientX, clientY) {
+    const rect = this.renderer.domElement.getBoundingClientRect();
+    this.pointerNDC.set((clientX - rect.left) / rect.width * 2 - 1, -(clientY - rect.top) / rect.height * 2 + 1);
+    this.raycaster.setFromCamera(this.pointerNDC, this.camera);
+    const hit = this.raycaster.ray.intersectPlane(this.groundPlane, this.pointerWorld);
+    if (!hit || Math.abs(hit.x) > 9 || Math.abs(hit.z) > 17) return null;
+    return { x: hit.x, z: hit.z };
+  }
+
+  reduceEffects() {
+    this.renderer.setPixelRatio(1);
+    this.renderer.shadowMap.enabled = false;
+    this.reducedEffects = true;
   }
 
   setSize(w, h) {
@@ -113,37 +138,40 @@ export class ThreeView {
     this.camera.updateProjectionMatrix();
   }
 
-  pose(mesh, ent, facing, t) {
-    mesh.position.set(ent.x, 0, ent.z);
-    mesh.rotation.y = facing;
-    const prog = ent.swing > 0 ? 1 - ent.swing / 0.25 : 0;
-    const arm = mesh.userData.arm;
-    arm.rotation.y = ent.swing > 0 ? ent.side * (1.8 - prog * 3.4) : ent.side * 0.9;
-    arm.rotation.z = ent.swing > 0 ? 0.3 - prog * 0.5 : -0.2;
-    if (mesh.userData.aura) {
-      const s = 1 + Math.sin(t * 4) * 0.12;
-      mesh.userData.aura.scale.set(s, s, s);
-    }
-  }
-
   updateCamera(e) {
     const b = e.ball;
+    const aspectOffset = this.camera.aspect < 1.25 ? 4 : 0;
     if (e.state === "replay") {
-      this.camPos.lerp(new THREE.Vector3(12, 5, b.z * 0.3 + 14), 0.05);
-      this.camLook.lerp(new THREE.Vector3(b.x * 0.3, b.y * 0.3, b.z * 0.5), 0.08);
+      const last = e.replayFrames[e.replayFrames.length - 1];
+      const hitter = last?.lastHitter === 1 ? e.a : e.p;
+      const side = hitter.z > 0 ? 1 : -1;
+      const radius = Math.max(2.8, Math.hypot(b.x - hitter.x, b.z - hitter.z, b.y - 1) / 2 + 1.5);
+      const halfFov = THREE.MathUtils.degToRad(this.camera.fov / 2);
+      const narrowFov = Math.min(halfFov, Math.atan(Math.tan(halfFov) * this.camera.aspect));
+      const distance = radius / Math.sin(narrowFov) * 1.12;
+      this.lookTarget.set((hitter.x + b.x) / 2, Math.max(0.9, b.y / 2), (hitter.z + b.z) / 2);
+      this.cameraTarget.copy(this.lookTarget).addScaledVector(new THREE.Vector3(0.58, 0.52, side * 0.63).normalize(), distance);
     } else {
-      const tz = b.z * 0.05;
-      this.camPos.lerp(new THREE.Vector3(14, 13, 22 + tz), 0.03);
-      this.camLook.lerp(new THREE.Vector3(b.x * 0.04, 0, -5 + tz * 0.3), 0.04);
+      // Stable elevated baseline view: court-aligned controls, no ball-following drift.
+      const angled = e.cameraMode === "broadcast";
+      this.cameraTarget.set(angled ? 9 : 0, 19 + aspectOffset, 26 + aspectOffset);
+      this.lookTarget.set(0, 0, -1);
     }
+    // Snap back from the cinematic angle: no obscured opening serve after a replay.
+    const transition = this.wasReplay && e.state !== "replay" ? 1 : 0.08;
+    this.camPos.lerp(this.cameraTarget, transition);
+    this.camLook.lerp(this.lookTarget, transition);
+    this.wasReplay = e.state === "replay";
     this.camera.position.copy(this.camPos);
     this.camera.lookAt(this.camLook);
   }
 
   render() {
     const e = this.eng, t = e.time, b = e.ball;
-    this.pose(this.pMesh, e.p, 0, t);
-    this.pose(this.aMesh, e.a, Math.PI, t);
+    const poseTime = e.state === "replay" ? e.replayTime : t;
+    const context = { ball: b, toss: e.serveStage === "toss" };
+    animatePlayer(this.pMesh, e.p, 0, poseTime, { ...context, serving: e.state === "serve" && e.server === 0 });
+    animatePlayer(this.aMesh, e.a, Math.PI, poseTime, { ...context, serving: e.state === "serve" && e.server === 1 });
     this.ball.position.set(b.x, b.y + BALL_R, b.z);
     this.ball.rotation.x -= 0.2;
     this.shadow.position.set(b.x, 0.015, b.z);
@@ -172,9 +200,13 @@ export class ThreeView {
       r.position.x = e.p.x;
       r.position.z = e.p.z;
     });
+    [[this.destinationRing, e.pointerTarget], [this.aimRing, e.pointerAim]].forEach(([ring, target]) => {
+      ring.visible = !!target && ["serve", "rally"].includes(e.state);
+      if (target) ring.position.set(target.x, 0.023, target.z);
+    });
 
     const { crowd, base } = this.stadium;
-    if (e.cheer > 0 || this.wasCheer) {
+    if (!this.reducedEffects && (e.cheer > 0 || this.wasCheer)) {
       const m4 = new THREE.Matrix4();
       base.forEach((c, i) => {
         m4.makeTranslation(c.pos.x, c.pos.y + Math.abs(Math.sin(t * 9 + c.ph)) * 0.35 * e.cheer, c.pos.z);
@@ -192,7 +224,7 @@ export class ThreeView {
     this.scene.traverse((o) => {
       o.geometry?.dispose();
       const mats = Array.isArray(o.material) ? o.material : o.material ? [o.material] : [];
-      mats.forEach((m) => { m.map?.dispose(); m.dispose(); });
+      mats.forEach((m) => { m.map?.dispose(); m.bumpMap?.dispose(); m.dispose(); });
     });
     this.renderer.dispose();
   }

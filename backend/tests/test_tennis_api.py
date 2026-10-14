@@ -5,8 +5,23 @@ Tests: Root endpoint, Matches CRUD, Leaderboard aggregation
 import pytest
 import requests
 import os
+from pathlib import Path
+from dotenv import dotenv_values
 
-BASE_URL = os.environ.get('REACT_APP_BACKEND_URL', '').rstrip('/')
+
+def _resolve_base_url():
+    url = os.environ.get("REACT_APP_BACKEND_URL")
+    if not url:
+        env_path = Path(__file__).resolve().parents[2] / "frontend" / ".env"
+        if env_path.exists():
+            url = dotenv_values(env_path).get("REACT_APP_BACKEND_URL")
+    return (url or "").rstrip("/")
+
+
+BASE_URL = _resolve_base_url()
+
+if not BASE_URL:
+    pytest.skip("REACT_APP_BACKEND_URL is not configured", allow_module_level=True)
 
 class TestRootEndpoint:
     """Test root API endpoint"""

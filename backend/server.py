@@ -60,6 +60,8 @@ class MatchIn(BaseModel):
     legend: bool = False
     stats: MatchStats
     opponent_points: int = 0
+    opponent_stats: Optional[MatchStats] = None
+    rally_lengths: List[Annotated[int, Field(ge=0)]] = Field(default_factory=list, max_length=5000)
 
 
 class Match(BaseDocument, MatchIn):

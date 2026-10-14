@@ -1,56 +1,68 @@
-import { useEffect, useRef } from "react";
-import { render } from "@/game/render";
+import { useEffect, useRef, useState } from "react";
+import { RotateCcw } from "lucide-react";
 import { ThreeView } from "@/game/three/ThreeView";
 
-function size(mode, wrapW) {
-  const mobile = window.innerWidth < 1024;
-  const maxH = mobile ? Math.max(360, window.innerHeight - 300) : Math.min(window.innerHeight - 110, 900);
-  if (mode === "3d") return [wrapW, Math.min(maxH, mobile ? wrapW * 0.85 : wrapW * 0.62)];
-  const w = Math.min(wrapW, maxH * 0.62);
-  return [w, w / 0.62];
-}
+export default function GameCanvas({ eng, wrapRef, onSwing, onRelease, onPointer, onPointerLeave, onQuality, onAvailability }) {
+  const ref = useRef(null), viewRef = useRef(null);
+  const [error, setError] = useState(null), [retry, setRetry] = useState(0);
 
-export default function GameCanvas({ eng, mode, wrapRef, onTap, onSlow }) {
-  const ref = useRef(null);
-
-  // eslint-disable-next-line react-hooks/exhaustive-deps -- ThreeView, render, size are module constants; cancelAnimationFrame/requestAnimationFrame are globals
   useEffect(() => {
-    const c = ref.current;
-    let view = null;
-    if (mode === "3d") {
-      try { view = new ThreeView(c, eng); } catch { onSlow?.("unsupported"); return undefined; }
-    }
+    const canvas = ref.current;
+    let view, raf, frames = 0, checked = false;
+    setError(null);
+    try { view = new ThreeView(canvas, eng); }
+    catch { setError("3D graphics could not start on this browser."); onAvailability?.(false); return undefined; }
+    viewRef.current = view;
+    onAvailability?.(true);
     const fit = () => {
-      const [w, h] = size(view ? "3d" : "2d", wrapRef.current?.clientWidth || 600);
-      c.style.width = `${w}px`;
-      c.style.height = `${h}px`;
-      if (view) view.setSize(w, h);
-      else { const dpr = window.devicePixelRatio || 1; c.width = w * dpr; c.height = h * dpr; }
+      const width = wrapRef.current.clientWidth;
+      const mobile = window.innerWidth < 1024;
+      const maxH = Math.max(300, window.innerHeight - (mobile ? 230 : 145));
+      const height = Math.min(maxH, width * (mobile ? 0.95 : 0.68));
+      canvas.style.width = `${width}px`; canvas.style.height = `${height}px`;
+      view.setSize(width, height);
     };
     fit();
+    const resize = new ResizeObserver(fit);
+    resize.observe(wrapRef.current);
     window.addEventListener("resize", fit);
-    let raf;
-    const ctx = view ? null : c.getContext("2d");
-    const t0 = performance.now();
-    let frames = 0;
-    let checked = false;
+    const contextLost = (event) => { event.preventDefault(); cancelAnimationFrame(raf); onAvailability?.(false); setError("The 3D connection was interrupted. Your match is preserved."); };
+    canvas.addEventListener("webglcontextlost", contextLost);
+    const start = performance.now();
     const loop = () => {
-      if (view && !checked) {
-        const el = performance.now() - t0;
-        if (el > 1200) frames++;
-        if (el > 3200) { checked = true; if (frames / 2 < 8) { onSlow?.("slow"); return; } }
+      const elapsed = performance.now() - start;
+      if (!checked && elapsed > 1200) frames++;
+      if (!checked && elapsed > 4200) {
+        checked = true;
+        if (frames / ((elapsed - 1200) / 1000) < 24) { view.reduceEffects(); onQuality?.("reduced"); }
       }
-      if (view) view.render();
-      else render(ctx, eng, c.width, c.height);
+      view.render();
       raf = requestAnimationFrame(loop);
     };
     raf = requestAnimationFrame(loop);
-    return () => { cancelAnimationFrame(raf); window.removeEventListener("resize", fit); view?.dispose(); };
-  }, [eng, mode, wrapRef, onSlow]);
+    return () => {
+      cancelAnimationFrame(raf); resize.disconnect(); window.removeEventListener("resize", fit);
+      canvas.removeEventListener("webglcontextlost", contextLost); view.dispose(); viewRef.current = null; onAvailability?.(false);
+    };
+  }, [eng, wrapRef, onQuality, onAvailability, retry]);
 
-  return (
-    <canvas ref={ref} data-testid="game-canvas" data-view-mode={mode}
-      onPointerDown={(e) => { if (e.pointerType === "touch") onTap?.(); }}
-      className="block touch-none rounded-2xl border border-white/10" />
-  );
+  const point = (event) => viewRef.current?.courtPoint(event.clientX, event.clientY);
+  return <div className="relative" data-testid="3d-game-surface">
+    <canvas key={retry} ref={ref} data-testid="game-canvas" data-view-mode="3d" aria-label="3D tennis court"
+      onPointerMove={e => { if (e.pointerType === "mouse") onPointer?.(point(e), !!(e.buttons & 2)); }}
+      onPointerLeave={() => { onPointerLeave?.(); onRelease?.(); }}
+      onContextMenu={e => e.preventDefault()}
+      onPointerDown={e => {
+        e.preventDefault(); e.currentTarget.setPointerCapture(e.pointerId);
+        if (e.button === 2) onPointer?.(point(e), true);
+        if (e.button === 0) onSwing?.();
+      }}
+      onPointerUp={e => { if (e.button === 0) onRelease?.(); if (e.button === 2) onPointerLeave?.(); }}
+      onPointerCancel={() => { onPointerLeave?.(); onRelease?.(); }}
+      onLostPointerCapture={() => onRelease?.()}
+      className="block touch-none rounded-xl border border-white/10" style={{ cursor: "crosshair" }} />
+    {error && <div data-testid="webgl-error" role="alert" className="absolute inset-0 z-40 flex flex-col items-center justify-center gap-4 bg-[#121824] p-5 text-center">
+      <p>{error}</p><button data-testid="webgl-retry-btn" onClick={() => setRetry(n => n + 1)} className="btn-volt flex items-center gap-2 rounded-full px-5 py-3"><RotateCcw size={16} />Retry 3D</button>
+    </div>}
+  </div>;
 }

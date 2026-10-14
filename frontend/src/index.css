@@ -91,3 +91,9 @@ body {
   font-size: 12px;
   background: rgba(255, 255, 255, 0.04);
 }
+
+@keyframes preview-ball { from { transform: translate(-20px, -12px); opacity: 0.2; } to { transform: translate(0, 0); opacity: 1; } }
+.surface-preview-ball { animation: preview-ball 450ms ease-out both; }
+@media (prefers-reduced-motion: reduce) {
+  .surface-preview-ball { animation: none; }
+}

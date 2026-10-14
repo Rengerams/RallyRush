@@ -1,0 +1,27 @@
+{
+  "date": "2026-10-14",
+  "scope": "Main-agent follow-up after mandatory testing agent iteration_4",
+  "verified_fixes": [
+    "History expanded match breakdown persists after reload by match id",
+    "Home reports five surfaces and 3D tennis",
+    "Completed points reject buffered hits",
+    "Mobile scoreboard and serve meter do not overlap at 320px; no horizontal overflow"
+  ],
+  "additional_browser_checks_passed": [
+    "Controlled match-point fixture triggers automatic final replay and finishes in result modal",
+    "Match result saves through real API",
+    "Manual final replay skip restores score/stats and matchOver state",
+    "Manual final replay natural completion restores result without another saved match",
+    "Held shot prepares then strikes when ball enters reachable contact range"
+  ],
+  "unit_tests_rerun": {"passed": 8, "failed": 0},
+  "backend_agent_results": {"passed": 35, "failed": 0},
+  "frontend_build": "Compiled successfully",
+  "mocked_app_apis": false,
+  "notes": [
+    "Final-point checks used a controlled recorded-frame/score fixture in browser; full natural long-play balancing was not claimed.",
+    "Initial Home text assertion compared CSS-transformed uppercase innerText; corrected textContent assertion passed without additional app changes.",
+    "No authentication or credentials required.",
+    "Player assets are detailed procedural athletes, not photoreal scans."
+  ]
+}

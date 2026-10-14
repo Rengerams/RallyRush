@@ -1,9 +1,19 @@
 import { useEffect, useState } from "react";
 import { fetchMatches } from "@/lib/api";
 import { SURFACES, DIFFICULTY, STYLES, FORMATS } from "@/game/constants";
+import { MatchStats } from "@/components/game/MatchStats";
 
 function MatchCard({ m, i }) {
   const surf = SURFACES[m.surface];
+  const storageKey = `renffr-breakdown-${m.id}`;
+  const [expanded, setExpanded] = useState(() => {
+    try { return localStorage.getItem(storageKey) === "open"; } catch { return false; }
+  });
+  const rememberExpanded = event => {
+    const open = event.currentTarget.open;
+    setExpanded(open);
+    try { if (open) localStorage.setItem(storageKey, "open"); else localStorage.removeItem(storageKey); } catch { /* Storage may be disabled. */ }
+  };
   return (
     <div data-testid={`history-match-${i}`} className="fade-up flex flex-wrap items-center gap-5 rounded-2xl border border-white/10 bg-[#121824] p-5" style={{ animationDelay: `${Math.min(i, 10) * 40}ms` }}>
       <span className={`font-display w-24 text-3xl font-black uppercase italic ${m.won ? "text-[#DFFF00]" : "text-[#E05A47]"}`}>{m.won ? "Win" : "Loss"}</span>
@@ -19,6 +29,10 @@ function MatchCard({ m, i }) {
         <span>Perfect <b className="text-white">{m.stats.perfect_shots}</b></span>
       </div>
       <span className="font-mono text-[11px] text-slate-500">{new Date(m.created_at).toLocaleString()}</span>
+      {m.opponent_stats && <details data-testid={`history-stats-${i}`} open={expanded} onToggle={rememberExpanded} className="w-full border-t border-white/10 pt-3">
+        <summary data-testid={`history-stats-toggle-${i}`} className="cursor-pointer font-mono text-xs text-[#00F0FF]">Match breakdown</summary>
+        <div className="mt-5 max-w-xl"><MatchStats stats={m.stats} opponentStats={m.opponent_stats} names={[m.player_name, `${DIFFICULTY[m.difficulty].label} AI`]} rallyLengths={m.rally_lengths} prefix={`history-${m.id}`} /></div>
+      </details>}
     </div>
   );
 }

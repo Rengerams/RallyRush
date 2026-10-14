@@ -2,8 +2,8 @@ import { Volume2, VolumeX, Mic, MicOff, Film } from "lucide-react";
 
 export default function PauseModal({ onResume, onRestart, onQuit, sound, voice, onSound, onVoice, replays, onReplays }) {
   return (
-    <div data-testid="pause-modal" className="absolute inset-0 z-30 flex items-center justify-center bg-[#0B0E14]/70 backdrop-blur-md">
-      <div className="fade-up w-[320px] rounded-2xl border border-white/10 bg-[#121824] p-6">
+    <div data-testid="pause-modal" role="dialog" aria-modal="true" aria-label="Match paused" className="fixed inset-0 z-50 overflow-y-auto bg-[#0B0E14]/70 p-4 backdrop-blur-md">
+      <div className="fade-up mx-auto my-8 w-full max-w-[320px] rounded-2xl border border-white/10 bg-[#121824] p-6">
         <p className="font-mono text-[10px] uppercase tracking-[0.3em] text-[#00F0FF]">Time-out</p>
         <h2 className="font-display mt-1 text-5xl font-black uppercase italic">Paused</h2>
         <div className="mt-6 space-y-2">

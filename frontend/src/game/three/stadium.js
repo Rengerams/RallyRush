@@ -28,10 +28,9 @@ function net(scene) {
   const c = document.createElement("canvas");
   c.width = c.height = 64;
   const g = c.getContext("2d");
-  g.fillStyle = "rgba(235,235,235,0.88)";
-  g.fillRect(0, 0, 64, 64);
-  g.strokeStyle = "rgba(30,30,30,0.55)";
-  g.lineWidth = 2;
+  g.clearRect(0, 0, 64, 64);
+  g.strokeStyle = "rgba(22,28,32,0.85)";
+  g.lineWidth = 1.2;
   for (let i = 0; i <= 64; i += 10) {
     g.beginPath(); g.moveTo(i, 0); g.lineTo(i, 64);
     g.moveTo(0, i); g.lineTo(64, i); g.stroke();
@@ -223,24 +222,10 @@ function stands(scene) {
 
 /* ── Canopy / roof over stands ─────────────────── */
 function canopy(scene) {
-  const roofMat = new THREE.MeshLambertMaterial({ color: 0x0d2137 });
-  const pillarMat = new THREE.MeshLambertMaterial({ color: 0x37474f });
-  [-1, 1].forEach((side) => {
-    const roof = new THREE.Mesh(new THREE.BoxGeometry(10, 0.12, 32), roofMat);
-    roof.position.set(side * 14.5, 7.2, 0);
-    scene.add(roof);
-    const edge = new THREE.Mesh(
-      new THREE.BoxGeometry(10, 0.2, 0.06),
-      new THREE.MeshBasicMaterial({ color: 0x1565c0 })
-    );
-    edge.position.set(side * 14.5, 7.08, side > 0 ? -16 : 16);
-    scene.add(edge);
-    for (let z = -14; z <= 14; z += 7) {
-      const p = new THREE.Mesh(new THREE.CylinderGeometry(0.08, 0.08, 7.2), pillarMat);
-      p.position.set(side * 18, 3.6, z);
-      scene.add(p);
-    }
-  });
+  // Only the far grandstand has a roof. Side roofs intersect gameplay camera sightlines.
+  const roof = new THREE.Mesh(new THREE.BoxGeometry(21, 0.15, 4), new THREE.MeshLambertMaterial({ color: 0x233b49 }));
+  roof.position.set(0, 6, -22);
+  scene.add(roof);
 }
 
 /* ── Stadium lights (visual) ───────────────────── */
