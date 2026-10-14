@@ -143,20 +143,8 @@ function boards(scene) {
 }
 
 /* ── Stands + crowd ────────────────────────────── */
-function stands(scene) {
-  const structMat = new THREE.MeshLambertMaterial({ color: 0x0d1b2a });
-  const crowdColors = [0x1565c0, 0xffd600, 0x00e5ff, 0xeceff1, 0x90a4ae, 0xff8f00, 0xef5350, 0x66bb6a];
-  const crowd = new THREE.InstancedMesh(
-    new THREE.CapsuleGeometry(0.2, 0.32, 1, 5),
-    new THREE.MeshLambertMaterial(),
-    850
-  );
-  const base = [];
-  const m4 = new THREE.Matrix4();
-  const col = new THREE.Color();
-  let n = 0;
-
-  /* Side stands (along the court) */
+function sideStands(scene, structMat, crowd, base, crowdColors, m4, col, startN) {
+  let n = startN;
   [-1, 1].forEach((side) => {
     for (let r = 0; r < 7; r++) {
       const h = 0.6 + r * 0.6;
@@ -184,8 +172,11 @@ function stands(scene) {
       }
     }
   });
+  return n;
+}
 
-  /* Back stands (behind baselines) */
+function backStands(scene, structMat, crowd, base, crowdColors, m4, col, startN) {
+  let n = startN;
   [-1, 1].forEach((end) => {
     for (let r = 0; r < 4; r++) {
       const h = 0.6 + r * 0.6;
@@ -207,6 +198,23 @@ function stands(scene) {
       }
     }
   });
+  return n;
+}
+
+function stands(scene) {
+  const structMat = new THREE.MeshLambertMaterial({ color: 0x0d1b2a });
+  const crowdColors = [0x1565c0, 0xffd600, 0x00e5ff, 0xeceff1, 0x90a4ae, 0xff8f00, 0xef5350, 0x66bb6a];
+  const crowd = new THREE.InstancedMesh(
+    new THREE.CapsuleGeometry(0.2, 0.32, 1, 5),
+    new THREE.MeshLambertMaterial(),
+    850
+  );
+  const base = [];
+  const m4 = new THREE.Matrix4();
+  const col = new THREE.Color();
+
+  let n = sideStands(scene, structMat, crowd, base, crowdColors, m4, col, 0);
+  n = backStands(scene, structMat, crowd, base, crowdColors, m4, col, n);
 
   crowd.count = n;
   scene.add(crowd);

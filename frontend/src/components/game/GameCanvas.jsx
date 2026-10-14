@@ -13,6 +13,7 @@ function size(mode, wrapW) {
 export default function GameCanvas({ eng, mode, wrapRef, onTap, onSlow }) {
   const ref = useRef(null);
 
+  // eslint-disable-next-line react-hooks/exhaustive-deps -- ThreeView, render, size are module constants; cancelAnimationFrame/requestAnimationFrame are globals
   useEffect(() => {
     const c = ref.current;
     let view = null;

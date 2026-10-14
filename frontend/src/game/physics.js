@@ -1,5 +1,24 @@
 import { BALL, COURT } from "./constants";
 
+function netCollision(b, pz) {
+  b.z = Math.sign(pz) * 0.06;
+  b.vz = -b.vz * 0.12;
+  b.vx *= 0.3;
+  b.netHit = true;
+}
+
+function groundBounce(b, surf) {
+  b.y = 0;
+  b.vy = -b.vy * BALL.bounce * surf.bounce;
+  const f = BALL.friction * surf.friction;
+  b.vx *= f;
+  b.vz *= f;
+  if (b.spin >= 0.8) { b.vz *= 1.08; b.vy *= 1.1; }
+  else if (b.spin <= -0.8) { b.vz *= 0.88; b.vy *= 0.65; }
+  b.spin *= 0.5;
+  if (b.vy < 0.4) b.vy = 0;
+}
+
 export function stepBall(b, dt, surf) {
   const g = BALL.gravity + b.spin * BALL.magnus;
   const pz = b.z;
@@ -9,22 +28,11 @@ export function stepBall(b, dt, surf) {
   b.z += b.vz * dt;
   let ev = null;
   if (!b.netHit && pz * b.z < 0 && Math.abs(b.x) < COURT.doublesHalfW + 0.9 && b.y < COURT.netH) {
-    b.z = Math.sign(pz) * 0.06;
-    b.vz = -b.vz * 0.12;
-    b.vx *= 0.3;
-    b.netHit = true;
+    netCollision(b, pz);
     ev = "net";
   }
   if (b.y <= 0 && b.vy < 0) {
-    b.y = 0;
-    b.vy = -b.vy * BALL.bounce * surf.bounce;
-    const f = BALL.friction * surf.friction;
-    b.vx *= f;
-    b.vz *= f;
-    if (b.spin >= 0.8) { b.vz *= 1.08; b.vy *= 1.1; }
-    else if (b.spin <= -0.8) { b.vz *= 0.88; b.vy *= 0.65; }
-    b.spin *= 0.5;
-    if (b.vy < 0.4) b.vy = 0;
+    groundBounce(b, surf);
     ev = ev || "bounce";
   }
   return ev;
@@ -59,7 +67,7 @@ export function isIn(b, side, serveBox) {
   return Math.abs(b.x) <= COURT.singlesHalfW + 0.05 && Math.abs(b.z) <= COURT.halfLen + 0.05;
 }
 
-export function predictIntercept(ball, ai, speed, reactLeft, surf, volleyOK, serveBox, startBounces = 0) {
+export function predictIntercept({ ball, ai, speed, reactLeft = 0, surf, volleyOK = false, serveBox = 0, startBounces = 0 }) {
   const b = { ...ball };
   const dt = 1 / 60;
   let bounces = startBounces;
@@ -76,8 +84,8 @@ export function predictIntercept(ball, ai, speed, reactLeft, surf, volleyOK, ser
       if (bounces >= 2) break;
     }
     if (b.z > -0.5) continue;
-    const ok = (bounces >= 1 && b.y < 2.2 && b.y > 0.12) || (volleyOK && bounces === 0 && b.y < 2.3 && b.z > -7);
-    if (!ok) continue;
+    const reachable = (bounces >= 1 && b.y < 2.2 && b.y > 0.12) || (volleyOK && bounces === 0 && b.y < 2.3 && b.z > -7);
+    if (!reachable) continue;
     last = { x: b.x, z: b.z };
     const need = Math.max(0, Math.hypot(b.x - ai.x, b.z - ai.z) - 1.2);
     if (need / speed <= t - reactLeft) { best = last; break; }

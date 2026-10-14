@@ -251,30 +251,8 @@ export class TennisEngine {
   updateAI(dt) {
     const a = this.a, b = this.ball, d = this.diff;
     a.swing = Math.max(0, a.swing - dt);
-    if (this.state === "serve") {
-      if (this.server !== 1) return;
-      this.aiServeT -= dt;
-      if (this.serveStage === "hold" && this.aiServeT <= 0) { this.serveStage = "toss"; b.vy = 5.2; }
-      if (this.serveStage === "toss" && b.vy < 0 && b.y <= 2.4) this.aiServe();
-      return;
-    }
-    const speed = 5 * d.move * this.surf.speed;
-    let tx = clamp(-b.x * 0.15, -2, 2);
-    let tz = a.homeZ;
-    const incoming = this.state === "rally" && this.lastHitter === 0;
-    if (incoming) {
-      a.reactT -= dt;
-      if (a.reactT > 0) { tx = a.x; tz = a.z; }
-      else {
-        if (!a.plan || this.time - a.planT > 0.12) {
-          a.plan = predictIntercept(b, a, speed, 0, this.surf, a.z > -6.5, this.isServe ? this.boxSign : 0, this.bounces);
-          a.planT = this.time;
-          if (a.plan.firstOut && d.smart && this.bounces === 0) a.letGo = true;
-        }
-        tx = a.plan.x + (a.plan.x >= a.x ? -0.5 : 0.5);
-        tz = a.plan.z;
-      }
-    }
+    if (this.state === "serve") return this.updateAIServe(dt);
+    const { tx, tz, speed, incoming } = this.aiComputeTarget(dt);
     const ddx = tx - a.x, ddz = tz - a.z;
     const dm = Math.hypot(ddx, ddz);
     const step = speed * dt;
@@ -290,6 +268,36 @@ export class TennisEngine {
       if (Math.random() < d.error) { if (Math.random() < 0.5) { a.whiff = true; a.swing = 0.25; return; } a.wild = true; }
     }
     this.aiHit();
+  }
+
+  updateAIServe(dt) {
+    const a = this.a, b = this.ball;
+    if (this.server !== 1) return;
+    this.aiServeT -= dt;
+    if (this.serveStage === "hold" && this.aiServeT <= 0) { this.serveStage = "toss"; b.vy = 5.2; }
+    if (this.serveStage === "toss" && b.vy < 0 && b.y <= 2.4) this.aiServe();
+  }
+
+  aiComputeTarget(dt) {
+    const a = this.a, b = this.ball, d = this.diff;
+    const speed = 5 * d.move * this.surf.speed;
+    const incoming = this.state === "rally" && this.lastHitter === 0;
+    let tx = clamp(-b.x * 0.15, -2, 2);
+    let tz = a.homeZ;
+    if (incoming) {
+      a.reactT -= dt;
+      if (a.reactT > 0) { tx = a.x; tz = a.z; }
+      else {
+        if (!a.plan || this.time - a.planT > 0.12) {
+          a.plan = predictIntercept({ ball: b, ai: a, speed, surf: this.surf, volleyOK: a.z > -6.5, serveBox: this.isServe ? this.boxSign : 0, startBounces: this.bounces });
+          a.planT = this.time;
+          if (a.plan.firstOut && d.smart && this.bounces === 0) a.letGo = true;
+        }
+        tx = a.plan.x + (a.plan.x >= a.x ? -0.5 : 0.5);
+        tz = a.plan.z;
+      }
+    }
+    return { tx, tz, speed, incoming };
   }
 
   updateBall(dt) {

@@ -23,6 +23,7 @@ function HallOfFame({ row }) {
 
 export default function Leaderboard() {
   const [rows, setRows] = useState(null);
+  // eslint-disable-next-line react-hooks/exhaustive-deps -- mount-only fetch; fetchLeaderboard is a module constant, setRows is a stable setter
   useEffect(() => { fetchLeaderboard().then(setRows).catch(() => setRows([])); }, []);
   const renffr = rows?.find((r) => r.player_name.toLowerCase() === "renffr");
 

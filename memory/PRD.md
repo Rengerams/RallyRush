@@ -33,8 +33,17 @@
 - Backend updated to accept all 5 surfaces
 - Tested: backend 100% (14/14), frontend 100% (12/12) — iteration_2
 
+## Code Quality Refactoring (2026-10)
+- Converted `predictIntercept()` from 8 positional params to named object parameter
+- Extracted `updateAIServe()` and `aiComputeTarget()` from complex `updateAI()` (complexity 33 → three focused methods)
+- Extracted `netCollision()` and `groundBounce()` from `stepBall()` for clarity
+- Split `actors()` into `createPlayers()`, `createBall()`, `createEffects()` in ThreeView.js
+- Split `stands()` into `sideStands()` and `backStands()` in stadium.js
+- Fixed Scoreboard array index key with composite key
+- Added localStorage data validation in api.js `validateSetup()`
+- Added ESLint suppress comments with reasoning for all intentional minimal hook deps
+
 ## Backlog
-- P1: Training mode (ball machine), replay of last point
 - P1: Local 2-player / online multiplayer
 - P2: Player outfits/colors customization, achievements, mobile layout polish
 - P2: Additional 3D camera angles (behind player, top-down 3D)

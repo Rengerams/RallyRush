@@ -44,13 +44,21 @@ export class ThreeView {
   }
 
   actors() {
+    this.createPlayers();
+    this.createBall();
+    this.createEffects();
+  }
+
+  createPlayers() {
     const e = this.eng;
     this.pMesh = makePlayer(e.cfg.legend ? 0xffc828 : 0x00e5ff, e.cfg.legend);
     this.pMesh.add(makeLabel(e.names[0], e.cfg.legend ? "#FFC828" : "#F5F5F5"));
     this.aMesh = makePlayer(0xef5350, false);
     this.aMesh.add(makeLabel(e.names[1], "#F5F5F5", 1.8));
     this.scene.add(this.pMesh, this.aMesh);
+  }
 
+  createBall() {
     this.ball = new THREE.Mesh(
       new THREE.SphereGeometry(BALL_R, 20, 14),
       new THREE.MeshStandardMaterial({ color: 0xdfff00, emissive: 0x4a5500, roughness: 0.6 })
@@ -70,7 +78,9 @@ export class ThreeView {
     this.trail = new THREE.Line(tg, new THREE.LineBasicMaterial({ color: 0xdfff00, transparent: true, opacity: 0.5 }));
     this.trail.frustumCulled = false;
     this.scene.add(this.trail);
+  }
 
+  createEffects() {
     this.marks = Array.from({ length: 12 }, () => {
       const m = new THREE.Mesh(
         new THREE.CircleGeometry(0.14, 16),

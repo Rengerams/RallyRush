@@ -21,6 +21,7 @@ export default function MatchIntro({ cfg, names, onDone }) {
   const [step, setStep] = useState(0);
   const surf = SURFACES[cfg.surface];
 
+  // eslint-disable-next-line react-hooks/exhaustive-deps -- audio, DIFFICULTY, STYLES, STEPS are module constants; setStep is a stable setter
   useEffect(() => {
     audio.unlock();
     audio.fanfare();

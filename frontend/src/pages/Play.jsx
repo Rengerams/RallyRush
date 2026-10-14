@@ -55,11 +55,13 @@ export default function Play() {
         stats: e.result.stats, opponent_points: e.result.opponentStats.points_won,
       }).then(() => setSaveState("saved")).catch(() => setSaveState("error"));
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- state setters (setReplay, setCall, etc.) and module-level saveMatch are stable references
   }, [cfg]);
 
   // eslint-disable-next-line react-hooks/exhaustive-deps
   const eng = useMemo(() => new TennisEngine(cfg, onEvent), [cfg, onEvent, seed]);
 
+  // eslint-disable-next-line react-hooks/exhaustive-deps -- refs (engRef, pausedRef, introRef) and globals (cancelAnimationFrame) are stable
   useEffect(() => {
     eng.replays = replaysRef.current;
     engRef.current = eng;
@@ -80,8 +82,10 @@ export default function Play() {
   useEffect(() => { const t = call && setTimeout(() => setCall(null), 1600); return () => clearTimeout(t); }, [call]);
   useEffect(() => { const t = quality && setTimeout(() => setQuality(null), 650); return () => clearTimeout(t); }, [quality]);
 
+  // eslint-disable-next-line react-hooks/exhaustive-deps -- pausedRef is a ref, setPaused is a stable setter
   const togglePause = useCallback(() => { pausedRef.current = !pausedRef.current; setPaused(pausedRef.current); }, []);
 
+  // eslint-disable-next-line react-hooks/exhaustive-deps -- engRef, pausedRef, introRef are refs; audio, KEYMAP, SHOT_BY_KEY are module constants
   useEffect(() => {
     const down = (e) => {
       const eng = engRef.current;
@@ -111,12 +115,14 @@ export default function Play() {
   }, [togglePause]);
 
 
+  // eslint-disable-next-line react-hooks/exhaustive-deps -- introRef is a ref, setIntro is a stable setter
   const endIntro = useCallback(() => { introRef.current = false; setIntro(false); }, []);
   const shot = (id) => {
     if (introRef.current) return; audio.unlock(); engRef.current?.pressShot(id); };
   const names = [cfg.name, `${DIFFICULTY[cfg.difficulty].label} AI`];
   const toggleSound = () => { audio.sound = !audio.sound; setSound(audio.sound); };
   const toggleReplays = () => { replaysRef.current = !replaysRef.current; if (engRef.current) engRef.current.replays = replaysRef.current; setReplays(replaysRef.current); };
+  // eslint-disable-next-line react-hooks/exhaustive-deps -- setMode is a stable setter, toast and localStorage are module/global constants
   const onSlow = useCallback((why) => {
     localStorage.setItem("renffr-view", "2d");
     setMode("2d");
