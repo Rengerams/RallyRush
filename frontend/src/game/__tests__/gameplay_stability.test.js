@@ -1,7 +1,7 @@
 import { TennisEngine } from "../engine";
 import { SURFACES, FORMATS } from "../constants";
 import { stepBall } from "../physics";
-import { createScore, awardPoint } from "../scoring";
+import { createScore, awardPoint, pointLabels } from "../scoring";
 
 const cfg = { name: "Tester", power: 6, stamina: 6, accuracy: 6,
   difficulty: "medium", style: "baseline", surface: "hard", format: "quick" };
@@ -85,4 +85,14 @@ test("a mistimed tap expires and reports a miss without hitting the ball", () =>
   expect(e.p.buffered).toBeNull();
   expect(events.some((event) => event.type === "shot" && event.quality === "miss")).toBe(true);
   expect(e.lastHitter).toBe(1);
+});
+
+test("advantage scoreboard shows forty on the other side", () => {
+  const s = createScore(FORMATS.standard);
+  s.points = [3, 3];
+  expect(pointLabels(s)).toEqual(["40", "40"]);
+  awardPoint(s, 0);
+  expect(pointLabels(s)).toEqual(["AD", "40"]);
+  awardPoint(s, 1);
+  expect(pointLabels(s)).toEqual(["40", "40"]);
 });

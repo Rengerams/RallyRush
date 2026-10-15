@@ -58,7 +58,7 @@ export function pointLabels(s) {
   if (s.tiebreak) return [String(a), String(b)];
   if (a >= 3 && b >= 3) {
     if (a === b) return ["40", "40"];
-    return a > b ? ["AD", ""] : ["", "AD"];
+    return a > b ? ["AD", "40"] : ["40", "AD"];
   }
   return [TENNIS[Math.min(a, 3)], TENNIS[Math.min(b, 3)]];
 }

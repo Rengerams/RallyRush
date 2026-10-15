@@ -42,6 +42,32 @@ describe("input movement and aiming", () => {
   });
 });
 
+test("right-mouse aiming works even when mouse-follow is switched off", () => {
+  const e = new TennisEngine(cfg);
+  e.mouseEnabled = false;
+  pointerInput(e, { x: 2, z: 10 }, false);
+  expect(e.pointerTarget).toBeNull();
+  pointerInput(e, { x: 2.5, z: -5 }, true);
+  expect(e.pointerAim).toBeTruthy();
+  expect(e.pointerAim.x).toBeCloseTo(2.5);
+});
+
+test("WASD steering cancels mouse-follow destination but preserves right-click aim", () => {
+  const e = new TennisEngine(cfg);
+  e.pointerTarget = { x: 3, z: 13 };
+  e.pointerAim = { x: -2, z: -9 };
+  e.setKey("left", true);
+  expect(e.pointerTarget).toBeNull();
+  expect(e.pointerAim).toEqual({ x: -2, z: -9 });
+});
+
+test("shot keys cannot silently skip an active replay", () => {
+  const e = new TennisEngine(cfg);
+  e.state = "replay";
+  e.pressShot("flat");
+  expect(e.state).toBe("replay");
+});
+
 // Module: engine update guard behavior
 describe("engine update guards", () => {
   test("update ignores non-positive dt", () => {

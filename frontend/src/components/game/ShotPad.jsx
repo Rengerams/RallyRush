@@ -29,9 +29,12 @@ export default function ShotPad({ onShot, onHold, onRelease, selectedShot = "fla
         ))}
       </div>
       <div className="mt-4 hidden space-y-1.5 font-mono text-[11px] text-slate-400 lg:block">
-        <p><span className="key-cap">WASD</span> / arrows · move & aim</p>
+        <p><span className="key-cap">WASD</span> / arrows · move</p>
+        <p><span className="key-cap">1–7</span> hold a key to prepare a return</p>
+        <p>Mouse: right hold · aim, left click · hit</p>
+        <p>Mouse-follow movement is optional (off by default).</p>
         <p><span className="key-cap">Shift</span> sprint · <span className="key-cap">Space</span> slide</p>
-        <p><span className="key-cap">Esc</span> pause</p>
+        <p><span className="key-cap">Esc</span> pause · <span className="key-cap">Enter</span> skip replay</p>
       </div>
     </div>
   );
