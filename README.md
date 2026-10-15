@@ -20,7 +20,7 @@
 
 ## Windows desktop
 
-Download the latest **Rally-Rush-`0.2.0`-Windows-Setup.exe** installer from [GitHub Releases](https://github.com/Rengerams/tennnisNL/releases). Install and launch Rally Rush like a regular Windows app.
+Download the latest `Rally-Rush-0.2.0-Windows-Setup.exe` installer from [GitHub Releases](https://github.com/Rengerams/tennnisNL/releases). Install and launch Rally Rush like a regular Windows app.
 
 - Supported: Windows 10 or 11, 64-bit.
 - A separate browser, Node.js, server, or database is not needed to play the installed desktop version.
@@ -90,6 +90,10 @@ The installer is written to `frontend/release/`.
 - `frontend/src/components/game/` — match interface, court canvas, scoreboard, controls, and statistics.
 - `frontend/src/pages/` — home, match setup, gameplay, local leaderboard, and match history.
 - `frontend/desktop/` — Electron desktop shell.
+
+## Next version
+
+See the [Rally Rush 0.3.0 roadmap](ROADMAP.md) for the proposed UI, onboarding, practice, local data, testing, and release plan.
 
 ## License
 
