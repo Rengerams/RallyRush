@@ -4,7 +4,7 @@
 [![Downloads](https://img.shields.io/github/downloads/Rengerams/tennnisNL/total?style=flat-square)](https://github.com/Rengerams/tennnisNL/releases)
 [![License](https://img.shields.io/github/license/Rengerams/tennnisNL?style=flat-square)](./LICENSE)
 
-Rally Rush (v0.2.0) is a single-player, arcade-style 3D tennis game for Windows and the browser. Play fast matches against AI opponents, build a player, and learn to time each shot across five court surfaces.
+Rally Rush (v0.2.0) is a single-player, arcade-style 3D tennis game for Windows and the browser. Play fast matches against AI opponents, build a player, and learn to time each shot across five cour[...] 
 
 > Local play only: matches, match history, and leaderboard entries are saved on this device. There is no online multiplayer, account system, or shared online ranking.
 
@@ -14,11 +14,11 @@ Rally Rush (v0.2.0) is a single-player, arcade-style 3D tennis game for Windows 
 <!-- prettier-ignore -->
 ## Demo
 
-Below is a gameplay screenshot to give a quick preview of Rally Rush. For a short animated preview, add `assets/demo.gif` to the repository and it will appear here.
+Below is a short preview area for a gameplay screenshot or animated demo. The repository uses an `assets/` directory for screenshots and demo GIFs. If you want a preview to appear in this README, add `assets/demo.gif` or `assets/screenshot-01.png` to the repository root and the image will be displayed here.
 
-![Gameplay screenshot](assets/screenshot-01.png)
+Note: there is currently no committed screenshot or demo GIF in `assets/`, so the embedded image has been removed to avoid linking to a missing file. If you'd like, I can add an optimized demo GIF or the screenshot image file to the repo and update this README to reference it directly.
 
-If you'd like, I can add an optimized demo GIF or the screenshot image file to the repo and update this README to reference it directly.
+If you add a demo GIF, it will be shown here as an animated preview.
 
 ## Table of contents
 
