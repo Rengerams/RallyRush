@@ -10,13 +10,14 @@ import { loadSetup, storeSetup } from "@/lib/api";
 const ATTRS = ["power", "stamina", "accuracy"];
 
 function AttrSlider({ attr, value, onChange, disabled }) {
+  const labelId = `setup-attr-${attr}-label`;
   return (
     <div>
       <div className="flex items-baseline justify-between">
-        <span className="font-mono text-xs uppercase tracking-[0.2em] text-slate-400">{attr}</span>
+        <span id={labelId} className="font-mono text-xs uppercase tracking-[0.2em] text-slate-400">{attr}</span>
         <span data-testid={`setup-attr-${attr}-value`} className="font-display text-3xl font-black">{value}</span>
       </div>
-      <Slider data-testid={`setup-attr-${attr}-slider`} className="mt-2" min={1} max={10} step={1} value={[value]} disabled={disabled} onValueChange={([v]) => onChange(v)} />
+      <Slider thumbProps={{ "aria-labelledby": labelId, "aria-valuetext": `${value} out of 10` }} data-testid={`setup-attr-${attr}-slider`} className="mt-2" min={1} max={10} step={1} value={[value]} disabled={disabled} onValueChange={([v]) => onChange(v)} />
     </div>
   );
 }
