@@ -9,7 +9,14 @@ export const fetchLeaderboard = () => axios.get(`${API}/leaderboard`).then((r) =
 
 function validateSetup(raw) {
   const s = { ...DEFAULT_SETUP, ...raw };
-  if (typeof s.name !== "string" || s.name.length > 32) s.name = DEFAULT_SETUP.name;
+  if (typeof s.name !== "string" || !s.name.trim() || s.name.length > 24) s.name = DEFAULT_SETUP.name;
+  for (const attr of ["power", "stamina", "accuracy"]) {
+    if (!Number.isInteger(s[attr]) || s[attr] < 1 || s[attr] > 10) s[attr] = DEFAULT_SETUP[attr];
+  }
+  if (typeof s.legend !== "boolean") s.legend = false;
+  if (!s.legend && s.power + s.stamina + s.accuracy > 18) {
+    s.power = 6; s.stamina = 6; s.accuracy = 6;
+  }
   if (!SURFACES[s.surface]) s.surface = DEFAULT_SETUP.surface;
   if (!DIFFICULTY[s.difficulty]) s.difficulty = DEFAULT_SETUP.difficulty;
   if (!STYLES[s.style]) s.style = DEFAULT_SETUP.style;

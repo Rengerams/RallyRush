@@ -6,6 +6,8 @@ import { recordFrame, startReplay, stepReplay, endReplay } from "./replay";
 import { pointerInput, movementDirection } from "./input";
 
 const SIM = 0.82;
+const PHYSICS_STEP = 1 / 120;
+const MAX_CATCHUP_STEPS = 30;
 const rand = (a, b) => a + Math.random() * (b - a);
 const lerp = (a, b, t) => a + (b - a) * t;
 const clamp = (v, a, b) => Math.max(a, Math.min(b, v));
@@ -27,6 +29,8 @@ export class TennisEngine {
     this.pointerAim = null;
     this.selectedShot = "flat";
     this.time = 0;
+    this.simCarry = 0;
+    this.activeSeconds = 0;
     const cap = 100 * clamp(cfg.stamina / 10, 0.1, 1);
     this.p = { x: 0, z: 11.5, vx: 0, vz: 0, cap, stamina: cap, sliding: 0, sdx: 0, sdz: 0, swing: 0, side: 1, buffered: null, sprint: false };
     this.a = { x: 0, z: -11.5, swing: 0, side: 1, plan: null, planT: 0, reactT: 0, homeZ: this.style.homeZ, rolled: false, whiff: false, wild: false, letGo: false };
@@ -243,11 +247,25 @@ export class TennisEngine {
   }
 
   update(dtReal) {
-    if (dtReal <= 0) return;
-    if (this.state === "matchOver") return;
+    if (!Number.isFinite(dtReal) || dtReal <= 0 || this.state === "matchOver") return;
     if (this.state === "replay") return this.stepReplay(dtReal);
-    const dt = Math.min(dtReal, 0.034) * SIM;
+    this.simCarry += Math.min(dtReal, 0.25) * SIM;
+    let steps = 0;
+    while (this.simCarry >= PHYSICS_STEP && steps < MAX_CATCHUP_STEPS) {
+      this.simCarry -= PHYSICS_STEP;
+      this.advance(PHYSICS_STEP);
+      steps++;
+      if (this.state === "replay" || this.state === "matchOver") {
+        this.simCarry = 0;
+        break;
+      }
+    }
+    if (steps >= MAX_CATCHUP_STEPS) this.simCarry = Math.min(this.simCarry, PHYSICS_STEP);
+  }
+
+  advance(dt) {
     this.time += dt;
+    this.activeSeconds += dt;
     this.stateT += dt;
     this.cheer = Math.max(0, this.cheer - dt * 0.6);
     this.marks = this.marks.filter((m) => (m.life -= dt * 0.25) > 0);
@@ -418,7 +436,7 @@ export class TennisEngine {
     audio.say(`${reason}. ${call}`);
     this.bigPoint = reason === "Ace" ? "Ace" : this.rally >= 6 ? `${this.rally}-shot rally` : null;
     this.state = events.includes("match") ? "matchPending" : "pointOver";
-    if (events.includes("match")) this.matchDuration = Math.round((Date.now() - this.startedAt) / 1000);
+    if (events.includes("match")) this.matchDuration = Math.round(this.activeSeconds);
     this.stateT = 0;
   }
 
@@ -446,7 +464,7 @@ export class TennisEngine {
       stats: { ...this.stats[0] },
       opponentStats: { ...this.stats[1] },
       rally_lengths: [...this.rallyLengths],
-      duration_sec: this.matchDuration ?? Math.round((Date.now() - this.startedAt) / 1000),
+      duration_sec: this.matchDuration ?? Math.round(this.activeSeconds),
     };
   }
 

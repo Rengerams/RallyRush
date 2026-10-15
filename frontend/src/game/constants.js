@@ -3,10 +3,10 @@ export const COURT = { halfLen: 11.885, singlesHalfW: 4.115, doublesHalfW: 5.485
 // Values ported from CourtSurface.cs
 export const SURFACES = {
   hard: { id: "hard", label: "Hard Court", sub: "Balanced pace & bounce", bounce: 0.9, friction: 0.95, speed: 1.0, color: "#1565C0", outer: "#0D47A1" },
-  clay: { id: "clay", label: "Clay", sub: "Slow, grinding rallies", bounce: 0.8, friction: 0.8, speed: 0.85, color: "#C85A32", outer: "#9E4526" },
-  grass: { id: "grass", label: "Grass", sub: "Fast skid, low bounce", bounce: 0.95, friction: 0.9, speed: 0.9, color: "#2F7A45", outer: "#1F5A33" },
-  artificial: { id: "artificial", label: "Kunstgras", sub: "Fast, low bounce, all-season", bounce: 0.85, friction: 0.92, speed: 1.05, color: "#388E3C", outer: "#2E7D32" },
-  smashcourt: { id: "smashcourt", label: "Smashcourt", sub: "Medium pace, clay-like feel", bounce: 0.82, friction: 0.82, speed: 0.88, color: "#D84315", outer: "#BF360C" },
+  clay: { id: "clay", label: "Clay", sub: "Slow, grinding rallies", bounce: 0.95, friction: 0.82, speed: 0.85, color: "#C85A32", outer: "#9E4526" },
+  grass: { id: "grass", label: "Grass", sub: "Fast skid, low bounce", bounce: 0.73, friction: 1.0, speed: 0.9, color: "#2F7A45", outer: "#1F5A33" },
+  artificial: { id: "artificial", label: "Kunstgras", sub: "Fast, low bounce, all-season", bounce: 0.76, friction: 0.99, speed: 1.05, color: "#388E3C", outer: "#2E7D32" },
+  smashcourt: { id: "smashcourt", label: "Smashcourt", sub: "Medium pace, clay-like feel", bounce: 0.88, friction: 0.86, speed: 0.88, color: "#D84315", outer: "#BF360C" },
 };
 
 export const BALL = { gravity: 9.81, bounce: 0.8, friction: 0.9, magnus: 3.2 };
