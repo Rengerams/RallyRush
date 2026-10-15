@@ -2,13 +2,20 @@ import { useEffect, useRef, useState } from "react";
 import { RotateCcw } from "lucide-react";
 import { ThreeView } from "@/game/three/ThreeView";
 
-export default function GameCanvas({ eng, wrapRef, onSwing, onRelease, onPointer, onPointerLeave, onQuality, onAvailability }) {
+export default function GameCanvas({ eng, wrapRef, renderActive = true, onSwing, onRelease, onPointer, onPointerLeave, onQuality, onAvailability }) {
   const ref = useRef(null), viewRef = useRef(null);
   const [error, setError] = useState(null), [retry, setRetry] = useState(0);
+  const [pageVisible, setPageVisible] = useState(() => typeof document === "undefined" || document.visibilityState !== "hidden");
+
+  useEffect(() => {
+    const updateVisibility = () => setPageVisible(document.visibilityState !== "hidden");
+    document.addEventListener("visibilitychange", updateVisibility);
+    return () => document.removeEventListener("visibilitychange", updateVisibility);
+  }, []);
 
   useEffect(() => {
     const canvas = ref.current;
-    let view, raf, frames = 0, checked = false;
+    let view;
     setError(null);
     try { view = new ThreeView(canvas, eng); }
     catch { setError("3D graphics could not start on this browser."); onAvailability?.(false); return undefined; }
@@ -26,25 +33,31 @@ export default function GameCanvas({ eng, wrapRef, onSwing, onRelease, onPointer
     const resize = new ResizeObserver(fit);
     resize.observe(wrapRef.current);
     window.addEventListener("resize", fit);
-    const contextLost = (event) => { event.preventDefault(); cancelAnimationFrame(raf); onAvailability?.(false); setError("The 3D connection was interrupted. Your match is preserved."); };
+    const contextLost = (event) => { event.preventDefault(); onAvailability?.(false); setError("The 3D connection was interrupted. Your match is preserved."); };
     canvas.addEventListener("webglcontextlost", contextLost);
+    return () => {
+      resize.disconnect(); window.removeEventListener("resize", fit);
+      canvas.removeEventListener("webglcontextlost", contextLost); view.dispose(); viewRef.current = null; onAvailability?.(false);
+    };
+  }, [eng, wrapRef, onQuality, onAvailability, retry]);
+
+  useEffect(() => {
+    if (!renderActive || !pageVisible || error || !viewRef.current) return undefined;
+    let raf, frames = 0, checked = false;
     const start = performance.now();
     const loop = () => {
       const elapsed = performance.now() - start;
       if (!checked && elapsed > 1200) frames++;
       if (!checked && elapsed > 4200) {
         checked = true;
-        if (frames / ((elapsed - 1200) / 1000) < 24) { view.reduceEffects(); onQuality?.("reduced"); }
+        if (frames / ((elapsed - 1200) / 1000) < 24) { viewRef.current?.reduceEffects(); onQuality?.("reduced"); }
       }
-      view.render();
+      viewRef.current?.render();
       raf = requestAnimationFrame(loop);
     };
     raf = requestAnimationFrame(loop);
-    return () => {
-      cancelAnimationFrame(raf); resize.disconnect(); window.removeEventListener("resize", fit);
-      canvas.removeEventListener("webglcontextlost", contextLost); view.dispose(); viewRef.current = null; onAvailability?.(false);
-    };
-  }, [eng, wrapRef, onQuality, onAvailability, retry]);
+    return () => cancelAnimationFrame(raf);
+  }, [renderActive, pageVisible, error, retry, onQuality]);
 
   const point = (event) => viewRef.current?.courtPoint(event.clientX, event.clientY);
   return <div className="relative" data-testid="3d-game-surface">
