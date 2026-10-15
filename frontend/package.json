@@ -90,7 +90,8 @@
       "target": [
         "nsis"
       ],
-      "artifactName": "RENFFR-OPEN-${version}-Windows-Setup.${ext}"
+      "artifactName": "RENFFR-OPEN-${version}-Windows-Setup.${ext}",
+      "icon": "build/icon.ico"
     },
     "nsis": {
       "oneClick": false,
