@@ -1,177 +1,151 @@
 # RENFFR OPEN — 3D Tennis
 
-**Version:** 0.1.0
-**License:** MIT (see [LICENSE](./LICENSE))
+**Version 0.2.0** · Windows desktop game · [MIT License](./LICENSE)
 
-A standalone Windows desktop tennis game, rendered with **Three.js and WebGL** and rebuilt from the Unity C# project `TennisGame_Upgraded`. Play singles against a computer opponent in a blue-court stadium, with keyboard and mouse controls, cinematic replays, and match results saved to a leaderboard and match history. The game opens in its own app window; no separate browser is required.
+RENFFR OPEN is a single-player 3D tennis game. Play full matches against a computer opponent, build your player, choose a court and AI style, and improve your timing across seven shots. The game opens in its own Windows app window; you do not need to install or open a separate browser.
 
-Built for and dedicated to **renffr**.
+**This is a local, single-player game.** There is no online multiplayer or shared leaderboard. Your settings, match history and rankings are saved on this device.
 
-## About the game
+## Get started
 
-RENFFR OPEN is a single-player 3D tennis game. Play a full match against an AI opponent, using keyboard and mouse or touchscreen controls. Pick a court surface, AI difficulty and play style, then choose a quick set or a best-of-three match.
+### Windows
 
-There are seven shots to learn, serve timing, stamina, tennis scoring, an umpire, crowd reactions and cinematic replays. After each match, review your stats and results. No account or server is needed: settings, match history and leaderboard stay on this device.
+Download the **RENFFR-OPEN-Windows** artifact from the latest successful **Windows desktop build** in the repository's **Actions** tab. Open the downloaded archive and run the Windows setup installer. The installed game does not need Node.js, a backend or a separate browser.
 
-**Competition is local-only:** matches are against the computer, and the leaderboard and match history stay on this device. There is no online multiplayer or shared ranking.
+### Build from source
 
----
-
-## Features
-
-- **3D stadium and articulated players:** animated running, swings and serves, detailed tennis outfits, rackets, court markings, spectators, shadows and a visible ball trail. Players are procedural models, not photoreal scans or licensed professional-player likenesses
-- **Clear court cameras:** a steady elevated baseline view by default, plus an optional angled broadcast view
-- **Always-3D gameplay:** slower devices use reduced visual effects rather than switching to a different rendering mode
-- Match intro with a fanfare, drums, crowd noise and an announcer voice (you can skip it)
-- Tennis scoring: Love / 15 / 30 / 40, deuce and advantage. Games are won by 2, sets have a tie-break at all-square, and the serve alternates each game
-- Seven shot types, each graded **Miss / Late / Good / Perfect** depending on how well you time the hit
-- Stamina: sprinting drains it, and when you're tired your speed, power and accuracy drop
-- Serving: toss the ball and hit it, with a toss-height timing meter, faults, double faults and aces. Reposition before serving, during the toss, and while waiting to receive
-- An umpire who announces calls on screen and out loud, plus sound effects and a crowd that reacts
-- **Cinematic replay:** recorded action plays at 0.65x, slowing to 0.3x near the end. Automatic highlights cover aces, rallies of 6 or more shots and the final point; manual replay, progress, skip and an automatic-replay toggle are available
-- **Post-match breakdown:** compare aces, winners, errors, double faults, perfect shots and points won; inspect longest/average rally lengths, a rally histogram and match duration
-- Match history, local leaderboard and detailed stats saved on this device
-- Five court surfaces with a color-matched mini-court preview on the setup screen
-- renffr tributes: "RENFFR OPEN" painted on the court, a gold nav badge, a Hall of Fame card and a **Legend renffr** player preset
-
----
-
-## Controls
-
-### Keyboard
-
-| Key | Action |
-|-----|--------|
-| `W A S D` / Arrow keys | Move (left/right while hitting aims the shot) |
-| `Shift` | Sprint (uses stamina) |
-| `Space` | Slide |
-| `1` | Flat: fast and direct |
-| `2` | Topspin: dips and kicks high |
-| `3` | Slice: low, skidding bounce |
-| `4` | Lob: high over a player at the net |
-| `5` | Drop Shot: soft and dies short |
-| `6` | Serve: press once to toss, again to hit (any shot key also works when serving) |
-| `7` | Smash: hits high balls hard |
-| `Esc` / `P` | Pause |
-| `Enter` | Skip replay |
-
-On touchscreens, use the on-screen shot buttons and the arrow pad.
-
-Hold a shot key to prepare an incoming return; the player hits when the ball reaches contact range. Tapping still attempts a shot with a short input buffer. Movement stays available before a serve and while receiving; pause and replay suspend live play.
-
-### Mouse
-
-| Input | Action |
-|-------|--------|
-| Move the pointer over the court | Guide your player toward a position in your own half |
-| Hold the right mouse button | Aim the selected shot without steering your player toward the aiming marker |
-| Left click | Attempt the selected shot; when serving, click once to toss and again to strike |
-| Hold the left mouse button | Prepare an incoming return using the selected shot |
-| On-screen shot buttons | Select and attempt one of the seven shots |
-| Mouse on/off button | Toggle mouse movement and aiming; keyboard movement and mouse shot inputs remain available |
-
-Keyboard movement takes priority over an existing mouse destination. Aim markers use the selected shot's depth; serves aim into the correct service box. The **Court / Broadcast** button changes the camera without changing the 3D game mode.
-
-**Timing:** Perfect means the ball is within about 1.0 m when you hit, Good within about 2.0 m, and Late within 2.5 m. Anything further is a Miss. While a ball is coming at you, two rings around your player show these distances.
-
----
-
-## Match options (Setup screen)
-
-### Player
-- **Name**: up to 24 characters
-- **Power / Stamina / Accuracy**: 1–10 each, sharing a budget of **18 points**
-- **Legend renffr preset**: 10 / 10 / 10 with no budget limit, a gold-colored kit and renffr branding
-
-### AI difficulty
-| Level | Reaction time | Error chance | Shot power | Move speed |
-|-------|---------------|--------------|------------|------------|
-| Easy | 1.5x | 40% | 0.8x | 0.7x |
-| Medium | 1.0x | 20% | 1.0x | 1.0x |
-| Hard | 0.7x | 10% | 1.1x | 1.1x |
-| Pro | 0.4x | 5% | 1.2x | 1.2x |
-
-Hard and Pro opponents leave balls that are going out.
-
-### AI play style
-- **Baseline**: flat and topspin shots from the back of the court
-- **Net Rusher**: comes to the net, plays flat shots and drop shots
-- **Defensive**: lobs and slices, stays far back
-- **Aggressive**: big flat shots and smashes
-
-### Court surface
-| Surface | Bounce | Friction | Player speed |
-|---------|--------|----------|--------------|
-| Hard Court | 0.90 | 0.95 | 1.00 |
-| Clay | 0.80 | 0.80 | 0.85 |
-| Grass | 0.95 | 0.90 | 0.90 |
-| Kunstgras (artificial grass) | 0.85 | 0.92 | 1.05 |
-| Smashcourt | 0.82 | 0.82 | 0.88 |
-
-These are surface multipliers used by the game physics. Selecting a surface updates the setup preview and the match court.
-
-### Match format
-- **Quick Set**: 1 set, first to 3 games (tie-break at 3-3)
-- **Original Rules**: best of 3 sets, 6 games per set (tie-break at 6-6)
-
-### In-game toggles (pause menu)
-- Sound on/off · Umpire voice on/off · Replays on/off · Restart match · Quit to setup
-
----
-
-## Leaderboard rating
-A win earns points based on difficulty: **Easy 10 · Medium 20 · Hard 35 · Pro 60**. A loss earns 2 points. Players are ranked by total points, then by wins. Names are matched without regard to upper/lower case.
-
----
-
-## Tech stack
-- **Frontend:** React, Vite, Tailwind, framer-motion, **Three.js/WebGL 3D rendering**, a custom JavaScript tennis simulation, Web Audio API and SpeechSynthesis
-
-The Windows desktop app includes its own rendering runtime; no separate browser installation is needed. Gameplay requires WebGL support. If graphics initialization fails or the WebGL context is lost, the game displays a retry control and suspends the simulation. Automatic quality adjustment reduces effects while retaining 3D rendering.
-
-### Project structure
-```
-frontend/src/game/      constants, physics, scoring, engine (AI/rules), input, replay, audio
-frontend/src/game/three/ ThreeView, stadium, player models, anatomy, animation, shared parts
-frontend/src/pages/     Home, Setup, Play, Leaderboard, History
-frontend/src/components/game/  GameCanvas, Scoreboard, ShotPad, DPad, ServeIndicator,
-                               SurfacePreview, MatchStats, MatchEndModal, PauseModal, MatchIntro
-```
-
-### Play on Windows
-
-Download and run the latest **RENFFR-OPEN Windows Setup.exe** from the repository's GitHub Actions artifact. The installed game opens as a normal desktop app and does not require a separate browser, Node.js, or a backend. Matches and settings stay on this device.
-
-### Run from source
-
-Install Node.js 22 or newer, then from `frontend/`:
+Install Node.js 22 or newer. From the `frontend/` directory, run:
 
 ```bash
 npm install --legacy-peer-deps
 npm run desktop
 ```
 
-This starts the development server in the background and opens the game in its own desktop window. To create a Windows installer from a Windows machine, run:
+This starts the development server and opens the game in its own desktop window. To build a Windows installer on Windows, run:
 
 ```bash
 npm run desktop:dist
 ```
 
-`npm run build` still creates the browser build for development or hosting.
+`npm run build` creates the frontend build for development or hosting.
 
----
+## What you can do
+
+- **Play full tennis matches:** Choose a Quick Set or a best-of-three match, with tennis scoring, deuce, advantage, alternating serves and tie-breaks.
+- **Choose your court:** Play on Hard Court, Clay, Grass, Kunstgras (artificial grass) or Smashcourt. Each surface changes ball bounce, friction and player movement.
+- **Set the challenge:** Pick Easy, Medium, Hard or Pro difficulty, then choose a Baseline, Net Rusher, Defensive or Aggressive AI opponent.
+- **Build your player:** Choose a name and distribute 18 points across Power, Stamina and Accuracy. Or select the special **Legend renffr** preset.
+- **Learn seven shots:** Flat, Topspin, Slice, Lob, Drop Shot, Serve and Smash. A timing grade tells you whether each hit was a Miss, Late, Good or Perfect.
+- **Play your way:** Use keyboard and mouse on desktop, or the on-screen movement pad and shot buttons on a touchscreen.
+- **Follow the match:** See the score and serve indicator, hear the umpire and crowd, and watch cinematic replays of highlights and match points.
+- **Review your performance:** Compare aces, winners, errors, double faults, perfect shots and points won. Check rally lengths, match duration, match history and your local leaderboard.
+- **Make it yours:** Turn sound, umpire voice and automatic replays on or off from the pause menu. Change between the Court and Broadcast camera views.
+
+## Match setup
+
+### Match format
+
+| Format | Rules |
+|---|---|
+| **Quick Set** | One set to 3 games, with a two-game lead needed. At 3–3, a tie-break decides the set. |
+| **Original Rules** | Best of 3 sets; a set is won at 6 games with a two-game lead. At 6–6, a tie-break decides the set. |
+
+### Your player
+
+Choose a name (up to 24 characters) and share **18 points** across:
+
+- **Power** — shot strength
+- **Stamina** — endurance while sprinting and playing long rallies
+- **Accuracy** — shot control
+
+Each attribute ranges from 1 to 10. The Legend renffr preset uses 10 / 10 / 10, has no point limit, and includes a gold kit and RENFFR branding.
+
+### Opponent
+
+| Difficulty | What to expect |
+|---|---|
+| **Easy** | More reaction time, slower movement and lighter shots |
+| **Medium** | Balanced opponent |
+| **Hard** | Faster reactions and movement, stronger shots; leaves balls going out |
+| **Pro** | Fastest reactions, movement and shots; leaves balls going out |
+
+Choose the opponent's play style too:
+
+- **Baseline:** Plays from the back with flat and topspin shots.
+- **Net Rusher:** Comes forward and uses flat shots and drop shots.
+- **Defensive:** Stays deep and uses lobs and slices.
+- **Aggressive:** Attacks with powerful flat shots and smashes.
+
+## Controls
+
+### Keyboard
+
+| Key | Action |
+|---|---|
+| `W A S D` or arrow keys | Move; left and right also aim while hitting |
+| `Shift` | Sprint (uses stamina) |
+| `Space` | Slide |
+| `1` | Flat — fast and direct |
+| `2` | Topspin — dips and kicks high |
+| `3` | Slice — low, skidding bounce |
+| `4` | Lob — high over an opponent at the net |
+| `5` | Drop Shot — soft and short |
+| `6` | Serve — press once to toss, again to hit |
+| `7` | Smash — powerful hit on a high ball |
+| `Esc` or `P` | Pause |
+| `Enter` | Skip a replay |
+
+Hold a shot key to prepare for an incoming return. Your player swings when the ball reaches contact range. Tapping a shot still works with a short input buffer.
+
+### Mouse
+
+| Input | Action |
+|---|---|
+| Move over the court | Guide your player around your half of the court |
+| Hold right mouse button | Aim without steering your player toward the aim marker |
+| Left click | Attempt the selected shot; when serving, click once to toss and again to hit |
+| Hold left mouse button | Prepare a return using the selected shot |
+| On-screen shot buttons | Select and attempt a shot |
+| Mouse on/off button | Toggle pointer movement and aiming |
+
+Keyboard movement stays available when mouse controls are on. Move before serving, during the toss and while waiting to receive. The **Court / Broadcast** button changes the camera view.
+
+### Shot timing
+
+Two rings around your player show how close the ball is. A hit within about **1 metre** is Perfect, within **2 metres** is Good, and within **2.5 metres** is Late. A shot from farther away is a Miss. Well-timed shots are more reliable and effective.
+
+## Scoring, results and privacy
+
+The scoreboard uses Love, 15, 30 and 40, followed by deuce and advantage. You must win a game or tie-break by two points. A set follows the rules of the selected match format, and the serve alternates each game.
+
+The local leaderboard awards points for wins by difficulty: **Easy 10 · Medium 20 · Hard 35 · Pro 60**. A loss earns 2 points. Players are ranked by points, then wins.
+
+Your settings, match results, history and leaderboard stay in local storage on this device. They are not uploaded to a server, shared with other players or synchronized across devices. Uninstalling or clearing the app's local data may remove them.
+
+## Presentation and accessibility
+
+RENFFR OPEN features a 3D stadium, animated players, court markings, spectators, shadows, a ball trail and an umpire who calls points on screen and aloud. The match intro includes music and crowd sound. Replays cover aces, rallies of six or more shots and the final point; you can also replay a point manually, skip it or disable automatic replays.
+
+The game uses WebGL for 3D graphics. If graphics initialization fails or the WebGL context is lost, the game pauses and offers a retry. On slower devices, visual effects are reduced while gameplay remains in 3D. The preview ball animation respects your system's reduced-motion preference.
+
+## About this project
+
+RENFFR OPEN is built with React, Vite, Three.js and a custom JavaScript tennis simulation. It was rebuilt from the Unity C# project `TennisGame_Upgraded` and is dedicated to **renffr**. Player models are procedural game characters, not photoreal scans or licensed professional-player likenesses.
 
 ## Changelog
-### 3D gameplay and usability update — 2026-10-14
-- Three.js stadium, articulated athletes, unobstructed court/broadcast cameras and adaptive 3D effects
-- Mouse movement, explicit right-button aiming, left-button shots, and held-key shot preparation
-- Free pre-serve/receiving movement, second-serve position retention and a serve timing indicator
-- Cinematic final-point/manual replays, comparison statistics, rally charts and saved match breakdowns
-- All five surfaces documented, with responsive surface previews and improved mobile HUD spacing
+
+### 0.2.0 — 2026-10-15
+- Standalone Windows desktop app; the game opens in its own window.
+- 3D stadium and animated players, with Court and Broadcast camera views.
+- Five court surfaces, four AI difficulties and four opponent styles.
+- Keyboard and mouse play, held-shot timing, serve repositioning and serve indicator.
+- Cinematic replays, post-match breakdowns, rally charts, match history and local leaderboard.
+- Local-first play with no online account, backend or shared competition.
 
 ### 0.1.0
-- First web version, based on the Unity project
-- Match intro with audio, instant slow-motion replays, leaderboard and match history
+- First playable version based on the Unity project.
+- Match intro, audio, slow-motion replays, leaderboard and match history.
 
 ## License
+
 MIT © 2026 renffr
