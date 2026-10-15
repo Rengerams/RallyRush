@@ -3,7 +3,6 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
-    "@hookform/resolvers": "5.0.1",
     "@radix-ui/react-accordion": "1.2.8",
     "@radix-ui/react-alert-dialog": "1.1.11",
     "@radix-ui/react-aspect-ratio": "1.1.4",
@@ -32,17 +31,12 @@
     "@radix-ui/react-toggle-group": "1.1.7",
     "@radix-ui/react-tooltip": "1.2.4",
     "@tanstack/react-query": "5.56.2",
-    "axios": "1.20.0",
     "class-variance-authority": "0.7.1",
     "clsx": "2.1.1",
     "cmdk": "1.1.1",
-    "cra-template": "1.2.0",
-    "date-fns": "4.1.0",
-    "dayjs": "1.11.13",
     "embla-carousel-react": "8.6.0",
     "framer-motion": "11.18.0",
-    "input-otp": "1.4.2",
-    "lodash": "4.18.1",
+    "input-otp": "1.5.0",
     "lucide-react": "0.516.0",
     "next-themes": "0.4.6",
     "react": "19.0.0",
@@ -52,19 +46,18 @@
     "react-resizable-panels": "3.0.1",
     "react-router-dom": "7.18.4",
     "react-scripts": "5.0.1",
-    "recharts": "3.6.0",
-    "sonner": "2.0.3",
-    "swr": "2.3.8",
-    "tailwind-merge": "3.2.0",
+    "sonner": "2.0.8",
+    "tailwind-merge": "3.7.0",
     "tailwindcss-animate": "1.0.7",
     "three": "0.170.0",
-    "vaul": "1.1.2",
-    "zod": "3.24.4"
+    "vaul": "1.1.2"
   },
   "scripts": {
     "start": "craco start",
     "build": "craco build",
-    "test": "craco test"
+    "test": "craco test",
+    "desktop": "node scripts/desktop-dev.cjs",
+    "desktop:dist": "yarn build && electron-builder --win nsis"
   },
   "browserslist": {
     "production": [
@@ -84,7 +77,6 @@
     "@emergentbase/overlay": "https://assets.emergent.sh/npm/emergentbase-overlay-0.1.31.tgz",
     "@emergentbase/visual-edits": "https://assets.emergent.sh/npm/emergentbase-visual-edits-1.0.13.tgz",
     "@eslint/js": "9.23.0",
-    "@types/lodash": "4.17.24",
     "autoprefixer": "10.4.20",
     "dotenv": "16.4.5",
     "eslint": "9.23.0",
@@ -94,7 +86,9 @@
     "eslint-plugin-react-hooks": "5.2.0",
     "globals": "15.15.0",
     "postcss": "8.5.28",
-    "tailwindcss": "3.4.17"
+    "tailwindcss": "3.4.17",
+    "electron": "44.7.2",
+    "electron-builder": "26.15.3"
   },
   "resolutions": {
     "react-router": "7.18.4",
@@ -141,5 +135,32 @@
     "http-proxy-middleware": "2.0.10"
   },
   "packageManager": "yarn@1.22.22+sha512.a6b2f7906b721bba3d67d4aff083df04dad64c399707841b7acf00f6b133b7ac24255f2652fa22ae3534329dc6180534e98d17432037ff6fd140556e2bb3137e",
-  "license": "MIT"
+  "license": "MIT",
+  "homepage": ".",
+  "main": "desktop/main.cjs",
+  "build": {
+    "appId": "com.renffr.open",
+    "productName": "RENFFR OPEN",
+    "directories": {
+      "output": "release"
+    },
+    "files": [
+      "build/**/*",
+      "desktop/**/*",
+      "package.json"
+    ],
+    "asar": true,
+    "win": {
+      "target": [
+        "nsis"
+      ],
+      "artifactName": "RENFFR-OPEN-${version}-Windows-Setup.${ext}"
+    },
+    "nsis": {
+      "oneClick": false,
+      "allowToChangeInstallationDirectory": true,
+      "createDesktopShortcut": true,
+      "createStartMenuShortcut": true
+    }
+  }
 }

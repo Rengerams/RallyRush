@@ -1,0 +1,24 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 900" role="img" aria-labelledby="title desc">
+<title id="title">RENFFR OPEN tennis court</title><desc id="desc">A neon tennis ball above a blue court in a dark stadium.</desc>
+<defs>
+ <linearGradient id="sky" x2="0" y2="1"><stop stop-color="#101d2b"/><stop offset=".62" stop-color="#182a3a"/><stop offset="1" stop-color="#0b0e14"/></linearGradient>
+ <linearGradient id="court" x2="0" y2="1"><stop stop-color="#127184"/><stop offset="1" stop-color="#084956"/></linearGradient>
+ <radialGradient id="glow"><stop stop-color="#dfff00" stop-opacity=".65"/><stop offset="1" stop-color="#dfff00" stop-opacity="0"/></radialGradient>
+ <filter id="blur"><feGaussianBlur stdDeviation="30"/></filter>
+</defs>
+<rect width="1200" height="900" fill="url(#sky)"/>
+<path d="M0 270 160 90h880l160 180v150H0z" fill="#111a24"/>
+<g fill="#263646" opacity=".9"><path d="M0 310h1200v22H0z"/><path d="M0 390h1200v14H0z"/><path d="M0 454h1200v10H0z"/></g>
+<g fill="#dfff00" opacity=".55"><circle cx="205" cy="190" r="5"/><circle cx="995" cy="190" r="5"/></g>
+<ellipse cx="600" cy="500" rx="540" ry="260" fill="#dfff00" opacity=".08" filter="url(#blur)"/>
+<path d="M115 900 325 455h550l210 445z" fill="url(#court)"/>
+<path d="M235 900 390 520h420l155 380" fill="none" stroke="#dfff00" stroke-opacity=".75" stroke-width="5"/>
+<path d="M325 455h550M270 690h660M600 520v380" fill="none" stroke="#e9f9ff" stroke-opacity=".8" stroke-width="4"/>
+<path d="M60 900 290 470M1140 900 910 470" stroke="#b9e2eb" stroke-opacity=".35" stroke-width="3"/>
+<path d="M363 672h474" stroke="#e9f9ff" stroke-width="6" opacity=".85"/>
+<path d="M350 670h500" stroke="#fff" stroke-opacity=".5" stroke-width="3" stroke-dasharray="6 8"/>
+<circle cx="815" cy="300" r="112" fill="url(#glow)"/>
+<circle cx="815" cy="300" r="39" fill="#dfff00"/>
+<path d="M791 265c30 20 32 51 2 70m46-70c-30 20-32 51-2 70" fill="none" stroke="#4b6b09" stroke-width="4"/>
+<path d="M0 900h1200" stroke="#dfff00" stroke-width="3" opacity=".7"/>
+</svg>

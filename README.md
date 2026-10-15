@@ -1,9 +1,9 @@
-# RENFFR OPEN — 3D Tennis Web App
+# RENFFR OPEN — 3D Tennis
 
 **Version:** 0.1.0
 **License:** MIT (see [LICENSE](./LICENSE))
 
-A 3D tennis game for the browser, rendered with **Three.js and WebGL** and rebuilt from the Unity C# project `TennisGame_Upgraded`. Play singles against a computer opponent in a blue-court stadium, with keyboard and mouse controls, cinematic replays, and match results saved to a leaderboard and match history.
+A standalone Windows desktop tennis game, rendered with **Three.js and WebGL** and rebuilt from the Unity C# project `TennisGame_Upgraded`. Play singles against a computer opponent in a blue-court stadium, with keyboard and mouse controls, cinematic replays, and match results saved to a leaderboard and match history. The game opens in its own app window; no separate browser is required.
 
 Built for and dedicated to **renffr**.
 
@@ -11,7 +11,7 @@ Built for and dedicated to **renffr**.
 
 RENFFR OPEN is a single-player 3D tennis game. Play a full match against an AI opponent, using keyboard and mouse or touchscreen controls. Pick a court surface, AI difficulty and play style, then choose a quick set or a best-of-three match.
 
-There are seven shots to learn, serve timing, stamina, tennis scoring, an umpire, crowd reactions and cinematic replays. After each match, review your stats and results. No account or server is needed: settings, match history and leaderboard stay in this browser on this device.
+There are seven shots to learn, serve timing, stamina, tennis scoring, an umpire, crowd reactions and cinematic replays. After each match, review your stats and results. No account or server is needed: settings, match history and leaderboard stay on this device.
 
 ---
 
@@ -28,7 +28,7 @@ There are seven shots to learn, serve timing, stamina, tennis scoring, an umpire
 - An umpire who announces calls on screen and out loud, plus sound effects and a crowd that reacts
 - **Cinematic replay:** recorded action plays at 0.65x, slowing to 0.3x near the end. Automatic highlights cover aces, rallies of 6 or more shots and the final point; manual replay, progress, skip and an automatic-replay toggle are available
 - **Post-match breakdown:** compare aces, winners, errors, double faults, perfect shots and points won; inspect longest/average rally lengths, a rally histogram and match duration
-- Match history, leaderboard and detailed stats saved locally in this browser
+- Match history, leaderboard and detailed stats saved locally on this device
 - Five court surfaces with a color-matched mini-court preview on the setup screen
 - renffr tributes: "RENFFR OPEN" painted on the court, a gold nav badge, a Hall of Fame card and a **Legend renffr** player preset
 
@@ -125,7 +125,7 @@ A win earns points based on difficulty: **Easy 10 · Medium 20 · Hard 35 · Pro
 ## Tech stack
 - **Frontend:** React, Tailwind, framer-motion, **Three.js/WebGL 3D rendering**, a custom JavaScript tennis simulation, Web Audio API and SpeechSynthesis
 
-A WebGL-capable browser is required. If graphics initialization fails or the WebGL context is lost, the game displays a retry control and suspends the simulation. Automatic quality adjustment reduces effects while retaining 3D rendering.
+The Windows desktop app includes its own rendering runtime; no separate browser installation is needed. Gameplay requires WebGL support. If graphics initialization fails or the WebGL context is lost, the game displays a retry control and suspends the simulation. Automatic quality adjustment reduces effects while retaining 3D rendering.
 
 ### Project structure
 ```
@@ -136,16 +136,26 @@ frontend/src/components/game/  GameCanvas, Scoreboard, ShotPad, DPad, ServeIndic
                                SurfacePreview, MatchStats, MatchEndModal, PauseModal, MatchIntro
 ```
 
-### Run the game locally
+### Play on Windows
 
-The game runs entirely in your browser and needs no API, database or account. From `frontend/`, install dependencies once, then start it:
+Download and run the latest **RENFFR-OPEN Windows Setup.exe** from the repository's GitHub Actions artifact. The installed game opens as a normal desktop app and does not require a separate browser, Node.js, or a backend. Matches and settings stay on this device.
+
+### Run from source
+
+Install Node.js 22 or newer and Yarn through Corepack, then from `frontend/`:
 
 ```bash
 corepack yarn install
-corepack yarn start
+corepack yarn desktop
 ```
 
-It opens at `http://localhost:3000`. Match results, history, settings and leaderboard stay in this browser on this device.
+This starts the development server in the background and opens the game in its own desktop window. To create a Windows installer from a Windows machine, run:
+
+```bash
+corepack yarn desktop:dist
+```
+
+`corepack yarn build` still creates the browser build for development or hosting.
 
 ---
 

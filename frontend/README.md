@@ -4,16 +4,28 @@ The React frontend for RENFFR OPEN, a single-player **3D tennis game** rendered 
 
 See the [main README](../README.md) for controls, court surfaces, features, API endpoints and backend setup.
 
-## Start playing
+## Desktop app
 
-The game can run without the API or MongoDB. From this folder, install dependencies once and start the game:
+On Windows, download the RENFFR OPEN installer from GitHub Actions or Releases and launch it like any other game. It runs in its own app window and does not require a separate browser, Node.js, an API, or MongoDB.
+
+For development, install dependencies once and run:
 
 ```bash
 corepack yarn install
+corepack yarn desktop
+```
+
+The desktop command starts the local development server and opens the game in an Electron window. Match results, history and rankings are stored locally on this device.
+
+## Browser development
+
+To work on the browser version instead:
+
+```bash
 corepack yarn start
 ```
 
-This opens the game at `http://localhost:3000`. Match results, history and rankings are saved in this browser on this device. To share results across players or devices, set `REACT_APP_BACKEND_URL` in `.env` and run the FastAPI backend with MongoDB.
+The frontend is available at `http://localhost:3000`. To create a Windows installer from a Windows machine, run `corepack yarn desktop:dist`.
 
 ## Development
 

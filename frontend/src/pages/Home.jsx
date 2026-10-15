@@ -2,7 +2,7 @@ import { Link } from "react-router-dom";
 import { Crown, Gauge, Zap, Wind, ArrowUpRight } from "lucide-react";
 import { SHOT_LIST } from "@/game/constants";
 
-const HERO = "https://images.unsplash.com/photo-1554068865-24cecd4e34b8?crop=entropy&cs=srgb&fm=jpg&q=85&w=1400";
+const HERO = `${process.env.PUBLIC_URL}/tennis-hero.svg`;
 
 const features = [
   { icon: Gauge, title: "Timing is everything", text: "Every swing graded Miss · Late · Good · Perfect, straight from the original shot engine." },
@@ -35,10 +35,8 @@ export default function Home() {
           </div>
         </div>
         <div className="fade-up relative" style={{ animationDelay: "150ms" }}>
-          <div className="relative isolate h-[460px] overflow-hidden rounded-[28px] border border-white/10 bg-[#124b32] lg:h-[560px]">
-            <div aria-hidden="true" className="absolute inset-0" style={{ backgroundImage: "linear-gradient(135deg, rgba(4, 30, 20, .2), rgba(4, 12, 18, .78)), repeating-linear-gradient(0deg, transparent 0 20%, rgba(255,255,255,.08) 20.2% 20.5%, transparent 20.7% 41%)" }} />
-            <div aria-hidden="true" className="absolute inset-x-[12%] inset-y-[13%] border-2 border-white/30" />
-            <img src={HERO} alt="Tennis player on court" width="1400" height="560" fetchPriority="high" decoding="async" onError={(e) => { e.currentTarget.style.display = "none"; }} className="absolute inset-0 h-full w-full object-cover" />
+          <div className="relative overflow-hidden rounded-[28px] border border-white/10">
+            <img src={HERO} alt="Stylized tennis court under stadium lights" width="1200" height="900" loading="eager" fetchPriority="high" decoding="async" className="h-[460px] w-full bg-[#121824] object-cover lg:h-[560px]" />
             <div className="absolute inset-0 bg-[#0B0E14]/30" />
             <div className="absolute bottom-5 left-5 right-5 rounded-2xl border border-white/10 bg-[#121824]/75 p-5 backdrop-blur-xl">
               <p className="font-mono text-[11px] uppercase tracking-[0.25em] text-slate-400">Shot keys</p>

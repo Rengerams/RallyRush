@@ -32,7 +32,7 @@ export default function Leaderboard() {
 
   return (
     <main className="mx-auto max-w-[1440px] px-5 py-10 lg:px-10">
-      <p className="font-mono text-xs uppercase tracking-[0.3em] text-[#00F0FF]">Local rankings · this device</p>
+      <p className="font-mono text-xs uppercase tracking-[0.3em] text-[#00F0FF]">Local rankings · this browser</p>
       <h1 className="font-display mt-2 mb-8 text-5xl font-black uppercase italic sm:text-6xl">Leaderboard</h1>
       <div role="group" aria-label="Leaderboard mode" className="mb-6 flex flex-wrap gap-2">
         <button type="button" data-testid="leaderboard-competitive-tab" aria-pressed={mode === "competitive"} onClick={() => setMode("competitive")} className={`rounded-full border px-4 py-2 font-mono text-xs uppercase tracking-wider transition ${mode === "competitive" ? "border-[#DFFF00]/60 bg-[#DFFF00]/10 text-[#DFFF00]" : "border-white/15 text-slate-400 hover:border-white/30"}`}>Competitive</button>
