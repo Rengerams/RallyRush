@@ -97,7 +97,16 @@ export class TennisEngine {
     this.pressShot(id);
   }
 
-  releaseShot(id) { if (this.p.heldShot === id) this.p.heldShot = null; }
+  releaseShot(id) {
+    if (this.p.heldShot !== id) return;
+    this.p.heldShot = null;
+    const buf = this.p.buffered;
+    if (this.state !== "rally" || !buf || buf.shot !== id || !buf.prepared) return;
+    buf.released = true;
+    buf.releaseDistance = Math.hypot(this.ball.x - this.p.x, this.ball.z - this.p.z);
+    buf.exp = this.time + 0.18;
+    this.attemptPlayerHit();
+  }
 
   slide() {
     const p = this.p;
@@ -166,7 +175,7 @@ export class TennisEngine {
     let force = this.power();
     let acc = this.accuracy() * 0.97;
     if (quality === "perfect") force *= 1.08;
-    if (quality === "late") { force *= 0.88; acc *= 0.9; }
+    if (quality === "late" || quality === "early") { force *= 0.88; acc *= 0.9; }
     const wide = this.keys.right ? 1 : this.keys.left ? -1 : 0;
     const tx = wide === 0 ? 2.2 : wide === this.boxSign ? 3.5 : 0.8;
     const target = { x: this.boxSign * tx, z: -SHOTS.serve.depth };
@@ -185,9 +194,13 @@ export class TennisEngine {
     const d = Math.hypot(b.x - p.x, b.z - p.z);
     if (d > 2.5) return;
     const approaching = (b.x - p.x) * b.vx + (b.z - p.z) * b.vz < 0;
-    const quality = d <= 1.04 ? "perfect" : d <= 1.96 ? "good" : "late";
-    if (buf.prepared && approaching && d > 1.04) return;
-    if (quality === "late" && approaching && this.time < buf.exp - 0.02) return;
+    if (buf.prepared && !buf.released) return;
+    if (buf.prepared && (!approaching || d > 1.04)) return;
+    const timingDistance = buf.prepared ? buf.releaseDistance : d;
+    const quality = timingDistance <= 0.62 ? "perfect"
+      : timingDistance <= 1.04 ? "good"
+      : timingDistance <= 1.65 ? "early" : "late";
+    if (!buf.prepared && quality === "late" && approaching && this.time < buf.exp - 0.02) return;
     p.buffered = null;
     this.playerHit(buf.shot, quality);
   }
@@ -215,6 +228,8 @@ export class TennisEngine {
     const r = Math.random();
     const b = this.ball;
     if (b.y > 1.8 && b.z > -9 && (this.cfg.style === "aggressive" || r < 0.4)) return SHOTS.smash;
+    if (this.p.z < 4.5 && r < 0.42) return SHOTS.lob;
+    if (this.p.z > 12.5 && r < 0.22) return SHOTS.dropshot;
     switch (this.cfg.style) {
       case "netrusher": return r > 0.7 ? SHOTS.dropshot : SHOTS.flat;
       case "defensive": return r > 0.5 ? SHOTS.lob : SHOTS.slice;
@@ -228,8 +243,13 @@ export class TennisEngine {
     const shot = this.aiPickShot();
     const quality = Math.random() < d.perfect ? "perfect" : "good";
     a.swing = 0.25; a.side = this.ball.x >= a.x ? -1 : 1;
-    const tx = Math.random() < 0.65 ? (p.x > 0 ? rand(-3.4, -1.2) : rand(1.2, 3.4)) : rand(-3, 3);
-    const target = { x: tx, z: shot.depth };
+    const predictedX = clamp(p.x + p.vx * 0.42, -3.5, 3.5);
+    const targetOpenSide = predictedX >= 0 ? -1 : 1;
+    const tx = Math.random() < 0.72
+      ? targetOpenSide * rand(1.8, 3.4)
+      : clamp(predictedX * 0.45 + rand(-0.6, 0.6), -1.4, 1.4);
+    const shortBall = p.z > 12.5 && shot.id !== "lob" && Math.random() < 0.35;
+    const target = { x: tx, z: shortBall ? Math.min(shot.depth, 5.4) : shot.depth };
     this.deviate(target, d.acc, 20);
     if (a.wild) { target.x += rand(-1, 1) * 3; target.z += rand(-0.5, 1) * 3; }
     if (this.cfg.style === "netrusher") a.homeZ = shot.id !== "lob" && Math.random() < 0.6 ? -4.5 : this.style.homeZ;
