@@ -82,7 +82,7 @@ export function createAthlete(color, legend, opponent = false) {
   contour(torso, [[0.565, 0.076, 0.071], [0.59, 0.074, 0.07]], m.white);
   const logoMat = new THREE.MeshBasicMaterial({ map: textTexture("R /", { w: 128, h: 64, font: "900 48px sans-serif" }), transparent: true, side: THREE.DoubleSide });
   addMesh(torso, new THREE.PlaneGeometry(0.09, 0.045), logoMat, [0.12, 0.425, -0.11]).rotation.y = Math.PI;
-  const back = new THREE.MeshBasicMaterial({ map: textTexture(legend ? "RENFFR" : "OPEN", { w: 256, h: 64, font: "700 46px sans-serif" }), transparent: true });
+  const back = new THREE.MeshBasicMaterial({ map: textTexture(legend ? "LEGEND" : "RALLY", { w: 256, h: 64, font: "700 46px sans-serif" }), transparent: true });
   addMesh(torso, new THREE.PlaneGeometry(0.25, 0.06), back, [0, 0.38, 0.125]);
   const leftArm = arm(torso, -1, m), rightArm = arm(torso, 1, m);
   const leftLeg = leg(pelvis, -1, m), rightLeg = leg(pelvis, 1, m);
