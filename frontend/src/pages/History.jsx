@@ -18,7 +18,7 @@ function MatchCard({ m, i }) {
     <div data-testid={`history-match-${i}`} className="fade-up flex flex-wrap items-center gap-5 rounded-2xl border border-white/10 bg-[#121824] p-5" style={{ animationDelay: `${Math.min(i, 10) * 40}ms` }}>
       <span className={`font-display w-24 text-3xl font-black uppercase italic ${m.won ? "text-[#DFFF00]" : "text-[#E05A47]"}`}>{m.won ? "Win" : "Loss"}</span>
       <div className="min-w-[160px] flex-1">
-        <p className={`font-display text-2xl font-extrabold uppercase ${m.player_name.toLowerCase() === "renffr" ? "gold-shimmer" : ""}`}>{m.player_name}</p>
+        <p className="font-display text-2xl font-extrabold uppercase">{m.player_name}</p>
         <p className="font-mono text-xs text-slate-500">vs {DIFFICULTY[m.difficulty].label} {STYLES[m.ai_style].label} · {FORMATS[m.match_format].label}</p>
       </div>
       <p className="font-mono text-xl font-bold">{m.sets.map((s) => `${s[0]}-${s[1]}`).join("  ")}</p>
@@ -56,7 +56,7 @@ export default function History() {
       <div className="mt-8 flex flex-wrap gap-3">
         <input data-testid="history-player-filter" placeholder="Filter by player" value={player} onChange={(e) => setPlayer(e.target.value)}
           className="rounded-full border border-white/10 bg-[#121824] px-5 py-2.5 font-mono text-sm outline-none transition-colors focus:border-[#DFFF00]" />
-        {[["", "All"], ...Object.values(SURFACES).map((s) => [s.id, s.label])].map(([id, label]) => (
+        {[[ "", "All"], ...Object.values(SURFACES).map((s) => [s.id, s.label])].map(([id, label]) => (
           <button key={id || "all"} data-testid={`history-surface-${id || "all"}`} onClick={() => setSurface(id)}
             className={`rounded-full px-4 py-2 font-mono text-xs uppercase tracking-[0.15em] transition-colors ${surface === id ? "bg-[#DFFF00] text-[#0B0E14]" : "btn-ghost text-slate-300"}`}>{label}</button>
         ))}
