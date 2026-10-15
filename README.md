@@ -142,20 +142,20 @@ Download and run the latest **RENFFR-OPEN Windows Setup.exe** from the repositor
 
 ### Run from source
 
-Install Node.js 22 or newer and Yarn through Corepack, then from `frontend/`:
+Install Node.js 22 or newer, then from `frontend/`:
 
 ```bash
-corepack yarn install
-corepack yarn desktop
+npm install --legacy-peer-deps
+npm run desktop
 ```
 
 This starts the development server in the background and opens the game in its own desktop window. To create a Windows installer from a Windows machine, run:
 
 ```bash
-corepack yarn desktop:dist
+npm run desktop:dist
 ```
 
-`corepack yarn build` still creates the browser build for development or hosting.
+`npm run build` still creates the browser build for development or hosting.
 
 ---
 
