@@ -1,4 +1,5 @@
-from fastapi import FastAPI, APIRouter, Query
+from collections import deque
+from fastapi import FastAPI, APIRouter, Query, Request, HTTPException
 from dotenv import load_dotenv
 from starlette.middleware.cors import CORSMiddleware
 from motor.motor_asyncio import AsyncIOMotorClient
@@ -7,8 +8,9 @@ from pymongo.errors import DuplicateKeyError
 import os
 import re
 import logging
+import time
 from pathlib import Path
-from pydantic import BaseModel, Field, ConfigDict, BeforeValidator, field_validator
+from pydantic import BaseModel, Field, ConfigDict, BeforeValidator, field_validator, model_validator
 from typing import List, Literal, Optional, Annotated
 from datetime import datetime, timezone
 
@@ -23,6 +25,27 @@ api_router = APIRouter(prefix="/api")
 
 PyObjectId = Annotated[str, BeforeValidator(lambda v: str(v) if isinstance(v, ObjectId) else v)]
 DIFF_POINTS = {"easy": 10, "medium": 20, "hard": 35, "pro": 60}
+MATCH_POST_WINDOW_SECONDS = 60
+MATCH_POST_LIMIT = 60
+_match_submission_events: dict[str, deque[float]] = {}
+
+
+def _allow_match_submission(client_key: str, now: Optional[float] = None) -> bool:
+    """Best-effort per-process burst limit; use shared storage for multi-worker enforcement."""
+    now = time.monotonic() if now is None else now
+    events = _match_submission_events.setdefault(client_key, deque())
+    while events and now - events[0] >= MATCH_POST_WINDOW_SECONDS:
+        events.popleft()
+    if len(events) >= MATCH_POST_LIMIT:
+        return False
+    events.append(now)
+    if len(_match_submission_events) > 4096:
+        for key, bucket in list(_match_submission_events.items()):
+            while bucket and now - bucket[0] >= MATCH_POST_WINDOW_SECONDS:
+                bucket.popleft()
+            if not bucket:
+                _match_submission_events.pop(key, None)
+    return True
 
 
 class BaseDocument(BaseModel):
@@ -76,6 +99,40 @@ class MatchIn(BaseModel):
             raise ValueError("player_name must contain a visible character")
         return name
 
+    @model_validator(mode="after")
+    def validate_completed_set_scores(self):
+        required_sets = 1 if self.match_format == "quick" else 2
+        max_sets = 1 if self.match_format == "quick" else 3
+        sets_to_win = 1 if self.match_format == "quick" else 2
+        if not required_sets <= len(self.sets) <= max_sets:
+            raise ValueError("sets must contain a completed match result for the selected format")
+
+        for score in self.sets:
+            if len(score) != 2:
+                raise ValueError("each completed set must have two game totals")
+            a, b = score
+            high, low = max(a, b), min(a, b)
+            if self.match_format == "quick":
+                # Quick Set is first to 3 games; the engine records 4–2 after
+                # a 3–2 score is extended, or 4–3 after the 3–3 tie-break.
+                valid = (high == 3 and low <= 1) or (high == 4 and low in (2, 3))
+            else:
+                # Standard sets use six games and record a 7–6 tie-break.
+                valid = (high == 6 and low <= 4) or (high == 7 and low in (5, 6))
+            if not valid:
+                raise ValueError("set score does not describe a completed set in this format")
+
+        set_wins = [0, 0]
+        for index, (a, b) in enumerate(self.sets):
+            set_wins[0 if a > b else 1] += 1
+            if max(set_wins) >= sets_to_win and index != len(self.sets) - 1:
+                raise ValueError("sets cannot continue after the match has been decided")
+        if max(set_wins) < sets_to_win:
+            raise ValueError("sets do not contain a completed match result")
+        if self.won != (set_wins[0] > set_wins[1]):
+            raise ValueError("won must agree with the recorded set scores")
+        return self
+
 
 class Match(BaseDocument, MatchIn):
     rating_points: int = 0
@@ -88,7 +145,10 @@ async def root():
 
 
 @api_router.post("/matches", response_model=Match, response_model_by_alias=False)
-async def create_match(body: MatchIn):
+async def create_match(body: MatchIn, request: Request):
+    client_key = request.client.host if request.client else "unknown"
+    if not _allow_match_submission(client_key):
+        raise HTTPException(status_code=429, detail="Too many match submissions; try again shortly")
     name = body.player_name.strip()
     rating = DIFF_POINTS[body.difficulty] if body.won else 2
     match = Match(**body.model_dump(exclude={"player_name"}), player_name=name,
