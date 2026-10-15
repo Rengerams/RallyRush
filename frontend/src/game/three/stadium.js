@@ -242,18 +242,54 @@ function lightPoles(scene) {
   });
 }
 
+/* ── Procedural court surface ───────────────────── */
+function courtSurface(scene, surf) {
+  const canvas = document.createElement("canvas");
+  canvas.width = 512;
+  canvas.height = 1024;
+  const ctx = canvas.getContext("2d");
+  const base = new THREE.Color(surf.color);
+  const bands = surf.id === "grass" || surf.id === "artificial" ? 0.045 : 0.022;
+
+  ctx.fillStyle = `#${base.getHexString()}`;
+  ctx.fillRect(0, 0, canvas.width, canvas.height);
+  for (let i = 0; i < 16; i++) {
+    const shade = base.clone().multiplyScalar(i % 2 ? 1 + bands : 1 - bands);
+    ctx.fillStyle = `#${shade.getHexString()}`;
+    ctx.fillRect(0, i * 64, canvas.width, 64);
+  }
+
+  // Fine, repeatable surface grain keeps the court from reading as a flat color.
+  let seed = 173;
+  const random = () => {
+    seed = (seed * 1664525 + 1013904223) >>> 0;
+    return seed / 4294967296;
+  };
+  for (let i = 0; i < 900; i++) {
+    const light = random() > 0.5;
+    ctx.fillStyle = light ? "rgba(255,255,255,0.035)" : "rgba(0,0,0,0.035)";
+    const size = surf.id === "clay" ? 1 + random() * 2 : 1;
+    ctx.fillRect(random() * canvas.width, random() * canvas.height, size, size);
+  }
+
+  const texture = new THREE.CanvasTexture(canvas);
+  texture.colorSpace = THREE.SRGBColorSpace;
+  texture.anisotropy = 4;
+  const surface = new THREE.Mesh(
+    new THREE.PlaneGeometry(2 * COURT.doublesHalfW, 2 * COURT.halfLen),
+    new THREE.MeshStandardMaterial({ map: texture, roughness: 0.88 })
+  );
+  surface.rotation.x = -Math.PI / 2;
+  surface.position.y = 0.005;
+  surface.receiveShadow = true;
+  scene.add(surface);
+}
+
 /* ── Main build ────────────────────────────────── */
 export function buildStadium(scene, surf) {
   scene.add(plane(120, 120, 0x071018, -0.02));
   scene.add(plane(22, 36, surf.outer, 0));
-  scene.add(plane(2 * COURT.doublesHalfW, 2 * COURT.halfLen, surf.color, 0.005));
-  if (surf.id === "grass" || surf.id === "artificial") {
-    for (let z = -COURT.halfLen; z < COURT.halfLen; z += 2.4) {
-      const s = plane(2 * COURT.doublesHalfW, 1.2, 0xffffff, 0.007, { transparent: true, opacity: 0.04 });
-      s.position.z = z + 0.6;
-      scene.add(s);
-    }
-  }
+  courtSurface(scene, surf);
   lines(scene);
   watermark(scene);
   net(scene);
