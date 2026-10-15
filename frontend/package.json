@@ -75,7 +75,7 @@
   "main": "desktop/main.cjs",
   "build": {
     "appId": "com.renffr.open",
-    "productName": "RENFFR OPEN",
+    "productName": "Rally Rush",
     "directories": {
       "output": "release"
     },
@@ -90,7 +90,7 @@
       "target": [
         "nsis"
       ],
-      "artifactName": "RENFFR-OPEN-${version}-Windows-Setup.${ext}"
+      "artifactName": "Rally-Rush-${version}-Windows-Setup.${ext}"
     },
     "nsis": {
       "oneClick": false,
@@ -176,7 +176,7 @@
       "postcss-selector-parser": "^7.1.6"
     }
   },
-  "description": "Standalone single-player 3D tennis game built with Electron and Vite.",
+  "description": "Arcade-style 3D tennis game for desktop and browser.",
   "author": "Renffr",
   "allowScripts": {
     "electron-winstaller@5.4.0": true

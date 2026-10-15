@@ -17,10 +17,10 @@ export default function Home() {
         <div className="fade-up">
           <p data-testid="home-game-mode" className="font-mono text-xs uppercase tracking-[0.3em] text-[#00F0FF]">3D tennis · single player vs AI</p>
           <h1 className="font-display mt-5 text-6xl font-black uppercase italic leading-[0.85] tracking-tight sm:text-7xl lg:text-[8.5rem]">
-            The <span className="text-[#DFFF00]">Renffr</span><br />Open
+            <span className="text-[#DFFF00]">Rally</span><br />Rush
           </h1>
           <p className="mt-6 max-w-lg text-base text-slate-400 sm:text-lg">
-            The Unity tennis project, rebuilt for the browser. Seven shots, real deuce & advantage scoring, stamina, slides and an umpire who calls every point.
+            Serve up an arcade-style match against four AI play styles. Master seven shots, real tennis scoring, stamina, slides, and five distinct court surfaces.
           </p>
           <div className="mt-9 flex flex-wrap gap-3">
             <Link to="/setup" data-testid="home-play-btn" className="btn-volt rounded-full px-8 py-4 font-display text-xl font-extrabold uppercase tracking-wide">Enter the court</Link>
