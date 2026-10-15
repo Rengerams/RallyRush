@@ -1,5 +1,5 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 900" role="img" aria-labelledby="title desc">
-<title id="title">RENFFR OPEN tennis court</title><desc id="desc">A neon tennis ball above a blue court in a dark stadium.</desc>
+<title id="title">Rally Rush tennis court</title><desc id="desc">A neon tennis ball above a blue court in a dark stadium.</desc>
 <defs>
  <linearGradient id="sky" x2="0" y2="1"><stop stop-color="#101d2b"/><stop offset=".62" stop-color="#182a3a"/><stop offset="1" stop-color="#0b0e14"/></linearGradient>
  <linearGradient id="court" x2="0" y2="1"><stop stop-color="#127184"/><stop offset="1" stop-color="#084956"/></linearGradient>

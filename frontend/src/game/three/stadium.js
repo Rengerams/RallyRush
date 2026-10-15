@@ -93,7 +93,7 @@ function umpireChair(scene) {
 
 /* ── Watermark on court ────────────────────────── */
 function watermark(scene) {
-  const tex = textTexture("RENFFR OPEN", { color: "rgba(255,255,255,0.18)" });
+  const tex = textTexture("RALLY RUSH", { color: "rgba(255,255,255,0.18)" });
   [13.2, -13.2].forEach((z) => {
     const m = new THREE.Mesh(
       new THREE.PlaneGeometry(9, 1.4),
@@ -108,7 +108,7 @@ function watermark(scene) {
 
 /* ── Advertising boards ────────────────────────── */
 function boards(scene) {
-  const tex = textTexture("RENFFR OPEN  ·  RENFFR OPEN", {
+  const tex = textTexture("RALLY RUSH  ·  ARCADE TENNIS", {
     w: 2048, h: 128,
     font: "italic 900 96px 'Barlow Condensed', sans-serif",
     color: "#0D47A1", bg: "#FFD600"
@@ -122,7 +122,7 @@ function boards(scene) {
     b.position.set(0, 0.45, z);
     scene.add(b);
   });
-  const side = textTexture("renffr edition", {
+  const side = textTexture("ARCADE TENNIS", {
     w: 1024, h: 128,
     font: "800 80px 'JetBrains Mono', monospace",
     color: "#FFD600", bg: "#0D47A1"
