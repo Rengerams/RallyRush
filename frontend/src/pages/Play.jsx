@@ -42,7 +42,7 @@ export default function Play() {
   const [cameraMode, setCameraMode] = useState("court");
   const [intro, setIntro] = useState(true);
   const introRef = useRef(true);
-  const [mouseEnabled, setMouseEnabled] = useState(true);
+  const [mouseEnabled, setMouseEnabled] = useState(false);
   const graphicsReady = useRef(false);
 
   const persistResult = useCallback((r) => {
@@ -202,7 +202,7 @@ export default function Play() {
           </div>
           <div className="absolute inset-x-2 top-2 flex flex-wrap justify-end gap-1.5 sm:inset-x-3 sm:top-3 sm:gap-2">
             <button data-testid="camera-toggle-btn" onClick={() => { eng.clearPointer(); setCameraMode(c => c === "court" ? "broadcast" : "court"); }} title="Change gameplay camera" className="btn-ghost flex items-center gap-1.5 rounded-full bg-[#0B0E14]/85 px-3 py-2 font-mono text-[10px]"><Camera size={14} /><span>{cameraMode === "court" ? "Court" : "Broadcast"}</span></button>
-            <button data-testid="mouse-control-toggle" aria-pressed={mouseEnabled} onClick={() => setMouseEnabled(v => !v)} title="Mouse: move · hold right button: aim · left button: hit / prepare" aria-label="Mouse movement" className={`btn-ghost flex items-center gap-1.5 rounded-full bg-[#0B0E14]/85 px-3 py-2 font-mono text-[10px] ${mouseEnabled ? "text-[#DFFF00]" : "text-slate-400"}`}><MousePointer2 size={14} />Mouse {mouseEnabled ? "on" : "off"}</button>
+            <button data-testid="mouse-control-toggle" aria-pressed={mouseEnabled} onClick={() => setMouseEnabled(v => !v)} title="Mouse movement optional · hold right button to aim · hold left button to prepare a shot" aria-label="Mouse movement" className={`btn-ghost flex items-center gap-1.5 rounded-full bg-[#0B0E14]/85 px-3 py-2 font-mono text-[10px] ${mouseEnabled ? "text-[#DFFF00]" : "text-slate-400"}`}><MousePointer2 size={14} />Mouse {mouseEnabled ? "on" : "off"}</button>
             <button data-testid="replay-last-point-btn" disabled={!snap?.canReplay || paused || intro} onClick={() => engRef.current?.startReplay(true)} title="Replay last point" aria-label="Replay last point" className="btn-ghost rounded-full bg-[#0B0E14]/85 p-2 disabled:opacity-30"><Film size={14} /></button>
             <button data-testid="pause-btn" aria-label="Pause match" onClick={togglePause} className="rounded-full border border-white/15 bg-[#0B0E14]/70 p-2 backdrop-blur hover:border-[#DFFF00]">
               <Pause size={16} />

@@ -3,7 +3,9 @@ import { SHOTS } from "./constants";
 const clamp = (v, a, b) => Math.max(a, Math.min(b, v));
 
 export function pointerInput(engine, point, aiming = false) {
-  if (!engine.mouseEnabled || !point || !["serve", "rally", "pointOver", "faultPause"].includes(engine.state)) return;
+  if (!point || !["serve", "rally", "pointOver", "faultPause"].includes(engine.state)) return;
+  // Mouse aiming remains available when mouse-follow movement is disabled.
+  if (!aiming && !engine.mouseEnabled) return;
   if (!aiming) {
     engine.pointerTarget = { x: clamp(point.x, -7, 7), z: clamp(point.z, 0.7, 14.6) };
     engine.pointerAim = null;

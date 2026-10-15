@@ -83,7 +83,8 @@ export class TennisEngine {
 
   setKey(k, down) {
     this.keys[k] = down;
-    if (down && ["left", "right", "up", "down"].includes(k)) this.clearPointer();
+    // Keyboard steering overrides mouse-follow, but keeps intentional right-click aim.
+    if (down && ["left", "right", "up", "down"].includes(k)) this.pointerTarget = null;
   }
 
   setPointer(point, aiming) { pointerInput(this, point, aiming); }
@@ -111,7 +112,8 @@ export class TennisEngine {
   }
 
   pressShot(id) {
-    if (this.state === "replay") return this.endReplay();
+    // Replays are dismissed with Enter or the Skip control, not an accidental shot key.
+    if (this.state === "replay") return;
     if (!SHOTS[id]) return;
     this.selectedShot = id;
     if (this.state === "serve" && this.server === 0) return this.playerServeInput();
