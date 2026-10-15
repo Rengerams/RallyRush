@@ -1,5 +1,5 @@
 import { Link } from "react-router-dom";
-import { Crown, Gauge, Zap, Wind, ArrowUpRight } from "lucide-react";
+import { Gauge, Zap, Wind, ArrowUpRight } from "lucide-react";
 import { SHOT_LIST } from "@/game/constants";
 
 const HERO = `${process.env.PUBLIC_URL}/tennis-hero.svg`;
@@ -26,12 +26,13 @@ export default function Home() {
             <Link to="/setup" data-testid="home-play-btn" className="btn-volt rounded-full px-8 py-4 font-display text-xl font-extrabold uppercase tracking-wide">Enter the court</Link>
             <Link to="/leaderboard" data-testid="home-leaderboard-btn" className="btn-ghost rounded-full px-7 py-4 font-display text-xl font-bold uppercase tracking-wide">Leaderboard</Link>
           </div>
-          <div data-testid="home-renffr-tribute" className="mt-12 inline-flex items-center gap-4 rounded-2xl border border-[#FFC828]/30 bg-[#FFC828]/[0.04] px-5 py-4">
-            <Crown className="text-[#FFC828]" size={30} />
-            <div>
-              <p className="font-mono text-[10px] uppercase tracking-[0.3em] text-[#FFC828]/70">Tournament founder</p>
-              <p className="font-display gold-shimmer text-3xl font-black uppercase italic">renffr</p>
-            </div>
+          <div data-testid="home-game-highlights" className="mt-12 grid max-w-lg grid-cols-3 gap-2">
+            {[["7", "shot types"], ["5", "court surfaces"], ["4", "AI styles"]].map(([value, label]) => (
+              <div key={label} className="rounded-xl border border-white/10 bg-white/[0.03] px-3 py-4 text-center">
+                <span className="font-display block text-2xl font-black text-[#DFFF00]">{value}</span>
+                <span className="font-mono text-[9px] uppercase tracking-wider text-slate-400">{label}</span>
+              </div>
+            ))}
           </div>
         </div>
         <div className="fade-up relative" style={{ animationDelay: "150ms" }}>
@@ -59,7 +60,7 @@ export default function Home() {
         ))}
       </section>
       <footer className="mx-auto flex max-w-[1440px] items-center justify-between px-5 py-8 font-mono text-xs uppercase tracking-[0.2em] text-slate-500 lg:px-10">
-        <span>Crafted for <span className="text-[#FFC828]">renffr</span></span>
+        <span>Arcade tennis · single player</span>
         <Link to="/history" data-testid="home-history-link" className="flex items-center gap-1 hover:text-white">Match history <ArrowUpRight size={14} /></Link>
       </footer>
     </main>
