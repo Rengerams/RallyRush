@@ -103,21 +103,34 @@ class MatchIn(BaseModel):
     def validate_completed_set_scores(self):
         required_sets = 1 if self.match_format == "quick" else 2
         max_sets = 1 if self.match_format == "quick" else 3
-        games_to_win = 3 if self.match_format == "quick" else 6
+        sets_to_win = 1 if self.match_format == "quick" else 2
         if not required_sets <= len(self.sets) <= max_sets:
             raise ValueError("sets must contain a completed match result for the selected format")
+
         for score in self.sets:
             if len(score) != 2:
                 raise ValueError("each completed set must have two game totals")
             a, b = score
             high, low = max(a, b), min(a, b)
-            # A level score at the format's game target represents a recorded tie-break.
-            if (a, b) == (games_to_win, games_to_win):
-                continue
-            if high < games_to_win or high > games_to_win + 1 or high - low < 2:
-                raise ValueError("set score does not describe a completed tennis set")
-            if high == games_to_win + 1 and low != games_to_win - 1:
-                raise ValueError("set score is not reachable under the selected format")
+            if self.match_format == "quick":
+                # Quick Set is first to 3 games; the engine records 4–2 after
+                # a 3–2 score is extended, or 4–3 after the 3–3 tie-break.
+                valid = (high == 3 and low <= 1) or (high == 4 and low in (2, 3))
+            else:
+                # Standard sets use six games and record a 7–6 tie-break.
+                valid = (high == 6 and low <= 4) or (high == 7 and low in (5, 6))
+            if not valid:
+                raise ValueError("set score does not describe a completed set in this format")
+
+        set_wins = [0, 0]
+        for index, (a, b) in enumerate(self.sets):
+            set_wins[0 if a > b else 1] += 1
+            if max(set_wins) >= sets_to_win and index != len(self.sets) - 1:
+                raise ValueError("sets cannot continue after the match has been decided")
+        if max(set_wins) < sets_to_win:
+            raise ValueError("sets do not contain a completed match result")
+        if self.won != (set_wins[0] > set_wins[1]):
+            raise ValueError("won must agree with the recorded set scores")
         return self
 
 
