@@ -1,6 +1,7 @@
 import * as THREE from "three";
 import { COURT } from "../constants";
 import { textTexture, plane } from "./parts";
+import { addOfficials } from "./officials";
 
 /* ── Court lines (white, slightly raised) ──────── */
 function lines(scene) {
@@ -68,8 +69,8 @@ function umpireChair(scene) {
   const seat = new THREE.MeshStandardMaterial({ color: 0x1a237e, roughness: 0.6 });
   const grp = new THREE.Group();
   [[-0.22, -0.18], [0.22, -0.18], [-0.22, 0.18], [0.22, 0.18]].forEach(([x, z]) => {
-    const leg = new THREE.Mesh(new THREE.CylinderGeometry(0.025, 0.025, 2.6), metal);
-    leg.position.set(x, 1.3, z);
+    const leg = new THREE.Mesh(new THREE.CylinderGeometry(0.025, 0.025, 3.9), metal);
+    leg.position.set(x, 1.95, z);
     grp.add(leg);
   });
   const seatPad = new THREE.Mesh(new THREE.BoxGeometry(0.6, 0.05, 0.45), seat);
@@ -79,7 +80,7 @@ function umpireChair(scene) {
   back.position.set(0, 2.7, -0.2);
   grp.add(back);
   const shade = new THREE.Mesh(new THREE.BoxGeometry(0.9, 0.03, 0.7), seat);
-  shade.position.set(0, 3.1, 0);
+  shade.position.set(0, 3.9, 0);
   grp.add(shade);
   [0.7, 1.4].forEach((y) => {
     const step = new THREE.Mesh(new THREE.BoxGeometry(0.4, 0.03, 0.25), metal);
@@ -141,6 +142,8 @@ function boards(scene) {
   });
 }
 
+const CROWD_LIMIT = 1200;
+
 /* ── Stands + crowd ────────────────────────────── */
 function sideStands(scene, structMat, crowd, base, crowdColors, m4, col, startN) {
   let n = startN;
@@ -157,13 +160,13 @@ function sideStands(scene, structMat, crowd, base, crowdColors, m4, col, startN)
       );
       seatStrip.position.set(side * (9.5 + r * 1.2), h + 0.04, 0);
       scene.add(seatStrip);
-      for (let z = -14; z <= 14 && n < 850; z += 0.55) {
+      for (let z = -14; z <= 14 && n < CROWD_LIMIT; z += 0.5) {
         if (Math.random() < 0.14) continue;
         const pos = new THREE.Vector3(
           side * (9.5 + r * 1.2) + (Math.random() - 0.5) * 0.3,
           h + 0.38, z + (Math.random() - 0.5) * 0.15
         );
-        base.push({ pos, ph: Math.random() * 6.28 });
+        base.push({ pos, ph: Math.random() * 6.28, headScale: 0.85 + ((n * 17) % 5) * 0.04 });
         m4.makeTranslation(pos.x, pos.y, pos.z);
         crowd.setMatrixAt(n, m4);
         crowd.setColorAt(n, col.setHex(crowdColors[n % crowdColors.length]));
@@ -183,13 +186,13 @@ function backStands(scene, structMat, crowd, base, crowdColors, m4, col, startN)
       step.position.set(0, h / 2, end * (15.5 + r * 1.2));
       step.receiveShadow = true;
       scene.add(step);
-      for (let x = -7; x <= 7 && n < 850; x += 0.6) {
+      for (let x = -7; x <= 7 && n < CROWD_LIMIT; x += 0.5) {
         if (Math.random() < 0.18) continue;
         const pos = new THREE.Vector3(
           x + (Math.random() - 0.5) * 0.2,
           h + 0.38, end * (15.5 + r * 1.2)
         );
-        base.push({ pos, ph: Math.random() * 6.28 });
+        base.push({ pos, ph: Math.random() * 6.28, headScale: 0.85 + ((n * 17) % 5) * 0.04 });
         m4.makeTranslation(pos.x, pos.y, pos.z);
         crowd.setMatrixAt(n, m4);
         crowd.setColorAt(n, col.setHex(crowdColors[n % crowdColors.length]));
@@ -206,8 +209,14 @@ function stands(scene) {
   const crowd = new THREE.InstancedMesh(
     new THREE.CapsuleGeometry(0.2, 0.32, 1, 5),
     new THREE.MeshLambertMaterial(),
-    850
+    CROWD_LIMIT
   );
+  const crowdHeads = new THREE.InstancedMesh(
+    new THREE.SphereGeometry(0.12, 8, 6),
+    new THREE.MeshLambertMaterial(),
+    CROWD_LIMIT
+  );
+  const skinColors = [0xf0c8a0, 0xdba37a, 0xb97a55, 0x80543c, 0xe1b88f];
   const base = [];
   const m4 = new THREE.Matrix4();
   const col = new THREE.Color();
@@ -216,8 +225,19 @@ function stands(scene) {
   n = backStands(scene, structMat, crowd, base, crowdColors, m4, col, n);
 
   crowd.count = n;
-  scene.add(crowd);
-  return { crowd, base };
+  crowdHeads.count = n;
+  base.forEach(({ pos, ph }, i) => {
+    const headScale = base[i].headScale;
+    const headY = pos.y + 0.49;
+    m4.makeScale(headScale, headScale * 1.08, headScale);
+    m4.setPosition(pos.x, headY, pos.z);
+    crowdHeads.setMatrixAt(i, m4);
+    crowdHeads.setColorAt(i, col.setHex(skinColors[(i * 7 + Math.floor(ph)) % skinColors.length]));
+  });
+  crowd.instanceMatrix.needsUpdate = true;
+  crowdHeads.instanceMatrix.needsUpdate = true;
+  scene.add(crowd, crowdHeads);
+  return { crowd, crowdHeads, base };
 }
 
 /* ── Canopy / roof over stands ─────────────────── */
@@ -295,6 +315,7 @@ export function buildStadium(scene, surf) {
   net(scene);
   boards(scene);
   umpireChair(scene);
+  addOfficials(scene);
   canopy(scene);
   lightPoles(scene);
   return stands(scene);
