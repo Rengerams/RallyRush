@@ -143,11 +143,16 @@ backend/server.py       REST API
 - `backend/.env`: `MONGO_URL`, `DB_NAME`, `CORS_ORIGINS`
 - `frontend/.env`: `REACT_APP_BACKEND_URL`
 
-### Run locally
+### Run the game locally
+
+The game itself does not need the API or a database. From `frontend/`, install dependencies once, then start it:
+
 ```bash
-cd backend && pip install -r requirements.txt && uvicorn server:app --port 8001
-cd frontend && yarn install && yarn start
+corepack yarn install
+corepack yarn start
 ```
+
+It opens at `http://localhost:3000`. Without `REACT_APP_BACKEND_URL`, match results, history and the leaderboard stay in this browser on this device. To share results across players or devices, configure and run the optional FastAPI + MongoDB backend as described above.
 
 ---
 
