@@ -166,7 +166,7 @@ function sideStands(scene, structMat, crowd, base, crowdColors, m4, col, startN)
           side * (9.5 + r * 1.2) + (Math.random() - 0.5) * 0.3,
           h + 0.38, z + (Math.random() - 0.5) * 0.15
         );
-        base.push({ pos, ph: Math.random() * 6.28, headScale: 0.085 + ((n * 17) % 5) * 0.008 });
+        base.push({ pos, ph: Math.random() * 6.28, headScale: 0.85 + ((n * 17) % 5) * 0.04 });
         m4.makeTranslation(pos.x, pos.y, pos.z);
         crowd.setMatrixAt(n, m4);
         crowd.setColorAt(n, col.setHex(crowdColors[n % crowdColors.length]));
@@ -192,7 +192,7 @@ function backStands(scene, structMat, crowd, base, crowdColors, m4, col, startN)
           x + (Math.random() - 0.5) * 0.2,
           h + 0.38, end * (15.5 + r * 1.2)
         );
-        base.push({ pos, ph: Math.random() * 6.28, headScale: 0.085 + ((n * 17) % 5) * 0.008 });
+        base.push({ pos, ph: Math.random() * 6.28, headScale: 0.85 + ((n * 17) % 5) * 0.04 });
         m4.makeTranslation(pos.x, pos.y, pos.z);
         crowd.setMatrixAt(n, m4);
         crowd.setColorAt(n, col.setHex(crowdColors[n % crowdColors.length]));
