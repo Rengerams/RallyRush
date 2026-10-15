@@ -180,7 +180,7 @@ class TestLeaderboardEndpoint:
             "ai_style": "baseline",
             "surface": "hard",
             "match_format": "quick",
-            "sets": [[3, 2]],
+            "sets": [[4, 2]],
             "duration_sec": 400,
             "legend": False,
             "stats": {
