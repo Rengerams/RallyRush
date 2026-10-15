@@ -1,25 +1,20 @@
 """Regression tests for safe result retries and match-list validation."""
 import os
 import uuid
-from pathlib import Path
 
 import pytest
 import requests
-from dotenv import dotenv_values
 
 
-def _base_url():
-    value = os.getenv("REACT_APP_BACKEND_URL")
-    if not value:
-        filename = Path(__file__).resolve().parents[2] / "frontend" / ".env"
-        if filename.exists():
-            value = dotenv_values(filename).get("REACT_APP_BACKEND_URL")
-    return (value or "").rstrip("/")
-
-
-BASE_URL = _base_url()
-if not BASE_URL:
-    pytest.skip("REACT_APP_BACKEND_URL is not configured", allow_module_level=True)
+# These integration tests write a match record. They must never inherit
+# the frontend's deployment URL; opt in only with an isolated test backend.
+BASE_URL = os.getenv("TEST_BACKEND_URL", "").rstrip("/")
+RUN_API_INTEGRATION_TESTS = os.getenv("RUN_API_INTEGRATION_TESTS") == "1"
+if not RUN_API_INTEGRATION_TESTS or not BASE_URL:
+    pytest.skip(
+        "Set RUN_API_INTEGRATION_TESTS=1 and TEST_BACKEND_URL to an isolated test API",
+        allow_module_level=True,
+    )
 
 
 def _match_payload(match_id):

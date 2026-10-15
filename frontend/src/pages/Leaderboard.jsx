@@ -23,15 +23,22 @@ function HallOfFame({ row }) {
 
 export default function Leaderboard() {
   const [rows, setRows] = useState(null);
-  // eslint-disable-next-line react-hooks/exhaustive-deps -- mount-only fetch; fetchLeaderboard is a module constant, setRows is a stable setter
-  useEffect(() => { fetchLeaderboard().then(setRows).catch(() => setRows([])); }, []);
+  const [mode, setMode] = useState("competitive");
+  useEffect(() => {
+    setRows(null);
+    fetchLeaderboard(mode).then(setRows).catch(() => setRows([]));
+  }, [mode]);
   const renffr = rows?.find((r) => r.player_name.toLowerCase() === "renffr");
 
   return (
     <main className="mx-auto max-w-[1440px] px-5 py-10 lg:px-10">
       <p className="font-mono text-xs uppercase tracking-[0.3em] text-[#00F0FF]">Global rankings</p>
       <h1 className="font-display mt-2 mb-8 text-5xl font-black uppercase italic sm:text-6xl">Leaderboard</h1>
-      <HallOfFame row={renffr} />
+      <div role="group" aria-label="Leaderboard mode" className="mb-6 flex flex-wrap gap-2">
+        <button type="button" data-testid="leaderboard-competitive-tab" aria-pressed={mode === "competitive"} onClick={() => setMode("competitive")} className={`rounded-full border px-4 py-2 font-mono text-xs uppercase tracking-wider transition ${mode === "competitive" ? "border-[#DFFF00]/60 bg-[#DFFF00]/10 text-[#DFFF00]" : "border-white/15 text-slate-400 hover:border-white/30"}`}>Competitive</button>
+        <button type="button" data-testid="leaderboard-legend-tab" aria-pressed={mode === "legend"} onClick={() => setMode("legend")} className={`rounded-full border px-4 py-2 font-mono text-xs uppercase tracking-wider transition ${mode === "legend" ? "border-[#FFC828]/60 bg-[#FFC828]/10 text-[#FFC828]" : "border-white/15 text-slate-400 hover:border-white/30"}`}>Legend</button>
+      </div>
+      {mode === "competitive" && <HallOfFame row={renffr} />}
       <div className="mt-8 overflow-x-auto rounded-2xl border border-white/10">
         <table data-testid="leaderboard-table" className="w-full min-w-[720px] text-left">
           <thead className="bg-[#121824] font-mono text-[10px] uppercase tracking-[0.2em] text-slate-500">
