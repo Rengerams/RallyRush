@@ -88,6 +88,7 @@ class TestMatchesEndpoint:
         payload = self.test_match_payload.copy()
         payload["player_name"] = "TEST_LossPlayer"
         payload["won"] = False
+        payload["sets"] = [[1, 3]]
         payload["difficulty"] = "easy"
         
         response = requests.post(f"{BASE_URL}/api/matches", json=payload)
