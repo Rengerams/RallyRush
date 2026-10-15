@@ -41,7 +41,7 @@ export default function Setup() {
   };
 
   return (
-    <main className="mx-auto max-w-[1440px] px-5 py-10 lg:px-10">
+    <main className="mx-auto max-w-[1440px] px-5 pb-32 pt-10 lg:px-10">
       <p className="font-mono text-xs uppercase tracking-[0.3em] text-[#00F0FF]">Match setup</p>
       <h1 className="font-display mt-2 text-5xl font-black uppercase italic sm:text-6xl">Build your player</h1>
       <div className="mt-10 grid gap-10 lg:grid-cols-[380px_1fr]">
@@ -65,11 +65,15 @@ export default function Setup() {
           <OptionGroup label="Court surface" cols={5} options={Object.values(SURFACES)} value={cfg.surface} onChange={(v) => set("surface", v)} testPrefix="setup-surface" />
           <SurfacePreview surface={cfg.surface} />
           <OptionGroup label="Match format" cols={2} options={Object.values(FORMATS)} value={cfg.format} onChange={(v) => set("format", v)} testPrefix="setup-format" />
+        </section>
+      </div>
+      <div className="fixed inset-x-0 bottom-0 z-40 border-t border-white/10 bg-[#0B0E14]/95 px-5 pt-3 pb-[calc(0.75rem+env(safe-area-inset-bottom))] shadow-[0_-12px_32px_rgba(0,0,0,0.4)] backdrop-blur-xl">
+        <div className="mx-auto flex max-w-[1440px] justify-end">
           <button type="button" data-testid="setup-start-match-btn" onClick={start}
-            className="btn-volt w-full rounded-full py-5 font-display text-2xl font-black uppercase italic tracking-wide md:w-auto md:px-16">
+            className="btn-volt w-full rounded-full py-4 font-display text-xl font-black uppercase italic tracking-wide md:w-auto md:px-16">
             Start match
           </button>
-        </section>
+        </div>
       </div>
     </main>
   );
