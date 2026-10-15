@@ -2,7 +2,7 @@ import { Link } from "react-router-dom";
 import { Crown, Gauge, Zap, Wind, ArrowUpRight } from "lucide-react";
 import { SHOT_LIST } from "@/game/constants";
 
-const HERO = "/tennis-hero.svg";
+const HERO = `${process.env.PUBLIC_URL}/tennis-hero.svg`;
 
 const features = [
   { icon: Gauge, title: "Timing is everything", text: "Every swing graded Miss · Late · Good · Perfect, straight from the original shot engine." },
