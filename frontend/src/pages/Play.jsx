@@ -119,7 +119,7 @@ export default function Play() {
     }
   };
 
-  // eslint-disable-next-line react-hooks/exhaustive-deps -- engRef, pausedRef, introRef are refs; audio, KEYMAP, SHOT_BY_KEY are module constants
+  // eslint-disable-next-line react-hooks/exhaustive-deps -- introRef is a ref, setIntro is a stable setter
   useEffect(() => {
     const down = (e) => {
       const eng = engRef.current;
@@ -213,7 +213,7 @@ export default function Play() {
       </aside>
       <section ref={wrapRef} className="relative order-1 min-w-0 lg:order-2" data-testid="game-canvas-wrapper">
         <div className="relative mx-auto w-fit max-w-full">
-          <GameCanvas eng={eng} wrapRef={wrapRef} onSwing={mouseSwing} onRelease={() => eng.releaseShot(eng.p.heldShot)} onPointer={pointerMove} onPointerLeave={() => eng.clearPointer()} onQuality={onQuality} onAvailability={onAvailability} />
+          <GameCanvas eng={eng} wrapRef={wrapRef} renderActive={!intro && !paused && !result} onSwing={mouseSwing} onRelease={() => eng.releaseShot(eng.p.heldShot)} onPointer={pointerMove} onPointerLeave={() => eng.clearPointer()} onQuality={onQuality} onAvailability={onAvailability} />
           <div className="flex flex-wrap items-center justify-between gap-2 py-2 lg:absolute lg:bottom-3 lg:right-3 lg:py-0">
             <MobileScore snap={snap} />
             {!intro && !paused && <ServeIndicator snap={snap} showFirstServeHint={!firstServeAttempted} />}
