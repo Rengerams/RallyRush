@@ -4,20 +4,22 @@ The React frontend for RENFFR OPEN, a single-player **3D tennis game** rendered 
 
 See the [main README](../README.md) for controls, court surfaces, features, API endpoints and backend setup.
 
-## Development
+## Start playing
 
-Use Yarn for frontend dependencies and scripts:
+The game can run without the API or MongoDB. From this folder, install dependencies once and start the game:
 
 ```bash
-yarn install
-yarn start
+corepack yarn install
+corepack yarn start
 ```
 
-Set `REACT_APP_BACKEND_URL` in `frontend/.env` to the application's backend base URL. The frontend appends `/api` when calling the FastAPI service.
+This opens the game at `http://localhost:3000`. Match results, history and rankings are saved in this browser on this device. To share results across players or devices, set `REACT_APP_BACKEND_URL` in `.env` and run the FastAPI backend with MongoDB.
+
+## Development
 
 ```bash
-yarn test --watchAll=false --runInBand
-yarn build
+corepack yarn test --watchAll=false --runInBand
+corepack yarn build
 ```
 
 The build uses Create React App with CRACO configuration. `yarn build` writes the optimized frontend to `build/`.
