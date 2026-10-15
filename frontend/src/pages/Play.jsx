@@ -99,6 +99,10 @@ export default function Play() {
 
   useEffect(() => { const t = call && setTimeout(() => setCall(null), 1600); return () => clearTimeout(t); }, [call]);
   useEffect(() => { const t = quality && setTimeout(() => setQuality(null), 650); return () => clearTimeout(t); }, [quality]);
+  useEffect(() => {
+    audio.setMusicActive(!intro && !paused && !replay && !result);
+  }, [intro, paused, replay, result]);
+  useEffect(() => () => audio.setMusicActive(false), []);
 
   // eslint-disable-next-line react-hooks/exhaustive-deps -- pausedRef is a ref, setPaused is a stable setter
   const togglePause = useCallback(() => {
@@ -165,7 +169,7 @@ export default function Play() {
   };
   const release = (id) => engRef.current?.releaseShot(id);
   const names = [cfg.name, `${DIFFICULTY[cfg.difficulty].label} AI`];
-  const toggleSound = () => { audio.sound = !audio.sound; setSound(audio.sound); };
+  const toggleSound = () => { audio.setSound(!audio.sound); setSound(audio.sound); };
   const toggleReplays = () => { replaysRef.current = !replaysRef.current; if (engRef.current) engRef.current.replays = replaysRef.current; setReplays(replaysRef.current); };
   const onQuality = useCallback(() => toast("3D effects reduced for smoother play", { id: "3d-quality" }), []);
   const onAvailability = useCallback(ready => { graphicsReady.current = ready; }, []);
