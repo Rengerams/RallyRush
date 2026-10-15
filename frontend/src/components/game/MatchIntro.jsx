@@ -25,7 +25,7 @@ export default function MatchIntro({ cfg, names, onDone }) {
   useEffect(() => {
     audio.unlock();
     audio.fanfare();
-    audio.say("Ladies and gentlemen, welcome to the Renffr Open!");
+    audio.say("Ladies and gentlemen, welcome to Rally Rush!");
     const timers = [
       setTimeout(() => { setStep(1); audio.sting(); audio.say(`${cfg.name}, versus the ${DIFFICULTY[cfg.difficulty].label} ${STYLES[cfg.style].label} A I`); }, STEPS[1]),
       setTimeout(() => { setStep(2); audio.sting(); audio.say("Quiet please. Play!"); }, STEPS[2]),
@@ -46,7 +46,7 @@ export default function MatchIntro({ cfg, names, onDone }) {
             <p className="font-mono text-[11px] uppercase tracking-[0.35em] text-[#00F0FF]">Ladies & gentlemen</p>
             <p className="font-display mt-2 text-2xl font-bold uppercase text-slate-300">welcome to the</p>
             <motion.p initial={{ letterSpacing: "0.4em" }} animate={{ letterSpacing: "-0.01em" }} transition={{ duration: 1.2, ease: "easeOut" }}
-              className="font-display text-6xl font-black uppercase italic leading-none text-[#DFFF00] sm:text-7xl">Renffr<br />Open</motion.p>
+              className="font-display text-6xl font-black uppercase italic leading-none text-[#DFFF00] sm:text-7xl">Rally<br />Rush</motion.p>
           </motion.div>
         )}
         {step === 1 && (
