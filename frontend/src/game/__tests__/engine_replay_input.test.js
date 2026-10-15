@@ -49,7 +49,7 @@ test("right-mouse aiming works even when mouse-follow is switched off", () => {
   expect(e.pointerTarget).toBeNull();
   pointerInput(e, { x: 2.5, z: -5 }, true);
   expect(e.pointerAim).toBeTruthy();
-  expect(e.pointerAim.x).toBeCloseTo(2.5);
+  expect(e.pointerAim.x).toBeCloseTo(e.boxSign * 2.5);
 });
 
 test("WASD steering cancels mouse-follow destination but preserves right-click aim", () => {
