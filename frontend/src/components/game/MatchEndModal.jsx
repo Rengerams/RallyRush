@@ -24,7 +24,7 @@ export default function MatchEndModal({ result, names, saveState, onRematch, onL
           <div className="mt-5 flex flex-wrap items-center gap-2">
             <p data-testid="match-end-save-status" role="status" className="flex items-center gap-2 font-mono text-xs text-slate-400">
               {saveState === "saving" && <><Loader2 size={14} className="animate-spin" /> Saving match…</>}
-              {saveState === "saved" && <><Check size={14} className="text-[#22C55E]" /> Match saved online</>}
+              {saveState === "saved" && <><Check size={14} className="text-[#22C55E]" /> Match saved</>}
               {saveState === "saved-local" && <><Check size={14} className="text-[#22C55E]" /> Match saved on this device</>}
               {saveState === "error" && <><AlertTriangle size={14} className="text-[#E05A47]" /> Could not save match</>}
             </p>
