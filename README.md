@@ -1,32 +1,59 @@
 # Rally Rush
 
-**Rally Rush 0.2.0** is a single-player, arcade-style 3D tennis game for Windows and the browser. Play fast matches against AI opponents, build a player, and learn to time each shot across five court surfaces.
+[![Release](https://img.shields.io/github/v/release/Rengerams/tennnisNL?label=release&style=flat-square)](https://github.com/Rengerams/tennnisNL/releases)
+[![Downloads](https://img.shields.io/github/downloads/Rengerams/tennnisNL/total?style=flat-square)](https://github.com/Rengerams/tennnisNL/releases)
+[![License](https://img.shields.io/github/license/Rengerams/tennnisNL?style=flat-square)](./LICENSE)
 
-> **Local play only:** matches, match history, and leaderboard entries are saved on this device. There is no online multiplayer, account system, or shared online ranking.
+Rally Rush (v0.2.0) is a single-player, arcade-style 3D tennis game for Windows and the browser. Play fast matches against AI opponents, build a player, and learn to time each shot across five court surfaces.
+
+> Local play only: matches, match history, and leaderboard entries are saved on this device. There is no online multiplayer, account system, or shared online ranking.
+
+- Homepage: https://github.com/Rengerams/tennnisNL
+- Changelog & releases: https://github.com/Rengerams/tennnisNL/releases
+
+<!-- prettier-ignore -->
+## Demo
+
+Add a short GIF or screenshot here to show gameplay. Example markdown:
+
+![Gameplay preview](assets/demo.gif)
+
+If you'd like, I can add an optimized demo GIF to the repo and update this README to show it.
+
+## Table of contents
+
+- [Features](#features)
+- [Download (Windows)](#windows-desktop)
+- [Controls](#controls)
+- [Run from source](#run-from-source)
+- [Build and test](#build-and-test)
+- [Project layout](#project-layout)
+- [Contributing](#contributing)
+- [Reporting bugs & feedback](#reporting-bugs--feedback)
+- [Roadmap](#next-version)
+- [License](#license)
 
 ## Features
 
-- **3D tennis simulation** with ball physics, player movement, stamina, sprinting, slides, and recorded point replays.
-- **Seven shot types:** flat, topspin, slice, lob, drop shot, serve, and smash. Each shot has a timing grade, from Miss and Late through Good and Perfect.
-- **Five court surfaces:** Hard Court, Clay, Grass, Kunstgras (artificial grass), and Smashcourt. Each changes ball bounce and movement.
-- **Four AI difficulty levels:** Easy, Medium, Hard, and Pro.
-- **Four AI styles:** Baseline, Net Rusher, Defensive, and Aggressive.
-- **Player setup:** choose a name and distribute attribute points across Power, Stamina, and Accuracy, or use the Legend preset.
-- **Two match formats:** Quick Set (one set, first to three games) and Original Rules (best of three sets, six games per set).
-- **Tennis scoring:** deuce, advantage, and tie-break rules.
-- **Match feedback and stats:** scoreboards, umpire callouts, shot-quality feedback, aces, rally counts, perfect shots, match breakdowns, and a match archive.
-- **Replay and presentation options:** replay the last point, switch between Court and Broadcast cameras, and toggle sound, voice callouts, and replays.
-- **Keyboard and optional mouse controls**, plus on-screen shot and movement controls.
+- 3D tennis simulation with ball physics, player movement, stamina, sprinting, slides, and recorded point replays.
+- Seven shot types: flat, topspin, slice, lob, drop shot, serve, and smash. Each shot has a timing grade (Miss → Perfect).
+- Five court surfaces: Hard Court, Clay, Grass, Kunstgras (artificial grass), and Smashcourt (affects bounce & movement).
+- Four AI difficulty levels and four AI play styles.
+- Player setup: name, attribute distribution (Power, Stamina, Accuracy), or Legend preset.
+- Two match formats: Quick Set and Original Rules (best of three sets).
+- Tennis scoring (deuce, advantage, tie-break), match stats, replay and presentation options.
+- Keyboard + optional mouse controls, local leaderboard and match archive.
 
 ## Windows desktop
 
-Download the latest `Rally-Rush-0.2.0-Windows-Setup.exe` installer from [GitHub Releases](https://github.com/Rengerams/tennnisNL/releases). Install and launch Rally Rush like a regular Windows app.
+Download the latest installer from the Releases page:
 
+https://github.com/Rengerams/tennnisNL/releases
+
+Notes:
 - Supported: Windows 10 or 11, 64-bit.
-- A separate browser, Node.js, server, or database is not needed to play the installed desktop version.
-- The game needs hardware-accelerated graphics with WebGL support.
-
-The desktop app keeps its local matches and rankings in its application storage on this device. Those records do not sync to another computer.
+- Desktop version stores matches and rankings locally on this device.
+- Requires hardware-accelerated graphics with WebGL support.
 
 ## Controls
 
@@ -42,15 +69,11 @@ The desktop app keeps its local matches and rankings in its application storage 
 | Pause or resume | **P** or **Esc** |
 | End a point replay | **Enter** |
 
-The shot keys are **1 Flat**, **2 Topspin**, **3 Slice**, **4 Lob**, **5 Drop Shot**, **6 Serve**, and **7 Smash**. Timing the release affects the quality of a shot. The on-screen shot pad and movement pad can also be used with pointer or touch input.
+Shot keys: **1 Flat**, **2 Topspin**, **3 Slice**, **4 Lob**, **5 Drop Shot**, **6 Serve**, **7 Smash**.
 
 ### Optional mouse movement
 
-Enable **Mouse** in the match controls to move with the pointer. Hold the right mouse button to aim; hold the left mouse button to prepare a shot and release it to swing. Mouse movement is optional.
-
-## Local rankings and saved data
-
-The leaderboard is a **local ranking on this device**. It is not an online competition, and entries are not uploaded or shared. Match history and setup preferences are also saved locally. Clearing Rally Rush's app/browser storage removes those local records.
+Enable "Mouse" in the match controls to move with the pointer. Hold right-click to aim; hold left-click to prepare and release to swing.
 
 ## Run from source
 
@@ -62,20 +85,18 @@ npm ci --legacy-peer-deps
 npm run desktop
 ```
 
-This starts the Vite development server and opens the game in Electron.
-
-For browser-based development, run `npm start` from `frontend/` and open the local address printed by Vite. The browser version is useful for development and testing; the packaged desktop app runs in its own window.
+This starts the Vite development server and opens the game in Electron. For browser-based development, run `npm start` from `frontend/` and open the local address printed by Vite.
 
 ## Build and test
 
-Run these commands from `frontend/`:
+From `frontend/`:
 
 ```bash
 npm test
 npm run build
 ```
 
-Create the Windows installer on Windows with:
+Create the Windows installer (on Windows):
 
 ```bash
 npm run desktop:dist
@@ -91,10 +112,30 @@ The installer is written to `frontend/release/`.
 - `frontend/src/pages/` — home, match setup, gameplay, local leaderboard, and match history.
 - `frontend/desktop/` — Electron desktop shell.
 
+## Contributing
+
+Thanks for considering contributing! A few ways to help:
+
+- Open issues for bugs or feature requests.
+- Fork the repo, make a branch, and open a PR with a clear description.
+- Add screenshots or a short demo GIF in `assets/` and update this README.
+
+If you want me to add a CONTRIBUTING.md or templates for issues/PRs, I can create them.
+
+## Reporting bugs & feedback
+
+Please use the GitHub Issues page to report problems or request enhancements:
+https://github.com/Rengerams/tennnisNL/issues
+
+Include:
+- What you did (steps to reproduce)
+- What you expected to happen
+- What actually happened (logs/screenshots if available)
+
 ## Next version
 
-See the [Rally Rush 0.3.0 roadmap](ROADMAP.md) for the proposed UI, onboarding, practice, local data, testing, and release plan.
+See the [Rally Rush 0.3.0 roadmap](ROADMAP.md) for proposed UI, onboarding, practice, local data, testing, and release plans.
 
 ## License
 
-MIT. See [frontend/package.json](frontend/package.json).
+MIT. See [frontend/package.json](frontend/package.json) for details.
