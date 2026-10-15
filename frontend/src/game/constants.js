@@ -44,7 +44,7 @@ export const FORMATS = {
   standard: { id: "standard", label: "Original Rules", desc: "Best of 3 sets · 6 games", games: 6, setsToWin: 2 },
 };
 
-export const LEGEND = { name: "renffr", power: 10, stamina: 10, accuracy: 10 };
+export const LEGEND = { name: "Legend", power: 10, stamina: 10, accuracy: 10 };
 export const ATTR_BUDGET = 18;
 export const SETUP_KEY = "renffr-tennis-setup";
 
