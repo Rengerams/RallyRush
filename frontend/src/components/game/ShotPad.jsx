@@ -30,8 +30,8 @@ export default function ShotPad({ onShot, onHold, onRelease, selectedShot = "fla
       </div>
       <div data-testid="desktop-controls" aria-label="Desktop controls" className="mt-4 hidden space-y-2 border-t border-white/10 pt-3 font-mono text-[10px] leading-relaxed text-slate-400 lg:block">
         <p><span className="key-cap">WASD</span> / arrows · move</p>
-        <p><span className="key-cap">1–7</span> hold a key to prepare a return</p>
-        <p>Mouse: move to run when enabled · hold right button to aim · hold left button to hit</p>
+        <p><span className="key-cap">1–7</span> hold to prepare · release near contact to swing</p>
+        <p>Mouse: move to run when enabled · hold right button to aim · release left button near contact</p>
         <p><span className="key-cap">Shift</span> sprint · <span className="key-cap">Space</span> slide</p>
         <p><span className="key-cap">Esc</span> / <span className="key-cap">P</span> pause · <span className="key-cap">Enter</span> skip replay</p>
       </div>
