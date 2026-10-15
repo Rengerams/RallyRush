@@ -1,3 +1,4 @@
+import { describe, expect, test, vi } from "vitest";
 import { TennisEngine } from "../engine";
 import { SURFACES, FORMATS, SHOTS } from "../constants";
 import { stepBall } from "../physics";
@@ -94,7 +95,7 @@ test("an early prepared swing expires without auto-hitting", () => {
 
 test("the AI changes tactics when the player rushes the net or stays deep", () => {
   const e = new TennisEngine(cfg);
-  const random = jest.spyOn(Math, "random").mockReturnValue(0.1);
+  const random = vi.spyOn(Math, "random").mockReturnValue(0.1);
   e.p.z = 3.5;
   expect(e.aiPickShot()).toBe(SHOTS.lob);
   e.p.z = 13;

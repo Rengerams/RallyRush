@@ -24,7 +24,7 @@ function createWindow() {
   if (process.env.DESKTOP_START_URL) {
     window.loadURL(process.env.DESKTOP_START_URL);
   } else {
-    window.loadFile(path.join(__dirname, "..", "build", "index.html"));
+    window.loadFile(path.join(__dirname, "..", "dist", "index.html"));
   }
 }
 

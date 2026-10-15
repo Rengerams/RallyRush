@@ -45,7 +45,6 @@
     "react-hook-form": "7.56.2",
     "react-resizable-panels": "3.0.1",
     "react-router-dom": "7.18.4",
-    "react-scripts": "5.0.1",
     "sonner": "2.0.8",
     "tailwind-merge": "3.7.0",
     "tailwindcss-animate": "1.0.7",
@@ -53,32 +52,15 @@
     "vaul": "1.1.2"
   },
   "scripts": {
-    "start": "craco start",
-    "build": "craco build",
-    "test": "craco test",
+    "start": "vite --host 127.0.0.1",
+    "build": "vite build",
+    "test": "vitest run",
     "desktop": "node scripts/desktop-dev.cjs",
     "desktop:dist": "npm run build && electron-builder --win nsis"
   },
-  "browserslist": {
-    "production": [
-      ">0.2%",
-      "not dead",
-      "not op_mini all"
-    ],
-    "development": [
-      "last 1 chrome version",
-      "last 1 firefox version",
-      "last 1 safari version"
-    ]
-  },
   "devDependencies": {
-    "@babel/plugin-proposal-private-property-in-object": "7.21.11",
-    "@craco/craco": "7.1.0",
-    "@emergentbase/overlay": "https://assets.emergent.sh/npm/emergentbase-overlay-0.1.31.tgz",
-    "@emergentbase/visual-edits": "https://assets.emergent.sh/npm/emergentbase-visual-edits-1.0.13.tgz",
     "@eslint/js": "9.23.0",
     "autoprefixer": "10.4.20",
-    "dotenv": "16.4.5",
     "eslint": "9.23.0",
     "eslint-plugin-import": "2.31.0",
     "eslint-plugin-jsx-a11y": "6.10.2",
@@ -88,7 +70,10 @@
     "postcss": "8.5.28",
     "tailwindcss": "3.4.17",
     "electron": "44.7.2",
-    "electron-builder": "26.15.3"
+    "electron-builder": "26.15.3",
+    "@vitejs/plugin-react": "6.1.2",
+    "vite": "8.3.4",
+    "vitest": "5.0.5"
   },
   "license": "MIT",
   "homepage": ".",
@@ -100,7 +85,7 @@
       "output": "release"
     },
     "files": [
-      "build/**/*",
+      "dist/**/*",
       "desktop/**/*",
       "package.json"
     ],
@@ -127,7 +112,6 @@
     "diff": "4.0.4",
     "follow-redirects": "1.16.0",
     "path-to-regexp": "0.1.13",
-    "rollup": "2.80.0",
     "underscore": "1.13.8",
     "@babel/plugin-transform-modules-systemjs": "7.29.4",
     "@eslint/plugin-kit": "0.3.4",
@@ -137,14 +121,6 @@
     "serialize-javascript": "7.0.5",
     "uuid": "11.1.1",
     "@tootallnate/once": "2.0.1",
-    "webpack-dev-server": {
-      ".": "5.2.6",
-      "ws": "8.21.0"
-    },
-    "resolve-url-loader": {
-      ".": "5.0.0",
-      "postcss": "8.5.28"
-    },
     "axios": {
       "form-data": "4.0.6"
     },
@@ -179,9 +155,6 @@
       "postcss": "8.5.28"
     },
     "css-minimizer-webpack-plugin": {
-      "postcss": "8.5.28"
-    },
-    "react-scripts": {
       "postcss": "8.5.28"
     },
     "filelist": {
