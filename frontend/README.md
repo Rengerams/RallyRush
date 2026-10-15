@@ -19,22 +19,22 @@ The desktop command starts the local development server and opens the game in an
 
 ## Browser development
 
-To work on the browser version instead:
+To work on the browser version (served by Vite) instead:
 
 ```bash
 npm start
 ```
 
-The frontend is available at `http://localhost:3000`. To create a Windows installer from a Windows machine, run `npm run desktop:dist`.
+The frontend is available at `http://127.0.0.1:3000`. To create a Windows installer from a Windows machine, run `npm run desktop:dist`.
 
 ## Development
 
 ```bash
-npm test --watchAll=false --runInBand
+npm test
 npm run build
 ```
 
-The build uses Create React App with CRACO configuration. `npm run build` writes the optimized frontend to `build/`.
+The development server and production build use Vite. `npm run build` writes the optimized frontend to `dist/`.
 
 ## Main source areas
 
