@@ -25,6 +25,7 @@ export default function Play() {
   const [cfg] = useState(loadSetup);
   const wrapRef = useRef(null);
   const engRef = useRef(null);
+  const matchIdRef = useRef(null);
   const pausedRef = useRef(false);
   const replaysRef = useRef(true);
   const [snap, setSnap] = useState(null);
@@ -45,12 +46,19 @@ export default function Play() {
   const graphicsReady = useRef(false);
 
   const persistResult = useCallback((r) => {
+    const matchId = matchIdRef.current || (matchIdRef.current =
+      globalThis.crypto?.randomUUID?.() || `match_${Date.now()}_${Math.random().toString(36).slice(2)}`);
     setSaveState("saving");
     saveMatch({
+      match_id: matchId,
       player_name: cfg.name, won: r.won, difficulty: cfg.difficulty, ai_style: cfg.style, surface: cfg.surface,
       match_format: cfg.format, sets: r.sets, duration_sec: r.duration_sec, legend: !!cfg.legend,
       stats: r.stats, opponent_points: r.opponentStats.points_won, opponent_stats: r.opponentStats, rally_lengths: r.rally_lengths,
-    }).then(() => setSaveState("saved")).catch(() => setSaveState("error"));
+    }).then(() => {
+      if (matchIdRef.current === matchId) setSaveState("saved");
+    }).catch(() => {
+      if (matchIdRef.current === matchId) setSaveState("error");
+    });
   }, [cfg]);
 
   const onEvent = useCallback((e) => {
@@ -74,6 +82,7 @@ export default function Play() {
   useEffect(() => {
     eng.replays = replaysRef.current;
     engRef.current = eng;
+    matchIdRef.current = null;
     setReplay(null);
     setResult(null); setSaveState(null); setPaused(false); pausedRef.current = false;
     introRef.current = true; setIntro(true);
@@ -136,7 +145,16 @@ export default function Play() {
   // eslint-disable-next-line react-hooks/exhaustive-deps -- introRef is a ref, setIntro is a stable setter
   const endIntro = useCallback(() => { introRef.current = false; setIntro(false); }, []);
   const shot = (id) => {
-    if (introRef.current || pausedRef.current || !graphicsReady.current) return; audio.unlock(); engRef.current?.pressShot(id); };
+    if (introRef.current || pausedRef.current || !graphicsReady.current) return;
+    audio.unlock();
+    engRef.current?.pressShot(id);
+  };
+  const hold = (id) => {
+    if (introRef.current || pausedRef.current || !graphicsReady.current) return;
+    audio.unlock();
+    engRef.current?.holdShot(id);
+  };
+  const release = (id) => engRef.current?.releaseShot(id);
   const names = [cfg.name, `${DIFFICULTY[cfg.difficulty].label} AI`];
   const toggleSound = () => { audio.sound = !audio.sound; setSound(audio.sound); };
   const toggleReplays = () => { replaysRef.current = !replaysRef.current; if (engRef.current) engRef.current.replays = replaysRef.current; setReplays(replaysRef.current); };
@@ -168,7 +186,7 @@ export default function Play() {
       </aside>
       <section ref={wrapRef} className="relative order-1 min-w-0 lg:order-2" data-testid="game-canvas-wrapper">
         <div className="relative mx-auto w-fit max-w-full">
-          <GameCanvas eng={eng} wrapRef={wrapRef} onSwing={mouseSwing} onRelease={() => eng.releaseShot(eng.selectedShot)} onPointer={pointerMove} onPointerLeave={() => eng.clearPointer()} onQuality={onQuality} onAvailability={onAvailability} />
+          <GameCanvas eng={eng} wrapRef={wrapRef} onSwing={mouseSwing} onRelease={() => eng.releaseShot(eng.p.heldShot)} onPointer={pointerMove} onPointerLeave={() => eng.clearPointer()} onQuality={onQuality} onAvailability={onAvailability} />
           <div className="flex flex-wrap items-center justify-between gap-2 py-2 lg:absolute lg:bottom-3 lg:right-3 lg:py-0">
             <MobileScore snap={snap} />
             {!intro && !paused && <ServeIndicator snap={snap} />}
@@ -203,7 +221,7 @@ export default function Play() {
         </div>
       </section>
       <aside className="order-2 min-w-0 space-y-3 lg:order-3 lg:space-y-4">
-        <ShotPad onShot={shot} selectedShot={snap?.selectedShot} onSelect={id => { eng.selectedShot = id; }} />
+        <ShotPad onShot={shot} onHold={hold} onRelease={release} selectedShot={snap?.selectedShot} onSelect={id => { eng.selectedShot = id; }} />
         <DPad onKey={(k, d) => { if (!pausedRef.current && !introRef.current) engRef.current?.setKey(k, d); }} />
       </aside>
     </main>

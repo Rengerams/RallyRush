@@ -117,9 +117,8 @@ export class TennisEngine {
     if (this.state === "serve" && this.server === 0) return this.playerServeInput();
     if (this.state !== "rally") return;
     const p = this.p;
-    p.swing = 0.25;
-    p.side = this.ball.x >= p.x ? 1 : -1;
-    p.buffered = { shot: id, exp: this.time + 0.18, prepared: this.p.heldShot === id };
+    // Preparing a return is not a swing. Animate only at contact (or on a missed tap).
+    p.buffered = { shot: id, exp: this.time + 0.18, prepared: p.heldShot === id };
     this.attemptPlayerHit();
   }
 
@@ -293,7 +292,12 @@ export class TennisEngine {
     }
     if (p.buffered) {
       this.attemptPlayerHit();
-      if (p.buffered && this.time > p.buffered.exp) { p.buffered = null; this.emit({ type: "shot", who: 0, quality: "miss" }); }
+      if (p.buffered && this.time > p.buffered.exp) {
+        p.buffered = null;
+        p.swing = 0.25;
+        p.side = this.ball.x >= p.x ? 1 : -1;
+        this.emit({ type: "shot", who: 0, quality: "miss" });
+      }
     }
     const { dx, dz } = this.moveDir();
     const moving = dx !== 0 || dz !== 0;

@@ -46,3 +46,43 @@ test("tie-break rotates serving and finishes only with 2-point margin", () => {
   awardPoint(s, 0); awardPoint(s, 0);
   expect(s.winner).toBe(0);
 });
+
+test("holding a return prepares the shot without swinging too early", () => {
+  const e = new TennisEngine(cfg);
+  e.state = "rally";
+  e.isServe = false;
+  e.lastHitter = 1;
+  e.ball.x = e.p.x;
+  e.ball.y = 1.2;
+  e.ball.z = 3;
+  e.p.swing = 0;
+
+  e.holdShot("flat");
+  expect(e.p.heldShot).toBe("flat");
+  expect(e.p.swing).toBe(0);
+  expect(e.lastHitter).toBe(1);
+
+  // The held input makes contact as the ball enters racket range.
+  e.ball.z = e.p.z - 0.5;
+  e.ball.vz = 4;
+  e.attemptPlayerHit();
+  expect(e.lastHitter).toBe(0);
+  expect(e.p.swing).toBeGreaterThan(0);
+});
+
+test("a mistimed tap expires and reports a miss without hitting the ball", () => {
+  const events = [];
+  const e = new TennisEngine(cfg, (event) => events.push(event));
+  e.state = "rally";
+  e.isServe = false;
+  e.lastHitter = 1;
+  e.ball.z = 2;
+  e.pressShot("flat");
+  expect(e.p.swing).toBe(0);
+  // Advance only the input logic; keep the ball far from the player.
+  e.time += 0.3;
+  e.updatePlayer(0.001);
+  expect(e.p.buffered).toBeNull();
+  expect(events.some((event) => event.type === "shot" && event.quality === "miss")).toBe(true);
+  expect(e.lastHitter).toBe(1);
+});

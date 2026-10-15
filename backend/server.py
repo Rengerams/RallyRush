@@ -3,6 +3,7 @@ from dotenv import load_dotenv
 from starlette.middleware.cors import CORSMiddleware
 from motor.motor_asyncio import AsyncIOMotorClient
 from bson import ObjectId
+from pymongo.errors import DuplicateKeyError
 import os
 import re
 import logging
@@ -49,6 +50,9 @@ class MatchStats(BaseModel):
 
 
 class MatchIn(BaseModel):
+    # Optional stable identifier makes retries safe and supports legacy match records.
+    match_id: Optional[str] = Field(default=None, min_length=8, max_length=96,
+                                    pattern=r"^[a-zA-Z0-9_-]+$")
     player_name: str = Field(min_length=1, max_length=24)
     won: bool
     difficulty: Literal["easy", "medium", "hard", "pro"]
@@ -80,13 +84,27 @@ async def create_match(body: MatchIn):
     rating = DIFF_POINTS[body.difficulty] if body.won else 2
     match = Match(**body.model_dump(exclude={"player_name"}), player_name=name,
                   rating_points=rating, created_at=datetime.now(timezone.utc).isoformat())
+    if body.match_id:
+        # Atomic insert-once: a timed-out HTTP response can be retried without
+        # inflating the leaderboard with the same completed match.
+        try:
+            await db.matches.update_one(
+                {"match_id": body.match_id},
+                {"$setOnInsert": match.to_mongo()},
+                upsert=True,
+            )
+        except DuplicateKeyError:
+            # Simultaneous retries may race on the unique partial index.
+            pass
+        saved = await db.matches.find_one({"match_id": body.match_id})
+        return Match.from_mongo(saved)
     res = await db.matches.insert_one(match.to_mongo())
     match.id = str(res.inserted_id)
     return match
 
 
 @api_router.get("/matches", response_model=List[Match], response_model_by_alias=False)
-async def list_matches(player: Optional[str] = None, surface: Optional[str] = None, limit: int = Query(50, le=200)):
+async def list_matches(player: Optional[str] = None, surface: Optional[str] = None, limit: int = Query(50, ge=1, le=200)):
     q = {}
     if player:
         q["player_name"] = {"$regex": f"^{re.escape(player.strip())}$", "$options": "i"}
@@ -110,7 +128,7 @@ class LeaderRow(BaseModel):
 
 
 @api_router.get("/leaderboard", response_model=List[LeaderRow])
-async def leaderboard(limit: int = Query(50, le=200)):
+async def leaderboard(limit: int = Query(50, ge=1, le=200)):
     pipeline = [
         {"$group": {
             "_id": {"$toLower": "$player_name"},
@@ -132,6 +150,15 @@ async def leaderboard(limit: int = Query(50, le=200)):
         win_pct=round(100 * r["wins"] / r["matches"], 1), rating=r["rating"], best_rally=r["best_rally"] or 0,
         aces=r["aces"], perfect_shots=r["perfect_shots"], legend=bool(r["legend"]),
     ) for r in rows]
+
+
+@app.on_event("startup")
+async def ensure_match_indexes():
+    # Legacy rows omit match_id; index only new rows with a string identifier.
+    await db.matches.create_index(
+        "match_id", unique=True,
+        partialFilterExpression={"match_id": {"$type": "string"}},
+    )
 
 
 app.include_router(api_router)
