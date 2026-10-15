@@ -69,8 +69,8 @@ function umpireChair(scene) {
   const seat = new THREE.MeshStandardMaterial({ color: 0x1a237e, roughness: 0.6 });
   const grp = new THREE.Group();
   [[-0.22, -0.18], [0.22, -0.18], [-0.22, 0.18], [0.22, 0.18]].forEach(([x, z]) => {
-    const leg = new THREE.Mesh(new THREE.CylinderGeometry(0.025, 0.025, 2.6), metal);
-    leg.position.set(x, 1.3, z);
+    const leg = new THREE.Mesh(new THREE.CylinderGeometry(0.025, 0.025, 3.9), metal);
+    leg.position.set(x, 1.95, z);
     grp.add(leg);
   });
   const seatPad = new THREE.Mesh(new THREE.BoxGeometry(0.6, 0.05, 0.45), seat);
@@ -80,7 +80,7 @@ function umpireChair(scene) {
   back.position.set(0, 2.7, -0.2);
   grp.add(back);
   const shade = new THREE.Mesh(new THREE.BoxGeometry(0.9, 0.03, 0.7), seat);
-  shade.position.set(0, 3.1, 0);
+  shade.position.set(0, 3.9, 0);
   grp.add(shade);
   [0.7, 1.4].forEach((y) => {
     const step = new THREE.Mesh(new THREE.BoxGeometry(0.4, 0.03, 0.25), metal);
