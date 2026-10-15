@@ -8,7 +8,7 @@ import os
 import re
 import logging
 from pathlib import Path
-from pydantic import BaseModel, Field, ConfigDict, BeforeValidator
+from pydantic import BaseModel, Field, ConfigDict, BeforeValidator, field_validator
 from typing import List, Literal, Optional, Annotated
 from datetime import datetime, timezone
 
@@ -39,14 +39,15 @@ class BaseDocument(BaseModel):
 
 
 class MatchStats(BaseModel):
-    aces: int = 0
-    double_faults: int = 0
-    winners: int = 0
-    errors: int = 0
-    perfect_shots: int = 0
-    total_shots: int = 0
-    longest_rally: int = 0
-    points_won: int = 0
+    # Bound client-supplied counters to non-negative, plausible integers.
+    aces: int = Field(default=0, ge=0, le=100_000)
+    double_faults: int = Field(default=0, ge=0, le=100_000)
+    winners: int = Field(default=0, ge=0, le=100_000)
+    errors: int = Field(default=0, ge=0, le=100_000)
+    perfect_shots: int = Field(default=0, ge=0, le=100_000)
+    total_shots: int = Field(default=0, ge=0, le=100_000)
+    longest_rally: int = Field(default=0, ge=0, le=100_000)
+    points_won: int = Field(default=0, ge=0, le=100_000)
 
 
 class MatchIn(BaseModel):
@@ -59,13 +60,21 @@ class MatchIn(BaseModel):
     ai_style: Literal["baseline", "netrusher", "defensive", "aggressive"]
     surface: Literal["hard", "clay", "grass", "artificial", "smashcourt"]
     match_format: Literal["quick", "standard"]
-    sets: List[List[int]]
-    duration_sec: int = 0
+    sets: List[List[Annotated[int, Field(ge=0, le=99)]]] = Field(max_length=3)
+    duration_sec: int = Field(default=0, ge=0, le=86_400)
     legend: bool = False
     stats: MatchStats
-    opponent_points: int = 0
+    opponent_points: int = Field(default=0, ge=0, le=100_000)
     opponent_stats: Optional[MatchStats] = None
     rally_lengths: List[Annotated[int, Field(ge=0)]] = Field(default_factory=list, max_length=5000)
+
+    @field_validator("player_name")
+    @classmethod
+    def normalize_player_name(cls, value: str) -> str:
+        name = " ".join(value.split())
+        if not name:
+            raise ValueError("player_name must contain a visible character")
+        return name
 
 
 class Match(BaseDocument, MatchIn):
@@ -128,8 +137,13 @@ class LeaderRow(BaseModel):
 
 
 @api_router.get("/leaderboard", response_model=List[LeaderRow])
-async def leaderboard(limit: int = Query(50, ge=1, le=200)):
+async def leaderboard(mode: Literal["competitive", "legend"] = "competitive", limit: int = Query(50, ge=1, le=200)):
+    # Keep boosted Legend matches out of competitive rankings while retaining
+    # a separate view for those matches. $ne also includes older rows without
+    # an explicit legend field.
+    match_filter = {"legend": True} if mode == "legend" else {"legend": {"$ne": True}}
     pipeline = [
+        {"$match": match_filter},
         {"$group": {
             "_id": {"$toLower": "$player_name"},
             "player_name": {"$first": "$player_name"},
