@@ -58,7 +58,7 @@ function localLeaderboard(mode) {
   return [...totals.values()].sort((a, b) => b.rating - a.rating || b.wins - a.wins).slice(0, 50);
 }
 
-export const saveMatch = (payload) => Promise.resolve(saveLocalMatch(payload));
+export const saveMatch = (payload) => Promise.resolve().then(() => saveLocalMatch(payload));
 export const fetchMatches = (params = {}) => Promise.resolve(fetchLocalMatches(params));
 export const fetchLeaderboard = (mode = "competitive") => Promise.resolve(localLeaderboard(mode));
 
