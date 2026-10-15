@@ -11,7 +11,7 @@ Built for and dedicated to **renffr**.
 
 RENFFR OPEN is a single-player 3D tennis game. Play a full match against an AI opponent, using keyboard and mouse or touchscreen controls. Pick a court surface, AI difficulty and play style, then choose a quick set or a best-of-three match.
 
-There are seven shots to learn, serve timing, stamina, tennis scoring, an umpire, crowd reactions and cinematic replays. After each match, review your stats and results. You can play without an account or backend: results and settings stay in your browser on this device. A configured backend enables a shared online leaderboard and match history.
+There are seven shots to learn, serve timing, stamina, tennis scoring, an umpire, crowd reactions and cinematic replays. After each match, review your stats and results. No account or server is needed: settings, match history and leaderboard stay in this browser on this device.
 
 ---
 
@@ -28,7 +28,7 @@ There are seven shots to learn, serve timing, stamina, tennis scoring, an umpire
 - An umpire who announces calls on screen and out loud, plus sound effects and a crowd that reacts
 - **Cinematic replay:** recorded action plays at 0.65x, slowing to 0.3x near the end. Automatic highlights cover aces, rallies of 6 or more shots and the final point; manual replay, progress, skip and an automatic-replay toggle are available
 - **Post-match breakdown:** compare aces, winners, errors, double faults, perfect shots and points won; inspect longest/average rally lengths, a rally histogram and match duration
-- Match history, leaderboard and detailed stats; saved locally in this browser, or shared online when the backend is configured
+- Match history, leaderboard and detailed stats saved locally in this browser
 - Five court surfaces with a color-matched mini-court preview on the setup screen
 - renffr tributes: "RENFFR OPEN" painted on the court, a gold nav badge, a Hall of Fame card and a **Legend renffr** player preset
 
@@ -124,7 +124,6 @@ A win earns points based on difficulty: **Easy 10 · Medium 20 · Hard 35 · Pro
 
 ## Tech stack
 - **Frontend:** React, Tailwind, framer-motion, **Three.js/WebGL 3D rendering**, a custom JavaScript tennis simulation, Web Audio API and SpeechSynthesis
-- **Backend:** FastAPI + MongoDB (Motor)
 
 A WebGL-capable browser is required. If graphics initialization fails or the WebGL context is lost, the game displays a retry control and suspends the simulation. Automatic quality adjustment reduces effects while retaining 3D rendering.
 
@@ -135,30 +134,18 @@ frontend/src/game/three/ ThreeView, stadium, player models, anatomy, animation, 
 frontend/src/pages/     Home, Setup, Play, Leaderboard, History
 frontend/src/components/game/  GameCanvas, Scoreboard, ShotPad, DPad, ServeIndicator,
                                SurfacePreview, MatchStats, MatchEndModal, PauseModal, MatchIntro
-backend/server.py       REST API
 ```
-
-### API
-| Method | Endpoint | Description |
-|--------|----------|-------------|
-| `POST` | `/api/matches` | Save a finished match |
-| `GET` | `/api/matches?player=&surface=&limit=` | Match history, newest first |
-| `GET` | `/api/leaderboard` | Rankings per player |
-
-### Environment
-- `backend/.env`: `MONGO_URL`, `DB_NAME`, `CORS_ORIGINS`
-- `frontend/.env`: `REACT_APP_BACKEND_URL`
 
 ### Run the game locally
 
-The game itself does not need the API or a database. From `frontend/`, install dependencies once, then start it:
+The game runs entirely in your browser and needs no API, database or account. From `frontend/`, install dependencies once, then start it:
 
 ```bash
 corepack yarn install
 corepack yarn start
 ```
 
-It opens at `http://localhost:3000`. Without `REACT_APP_BACKEND_URL`, match results, history and the leaderboard stay in this browser on this device. To share results across players or devices, configure and run the optional FastAPI + MongoDB backend as described above.
+It opens at `http://localhost:3000`. Match results, history, settings and leaderboard stay in this browser on this device.
 
 ---
 
