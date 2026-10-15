@@ -1,3 +1,4 @@
+import { describe, expect, test } from "vitest";
 import { TennisEngine } from "../engine";
 import { movementDirection, pointerInput } from "../input";
 import { recordFrame, startReplay, endReplay } from "../replay";
