@@ -261,7 +261,7 @@ class TestNewSurfaces:
             "ai_style": "aggressive",
             "surface": "smashcourt",
             "match_format": "quick",
-            "sets": [[3, 2]],
+            "sets": [[3, 1]],
             "duration_sec": 450,
             "legend": False,
             "stats": {
