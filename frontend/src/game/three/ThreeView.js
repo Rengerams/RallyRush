@@ -205,14 +205,19 @@ export class ThreeView {
       if (target) ring.position.set(target.x, 0.023, target.z);
     });
 
-    const { crowd, base } = this.stadium;
+    const { crowd, crowdHeads, base } = this.stadium;
     if (!this.reducedEffects && (e.cheer > 0 || this.wasCheer)) {
       const m4 = new THREE.Matrix4();
       base.forEach((c, i) => {
-        m4.makeTranslation(c.pos.x, c.pos.y + Math.abs(Math.sin(t * 9 + c.ph)) * 0.35 * e.cheer, c.pos.z);
+        const lift = Math.abs(Math.sin(t * 9 + c.ph)) * 0.35 * e.cheer;
+        m4.makeTranslation(c.pos.x, c.pos.y + lift, c.pos.z);
         crowd.setMatrixAt(i, m4);
+        m4.makeScale(c.headScale, c.headScale * 1.08, c.headScale);
+        m4.setPosition(c.pos.x, c.pos.y + 0.49 + lift, c.pos.z);
+        crowdHeads.setMatrixAt(i, m4);
       });
       crowd.instanceMatrix.needsUpdate = true;
+      crowdHeads.instanceMatrix.needsUpdate = true;
       this.wasCheer = e.cheer > 0;
     }
 
