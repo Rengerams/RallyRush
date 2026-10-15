@@ -65,10 +65,12 @@ export default function Setup() {
           <OptionGroup label="Court surface" cols={5} options={Object.values(SURFACES)} value={cfg.surface} onChange={(v) => set("surface", v)} testPrefix="setup-surface" />
           <SurfacePreview surface={cfg.surface} />
           <OptionGroup label="Match format" cols={2} options={Object.values(FORMATS)} value={cfg.format} onChange={(v) => set("format", v)} testPrefix="setup-format" />
-          <button type="button" data-testid="setup-start-match-btn" onClick={start}
-            className="btn-volt w-full rounded-full py-5 font-display text-2xl font-black uppercase italic tracking-wide md:w-auto md:px-16">
-            Start match
-          </button>
+          <div className="sticky bottom-0 z-20 -mx-5 border-t border-white/10 bg-[#0B0E14]/95 px-5 py-4 backdrop-blur lg:static lg:mx-0 lg:border-0 lg:bg-transparent lg:p-0 lg:backdrop-blur-none">
+            <button type="button" data-testid="setup-start-match-btn" onClick={start}
+              className="btn-volt w-full rounded-full py-5 font-display text-2xl font-black uppercase italic tracking-wide md:w-auto md:px-16">
+              Start match
+            </button>
+          </div>
         </section>
       </div>
     </main>

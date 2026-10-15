@@ -31,6 +31,7 @@ export default function Play() {
   const [snap, setSnap] = useState(null);
   const [call, setCall] = useState(null);
   const [quality, setQuality] = useState(null);
+  const [serveHelp, setServeHelp] = useState(true);
   const [paused, setPaused] = useState(false);
   const [result, setResult] = useState(null);
   const [saveState, setSaveState] = useState(null);
@@ -65,6 +66,7 @@ export default function Play() {
     if (e.type === "replay") setReplay(e.on ? e.label : null);
     if (e.type === "call") setCall({ ...e, id: Math.random() });
     if (e.type === "shot" && e.who === 0) setQuality({ q: e.quality, id: Math.random() });
+    if (e.type === "shot" && e.who === 0 && e.shot === "Serve") setServeHelp(false);
     if (e.type === "matchEnd") {
       setResult(e.result);
       persistResult(e.result);
@@ -84,7 +86,7 @@ export default function Play() {
     engRef.current = eng;
     matchIdRef.current = null;
     setReplay(null);
-    setResult(null); setSaveState(null); setPaused(false); pausedRef.current = false;
+    setResult(null); setSaveState(null); setPaused(false); setServeHelp(true); pausedRef.current = false;
     introRef.current = true; setIntro(true);
     let raf, last = performance.now();
     const loop = (t) => {
@@ -202,7 +204,7 @@ export default function Play() {
           <GameCanvas eng={eng} wrapRef={wrapRef} onSwing={mouseSwing} onRelease={() => eng.releaseShot(eng.p.heldShot)} onPointer={pointerMove} onPointerLeave={() => eng.clearPointer()} onQuality={onQuality} onAvailability={onAvailability} />
           <div className="flex flex-wrap items-center justify-between gap-2 py-2 lg:absolute lg:bottom-3 lg:right-3 lg:py-0">
             <MobileScore snap={snap} />
-            {!intro && !paused && <ServeIndicator snap={snap} />}
+            {!intro && !paused && <ServeIndicator snap={snap} showInstructions={serveHelp} />}
           </div>
           <div className="absolute inset-x-2 top-2 flex flex-wrap justify-end gap-1.5 sm:inset-x-3 sm:top-3 sm:gap-2">
             <button data-testid="camera-toggle-btn" onClick={() => { eng.clearPointer(); setCameraMode(c => c === "court" ? "broadcast" : "court"); }} title="Change gameplay camera" className="btn-ghost flex items-center gap-1.5 rounded-full bg-[#0B0E14]/85 px-3 py-2 font-mono text-[10px]"><Camera size={14} /><span>{cameraMode === "court" ? "Court" : "Broadcast"}</span></button>

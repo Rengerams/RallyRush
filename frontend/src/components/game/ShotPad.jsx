@@ -24,17 +24,20 @@ export default function ShotPad({ onShot, onHold, onRelease, selectedShot = "fla
             }}
             className={`touch-none flex items-center gap-1.5 rounded-lg border px-1.5 py-2 text-left lg:gap-2 lg:px-2.5 transition-[border-color,background-color] duration-150 hover:border-[#DFFF00]/60 hover:bg-[#DFFF00]/5 active:bg-[#DFFF00]/15 ${selectedShot === s.id ? "border-[#DFFF00]/60 bg-[#DFFF00]/10" : "border-white/10"}`}>
             <span className="key-cap">{s.key}</span>
-            <span className="text-xs font-medium lg:text-sm">{s.label}</span>
+            <span className="text-sm font-medium">{s.label}</span>
           </button>
         ))}
       </div>
-      <div data-testid="desktop-controls" aria-label="Desktop controls" className="mt-4 hidden space-y-2 border-t border-white/10 pt-3 font-mono text-[10px] leading-relaxed text-slate-400 lg:block">
-        <p><span className="key-cap">WASD</span> / arrows · move</p>
-        <p><span className="key-cap">1–7</span> hold to prepare · release near contact to swing</p>
-        <p>Mouse: move to run when enabled · hold right button to aim · release left button near contact</p>
-        <p><span className="key-cap">Shift</span> sprint · <span className="key-cap">Space</span> slide</p>
-        <p><span className="key-cap">Esc</span> / <span className="key-cap">P</span> pause · <span className="key-cap">Enter</span> skip replay</p>
-      </div>
+      <details data-testid="desktop-controls-details" className="mt-4 hidden border-t border-white/10 pt-3 lg:block">
+        <summary className="cursor-pointer select-none font-mono text-xs font-semibold uppercase tracking-[0.15em] text-slate-300 hover:text-[#DFFF00]">Controls</summary>
+        <div data-testid="desktop-controls" aria-label="Desktop controls" className="mt-3 space-y-2 font-mono text-xs leading-relaxed text-slate-200">
+          <p><span className="key-cap">WASD</span> / arrows · move</p>
+          <p><span className="key-cap">1–7</span> hold to prepare · release near contact to swing</p>
+          <p>Mouse: move to run when enabled · hold right button to aim · release left button near contact</p>
+          <p><span className="key-cap">Shift</span> sprint · <span className="key-cap">Space</span> slide</p>
+          <p><span className="key-cap">Esc</span> / <span className="key-cap">P</span> pause · <span className="key-cap">Enter</span> skip replay</p>
+        </div>
+      </details>
     </div>
   );
 }

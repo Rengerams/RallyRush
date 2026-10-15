@@ -14,7 +14,7 @@ function HallOfFame({ row }) {
         </div>
         <div className="ml-auto flex gap-8 font-mono text-sm">
           <div><p className="text-[10px] uppercase tracking-[0.2em] text-slate-500">Wins</p><p className="font-display text-4xl font-black">{row?.wins ?? "—"}</p></div>
-          <div><p className="text-[10px] uppercase tracking-[0.2em] text-slate-500">Rating</p><p className="font-display text-4xl font-black text-[#FFC828]">{row?.rating ?? "∞"}</p></div>
+          <div><p className="text-[10px] uppercase tracking-[0.2em] text-slate-500">Rating</p><p className="font-display text-4xl font-black text-[#FFC828]">{row?.rating ?? "—"}</p></div>
         </div>
       </div>
     </div>
@@ -32,7 +32,7 @@ export default function Leaderboard() {
 
   return (
     <main className="mx-auto max-w-[1440px] px-5 py-10 lg:px-10">
-      <p className="font-mono text-xs uppercase tracking-[0.3em] text-[#00F0FF]">Global rankings</p>
+      <p className="font-mono text-xs uppercase tracking-[0.3em] text-[#00F0FF]">Local rankings · this device</p>
       <h1 className="font-display mt-2 mb-8 text-5xl font-black uppercase italic sm:text-6xl">Leaderboard</h1>
       <div role="group" aria-label="Leaderboard mode" className="mb-6 flex flex-wrap gap-2">
         <button type="button" data-testid="leaderboard-competitive-tab" aria-pressed={mode === "competitive"} onClick={() => setMode("competitive")} className={`rounded-full border px-4 py-2 font-mono text-xs uppercase tracking-wider transition ${mode === "competitive" ? "border-[#DFFF00]/60 bg-[#DFFF00]/10 text-[#DFFF00]" : "border-white/15 text-slate-400 hover:border-white/30"}`}>Competitive</button>
