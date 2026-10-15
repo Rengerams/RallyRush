@@ -11,8 +11,8 @@ On Windows, download the RENFFR OPEN installer from GitHub Actions or Releases a
 For development, install dependencies once and run:
 
 ```bash
-corepack yarn install
-corepack yarn desktop
+npm install --legacy-peer-deps
+npm run desktop
 ```
 
 The desktop command starts the local development server and opens the game in an Electron window. Match results, history and rankings are stored locally on this device.
@@ -22,19 +22,19 @@ The desktop command starts the local development server and opens the game in an
 To work on the browser version instead:
 
 ```bash
-corepack yarn start
+npm start
 ```
 
-The frontend is available at `http://localhost:3000`. To create a Windows installer from a Windows machine, run `corepack yarn desktop:dist`.
+The frontend is available at `http://localhost:3000`. To create a Windows installer from a Windows machine, run `npm run desktop:dist`.
 
 ## Development
 
 ```bash
-corepack yarn test --watchAll=false --runInBand
-corepack yarn build
+npm test --watchAll=false --runInBand
+npm run build
 ```
 
-The build uses Create React App with CRACO configuration. `yarn build` writes the optimized frontend to `build/`.
+The build uses Create React App with CRACO configuration. `npm run build` writes the optimized frontend to `build/`.
 
 ## Main source areas
 

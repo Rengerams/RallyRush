@@ -5,9 +5,9 @@ const path = require("node:path");
 const root = path.resolve(__dirname, "..");
 const url = "http://127.0.0.1:3000";
 const isWindows = process.platform === "win32";
-const yarn = isWindows ? "yarn.cmd" : "yarn";
+const npm = isWindows ? "npm.cmd" : "npm";
 
-const server = spawn(yarn, ["start"], {
+const server = spawn(npm, ["start"], {
   cwd: root,
   env: { ...process.env, BROWSER: "none", CI: "true", HOST: "127.0.0.1", PORT: "3000" },
   stdio: "inherit",
