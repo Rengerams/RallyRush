@@ -43,6 +43,7 @@ export default function Play() {
   const [intro, setIntro] = useState(true);
   const introRef = useRef(true);
   const [mouseEnabled, setMouseEnabled] = useState(false);
+  const [firstServeAttempted, setFirstServeAttempted] = useState(false);
   const graphicsReady = useRef(false);
 
   const persistResult = useCallback((r) => {
@@ -83,6 +84,7 @@ export default function Play() {
     eng.replays = replaysRef.current;
     engRef.current = eng;
     matchIdRef.current = null;
+    setFirstServeAttempted(false);
     setReplay(null);
     setResult(null); setSaveState(null); setPaused(false); pausedRef.current = false;
     introRef.current = true; setIntro(true);
@@ -135,7 +137,10 @@ export default function Play() {
       if (e.code === "Space") eng.slide();
       if (e.code === "Enter" && eng.state === "replay") eng.endReplay();
       const digit = e.code.startsWith("Digit") ? e.code.slice(5) : e.code.startsWith("Numpad") ? e.code.slice(6) : null;
-      if (digit && SHOT_BY_KEY[digit]) eng.holdShot(SHOT_BY_KEY[digit]);
+      if (digit && SHOT_BY_KEY[digit]) {
+        if (SHOT_BY_KEY[digit] === "serve") setFirstServeAttempted(true);
+        eng.holdShot(SHOT_BY_KEY[digit]);
+      }
     };
     const up = (e) => {
       if (KEYMAP[e.code]) engRef.current?.setKey(KEYMAP[e.code], false);
@@ -164,6 +169,7 @@ export default function Play() {
   };
   const hold = (id) => {
     if (introRef.current || pausedRef.current || !graphicsReady.current) return;
+    if (id === "serve") setFirstServeAttempted(true);
     audio.unlock();
     engRef.current?.holdShot(id);
   };
@@ -202,7 +208,7 @@ export default function Play() {
           <GameCanvas eng={eng} wrapRef={wrapRef} onSwing={mouseSwing} onRelease={() => eng.releaseShot(eng.p.heldShot)} onPointer={pointerMove} onPointerLeave={() => eng.clearPointer()} onQuality={onQuality} onAvailability={onAvailability} />
           <div className="flex flex-wrap items-center justify-between gap-2 py-2 lg:absolute lg:bottom-3 lg:right-3 lg:py-0">
             <MobileScore snap={snap} />
-            {!intro && !paused && <ServeIndicator snap={snap} />}
+            {!intro && !paused && <ServeIndicator snap={snap} showFirstServeHint={!firstServeAttempted} />}
           </div>
           <div className="absolute inset-x-2 top-2 flex flex-wrap justify-end gap-1.5 sm:inset-x-3 sm:top-3 sm:gap-2">
             <button data-testid="camera-toggle-btn" onClick={() => { eng.clearPointer(); setCameraMode(c => c === "court" ? "broadcast" : "court"); }} title="Change gameplay camera" className="btn-ghost flex items-center gap-1.5 rounded-full bg-[#0B0E14]/85 px-3 py-2 font-mono text-[10px]"><Camera size={14} /><span>{cameraMode === "court" ? "Court" : "Broadcast"}</span></button>
