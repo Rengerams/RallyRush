@@ -1,5 +1,5 @@
 import "@/App.css";
-import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { HashRouter, Routes, Route } from "react-router-dom";
 import { Toaster } from "sonner";
 import Nav from "@/components/Nav";
 import Home from "@/pages/Home";
@@ -11,7 +11,7 @@ import History from "@/pages/History";
 function App() {
   return (
     <div className="App grain min-h-screen">
-      <BrowserRouter>
+      <HashRouter>
         <Nav />
         <Routes>
           <Route path="/" element={<Home />} />
@@ -20,7 +20,7 @@ function App() {
           <Route path="/leaderboard" element={<Leaderboard />} />
           <Route path="/history" element={<History />} />
         </Routes>
-      </BrowserRouter>
+      </HashRouter>
       <Toaster theme="dark" position="bottom-right" />
     </div>
   );
