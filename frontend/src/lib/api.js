@@ -1,8 +1,5 @@
-import axios from "axios";
 import { SETUP_KEY, DEFAULT_SETUP, SURFACES, DIFFICULTY, STYLES, FORMATS } from "@/game/constants";
 
-const API_BASE = (process.env.REACT_APP_BACKEND_URL || "").trim();
-const API = API_BASE ? `${API_BASE.replace(/\/$/, "")}/api` : null;
 const MATCHES_KEY = "renffr-tennis-matches";
 const RATING_POINTS = { easy: 10, medium: 20, hard: 35, pro: 60 };
 
@@ -61,18 +58,9 @@ function localLeaderboard(mode) {
   return [...totals.values()].sort((a, b) => b.rating - a.rating || b.wins - a.wins).slice(0, 50);
 }
 
-export const saveMatch = (payload) => {
-  if (!API) return Promise.resolve(saveLocalMatch(payload));
-  return axios.post(`${API}/matches`, payload).then((r) => r.data).catch(() => saveLocalMatch(payload));
-};
-export const fetchMatches = (params = {}) => {
-  if (!API) return Promise.resolve(fetchLocalMatches(params));
-  return axios.get(`${API}/matches`, { params }).then((r) => r.data).catch(() => fetchLocalMatches(params));
-};
-export const fetchLeaderboard = (mode = "competitive") => {
-  if (!API) return Promise.resolve(localLeaderboard(mode));
-  return axios.get(`${API}/leaderboard`, { params: { mode } }).then((r) => r.data).catch(() => localLeaderboard(mode));
-};
+export const saveMatch = (payload) => Promise.resolve(saveLocalMatch(payload));
+export const fetchMatches = (params = {}) => Promise.resolve(fetchLocalMatches(params));
+export const fetchLeaderboard = (mode = "competitive") => Promise.resolve(localLeaderboard(mode));
 
 function validateSetup(raw) {
   const s = { ...DEFAULT_SETUP, ...raw };
