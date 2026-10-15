@@ -5,23 +5,18 @@ Tests: Root endpoint, Matches CRUD, Leaderboard aggregation
 import pytest
 import requests
 import os
-from pathlib import Path
-from dotenv import dotenv_values
+from uuid import uuid4
 
 
 def _resolve_base_url():
-    url = os.environ.get("REACT_APP_BACKEND_URL")
-    if not url:
-        env_path = Path(__file__).resolve().parents[2] / "frontend" / ".env"
-        if env_path.exists():
-            url = dotenv_values(env_path).get("REACT_APP_BACKEND_URL")
-    return (url or "").rstrip("/")
-
+    # These integration tests write match records. Never infer a target from
+    # the frontend's normal backend URL; opt in with a disposable test backend.
+    return (os.environ.get("TENNIS_TEST_API_URL") or "").rstrip("/")
 
 BASE_URL = _resolve_base_url()
 
 if not BASE_URL:
-    pytest.skip("REACT_APP_BACKEND_URL is not configured", allow_module_level=True)
+    pytest.skip("Set TENNIS_TEST_API_URL to an isolated test backend", allow_module_level=True)
 
 class TestRootEndpoint:
     """Test root API endpoint"""
@@ -43,6 +38,7 @@ class TestMatchesEndpoint:
     def setup(self):
         """Setup test data"""
         self.test_match_payload = {
+            "match_id": f"test-{uuid4().hex}",
             "player_name": "TEST_Player",
             "won": True,
             "difficulty": "hard",
@@ -175,6 +171,7 @@ class TestLeaderboardEndpoint:
         """GET /api/leaderboard entries should have correct structure"""
         # First create a match to ensure leaderboard has data
         test_payload = {
+            "match_id": f"test-{uuid4().hex}",
             "player_name": "TEST_LeaderboardPlayer",
             "won": True,
             "difficulty": "medium",
@@ -232,6 +229,7 @@ class TestNewSurfaces:
     def test_kunstgras_surface_works(self):
         """API should accept artificial (Kunstgras) surface"""
         payload = {
+            "match_id": f"test-{uuid4().hex}",
             "player_name": "TEST_KunstgrasTest",
             "won": True,
             "difficulty": "medium",
@@ -256,6 +254,7 @@ class TestNewSurfaces:
     def test_smashcourt_surface_works(self):
         """API should accept smashcourt surface"""
         payload = {
+            "match_id": f"test-{uuid4().hex}",
             "player_name": "TEST_SmashcourtTest",
             "won": True,
             "difficulty": "hard",
