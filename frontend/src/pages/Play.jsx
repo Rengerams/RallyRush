@@ -112,6 +112,12 @@ export default function Play() {
     engRef.current?.clearInput();
     setPaused(pausedRef.current);
   }, []);
+  const noteServeAttempt = () => {
+    const active = engRef.current;
+    if (active?.state === "serve" && active.server === 0 && active.serveStage === "toss") {
+      setFirstServeAttempted(true);
+    }
+  };
 
   // eslint-disable-next-line react-hooks/exhaustive-deps -- engRef, pausedRef, introRef are refs; audio, KEYMAP, SHOT_BY_KEY are module constants
   useEffect(() => {
@@ -138,7 +144,7 @@ export default function Play() {
       if (e.code === "Enter" && eng.state === "replay") eng.endReplay();
       const digit = e.code.startsWith("Digit") ? e.code.slice(5) : e.code.startsWith("Numpad") ? e.code.slice(6) : null;
       if (digit && SHOT_BY_KEY[digit]) {
-        if (SHOT_BY_KEY[digit] === "serve") setFirstServeAttempted(true);
+        noteServeAttempt();
         eng.holdShot(SHOT_BY_KEY[digit]);
       }
     };
@@ -164,12 +170,13 @@ export default function Play() {
   const endIntro = useCallback(() => { introRef.current = false; setIntro(false); }, []);
   const shot = (id) => {
     if (introRef.current || pausedRef.current || !graphicsReady.current) return;
+    noteServeAttempt();
     audio.unlock();
     engRef.current?.pressShot(id);
   };
   const hold = (id) => {
     if (introRef.current || pausedRef.current || !graphicsReady.current) return;
-    if (id === "serve") setFirstServeAttempted(true);
+    noteServeAttempt();
     audio.unlock();
     engRef.current?.holdShot(id);
   };
@@ -182,6 +189,7 @@ export default function Play() {
   const pointerMove = (point, aiming) => { if (!pausedRef.current && !introRef.current && graphicsReady.current) engRef.current?.setPointer(point, aiming); };
   const mouseSwing = () => {
     if (pausedRef.current || introRef.current || !graphicsReady.current) return;
+    noteServeAttempt();
     audio.unlock(); eng.holdShot(eng.selectedShot);
   };
   const toggleVoice = () => { audio.voice = !audio.voice; setVoice(audio.voice); };
