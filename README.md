@@ -14,11 +14,11 @@ Rally Rush (v0.2.0) is a single-player, arcade-style 3D tennis game for Windows 
 <!-- prettier-ignore -->
 ## Demo
 
-Add a short GIF or screenshot here to show gameplay. Example markdown:
+Below is a gameplay screenshot to give a quick preview of Rally Rush. For a short animated preview, add `assets/demo.gif` to the repository and it will appear here.
 
-![Gameplay preview](assets/demo.gif)
+![Gameplay screenshot](assets/screenshot-01.png)
 
-If you'd like, I can add an optimized demo GIF to the repo and update this README to show it.
+If you'd like, I can add an optimized demo GIF or the screenshot image file to the repo and update this README to reference it directly.
 
 ## Table of contents
 
@@ -138,4 +138,4 @@ See the [Rally Rush 0.3.0 roadmap](ROADMAP.md) for proposed UI, onboarding, prac
 
 ## License
 
-MIT. See [frontend/package.json](frontend/package.json) for details.
+This project is licensed under the MIT License. See `LICENSE` for details (desktop frontend package.json also references the MIT license).
