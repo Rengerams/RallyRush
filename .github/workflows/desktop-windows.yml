@@ -8,6 +8,12 @@ on:
     paths:
       - "frontend/**"
       - ".github/workflows/desktop-windows.yml"
+  pull_request:
+    branches:
+      - main
+    paths:
+      - "frontend/**"
+      - ".github/workflows/desktop-windows.yml"
   workflow_dispatch:
 
 permissions:
