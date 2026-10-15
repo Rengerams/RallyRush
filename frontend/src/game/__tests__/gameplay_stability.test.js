@@ -1,5 +1,5 @@
 import { TennisEngine } from "../engine";
-import { SURFACES, FORMATS } from "../constants";
+import { SURFACES, FORMATS, SHOTS } from "../constants";
 import { stepBall } from "../physics";
 import { createScore, awardPoint, pointLabels } from "../scoring";
 
@@ -47,27 +47,59 @@ test("tie-break rotates serving and finishes only with 2-point margin", () => {
   expect(s.winner).toBe(0);
 });
 
-test("holding a return prepares the shot without swinging too early", () => {
+test("a prepared return waits for release and rewards a well-timed swing", () => {
   const e = new TennisEngine(cfg);
   e.state = "rally";
   e.isServe = false;
   e.lastHitter = 1;
   e.ball.x = e.p.x;
   e.ball.y = 1.2;
-  e.ball.z = 3;
+  e.ball.z = e.p.z - 0.5;
+  e.ball.vz = 4;
   e.p.swing = 0;
 
   e.holdShot("flat");
   expect(e.p.heldShot).toBe("flat");
+  e.attemptPlayerHit();
   expect(e.p.swing).toBe(0);
   expect(e.lastHitter).toBe(1);
 
-  // The held input makes contact as the ball enters racket range.
-  e.ball.z = e.p.z - 0.5;
-  e.ball.vz = 4;
-  e.attemptPlayerHit();
+  e.releaseShot("flat");
+  expect(e.p.heldShot).toBeNull();
   expect(e.lastHitter).toBe(0);
   expect(e.p.swing).toBeGreaterThan(0);
+});
+
+test("an early prepared swing expires without auto-hitting", () => {
+  const events = [];
+  const e = new TennisEngine(cfg, (event) => events.push(event));
+  e.state = "rally";
+  e.isServe = false;
+  e.lastHitter = 1;
+  e.ball.x = e.p.x;
+  e.ball.y = 1.2;
+  e.ball.z = e.p.z - 2.4;
+  e.ball.vz = 4;
+
+  e.holdShot("flat");
+  e.releaseShot("flat");
+  expect(e.lastHitter).toBe(1);
+
+  e.time += 0.3;
+  e.updatePlayer(0.001);
+  expect(e.lastHitter).toBe(1);
+  expect(e.p.buffered).toBeNull();
+  expect(events.some((event) => event.type === "shot" && event.quality === "miss")).toBe(true);
+});
+
+test("the AI changes tactics when the player rushes the net or stays deep", () => {
+  const e = new TennisEngine(cfg);
+  const random = jest.spyOn(Math, "random").mockReturnValue(0.1);
+  e.p.z = 3.5;
+  expect(e.aiPickShot()).toBe(SHOTS.lob);
+  e.p.z = 13;
+  expect(e.aiPickShot()).toBe(SHOTS.dropshot);
+  random.mockRestore();
 });
 
 test("a mistimed tap expires and reports a miss without hitting the ball", () => {
