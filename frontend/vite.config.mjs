@@ -7,7 +7,7 @@ const frontendRoot = fileURLToPath(new URL(".", import.meta.url));
 
 export default defineConfig({
   base: "./",
-  plugins: [react()],
+  plugins: [react({ include: /\\.[jt]sx?$/ })],
   resolve: {
     alias: {
       "@": path.resolve(frontendRoot, "src"),
