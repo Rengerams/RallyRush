@@ -112,10 +112,19 @@ export default function Play() {
     const down = (e) => {
       const eng = engRef.current;
       if (!eng || !graphicsReady.current) return;
+      const target = e.target;
+      const isEditable = target instanceof HTMLElement &&
+        (target.isContentEditable || target.matches("input, textarea, select, [role='textbox']"));
+      if (isEditable) return;
       if (["Space", "ArrowUp", "ArrowDown", "ArrowLeft", "ArrowRight"].includes(e.code)) e.preventDefault();
       if (introRef.current) return;
       if (eng.state === "matchOver") return;
-      if (e.code === "Escape" || e.code === "KeyP") return togglePause();
+      if (e.code === "Escape" || e.code === "KeyP") {
+        if (e.repeat) return;
+        e.preventDefault();
+        togglePause();
+        return;
+      }
       if (pausedRef.current || e.repeat) return;
       audio.unlock();
       if (KEYMAP[e.code]) eng.setKey(KEYMAP[e.code], true);
