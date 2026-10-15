@@ -15,7 +15,7 @@ export default function Scoreboard({ snap, names, legend }) {
   return (
     <div data-testid="scoreboard" className="overflow-hidden rounded-2xl border border-white/10 bg-[#121824]/90 backdrop-blur-xl">
       <div className="flex items-center justify-between border-b border-white/[0.06] px-4 py-2 font-mono text-[10px] uppercase tracking-[0.25em] text-slate-500">
-        <span>Renffr Open</span>
+        <span>Rally Rush</span>
         <span>{snap.tiebreak ? "Tie-break" : `Sets ${snap.sets[0]}-${snap.sets[1]}`}</span>
       </div>
       <Row idx={0} name={names[0]} legend={legend} labels={snap.labels} games={snap.games} history={snap.setHistory} serving={snap.server === 0} />
