@@ -30,4 +30,30 @@ describe("shared game loop lifecycle", () => {
     expect(cancelFrame).toHaveBeenCalledWith(3);
     expect(clearTimer).toHaveBeenCalledWith(42);
   });
+
+  it("resets the frame baseline when the document visibility changes", () => {
+    const engine = { update: vi.fn(), snapshot: vi.fn() };
+    const frames = [];
+    const listeners = new Map();
+    const visibilityTarget = {
+      addEventListener: (type, listener) => listeners.set(type, listener),
+      removeEventListener: (type, listener) => { if (listeners.get(type) === listener) listeners.delete(type); },
+    };
+    let clock = 0;
+    const cleanup = startGameLoop({
+      engine, canUpdate: () => true, onSnapshot: () => {}, now: () => clock,
+      requestFrame: (callback) => { frames.push(callback); return frames.length; },
+      cancelFrame: () => {}, setTimer: () => null, clearTimer: () => {}, visibilityTarget,
+    });
+
+    clock = 100;
+    listeners.get("visibilitychange")();
+    clock = 5_000;
+    listeners.get("visibilitychange")();
+    frames[0](5_016);
+
+    expect(engine.update).toHaveBeenCalledWith(0.016);
+    cleanup();
+    expect(listeners.has("visibilitychange")).toBe(false);
+  });
 });

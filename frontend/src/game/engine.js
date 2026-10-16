@@ -276,10 +276,10 @@ export class TennisEngine {
   update(dtReal) {
     if (!Number.isFinite(dtReal) || dtReal <= 0 || this.state === "matchOver") return;
     if (this.state === "replay") return this.stepReplay(dtReal);
-    const activeDelta = Math.min(dtReal, 0.25);
-    // Match duration is real active play time; physics intentionally runs slower.
-    this.activeSeconds += activeDelta;
-    this.simCarry += activeDelta * ENGINE_TUNING.simulationScale;
+    const simulationDelta = Math.min(dtReal, 0.25);
+    // Count the full foreground interval; only physics catch-up is clamped.
+    this.activeSeconds += dtReal;
+    this.simCarry += simulationDelta * ENGINE_TUNING.simulationScale;
     let steps = 0;
     while (this.simCarry >= ENGINE_TUNING.physicsStep && steps < ENGINE_TUNING.maxCatchupSteps) {
       this.simCarry -= ENGINE_TUNING.physicsStep;

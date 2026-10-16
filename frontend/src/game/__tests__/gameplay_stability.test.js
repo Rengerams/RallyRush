@@ -43,6 +43,14 @@ test("match duration measures real active time rather than scaled physics time",
   expect(e.time).toBeCloseTo(ENGINE_TUNING.simulationScale, 2);
 });
 
+test("match duration counts long active frames while physics catch-up stays capped", () => {
+  const e = new TennisEngine(cfg);
+  e.update(1);
+
+  expect(e.activeSeconds).toBe(1);
+  expect(e.time).toBeLessThanOrEqual(ENGINE_TUNING.maxCatchupSteps * ENGINE_TUNING.physicsStep);
+});
+
 test("simulation rejects nonfinite frame intervals", () => {
   const e = new TennisEngine(cfg);
   e.update(NaN); e.update(Infinity); e.update(-1);
