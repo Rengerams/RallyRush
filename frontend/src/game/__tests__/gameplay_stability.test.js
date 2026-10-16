@@ -48,6 +48,31 @@ test("tie-break rotates serving and finishes only with 2-point margin", () => {
   expect(s.winner).toBe(0);
 });
 
+test("snapshot announces the next server immediately after a game-ending point", () => {
+  const e = new TennisEngine(cfg);
+  e.score.points = [3, 0];
+  e.state = "rally";
+
+  e.endPoint(0, "Winner");
+
+  expect(e.server).toBe(0);
+  expect(e.snapshot().server).toBe(1);
+});
+
+test("snapshot announces a tie-break service rotation immediately", () => {
+  const e = new TennisEngine(cfg);
+  e.score.tiebreak = true;
+  e.score.tbStarter = 0;
+  e.score.points = [0, 0];
+  e.server = 0;
+  e.state = "rally";
+
+  e.endPoint(0, "Winner");
+
+  expect(e.server).toBe(0);
+  expect(e.snapshot().server).toBe(1);
+});
+
 test("a prepared return waits for release and rewards a well-timed swing", () => {
   const e = new TennisEngine(cfg);
   e.state = "rally";
