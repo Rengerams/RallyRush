@@ -38,7 +38,7 @@ describe("local data backup", () => {
     values.clear();
     expect(importLocalData(backupText, storage)).toMatchObject({ matchCount: 1, setup: { name: "Renger" } });
     expect(JSON.parse(storage.getItem(MATCHES_KEY))).toEqual([match]);
-    expect(JSON.parse(storage.getItem(DISPLAY_PREFERENCES_KEY))).toEqual({ hudSize: "large", reducedEffects: true, reducedMotion: true });
+    expect(JSON.parse(storage.getItem(DISPLAY_PREFERENCES_KEY))).toEqual({ hudSize: "large", reducedEffects: true, reducedMotion: true, shotHoldMs: 150 });
   });
 
   it.each([
@@ -93,6 +93,7 @@ describe("local data backup", () => {
     values.set(MATCHES_KEY, "matches");
     values.set(DISPLAY_PREFERENCES_KEY, "prefs");
     values.set("rally-rush:first-session-guide:v1", "complete");
+    values.set("rally-rush:first-serve-hint:v1", "seen");
     values.set(STORAGE_VERSION_KEY, "1");
     values.set("renffr-breakdown-match-1", "open");
     values.set("another-app:settings", "keep");
@@ -149,7 +150,7 @@ describe("local data backup", () => {
       ...match, match_id: `large-${index}`, player_name: `Player ${String(index).padStart(2, "0")}`,
       stats: { aces: index, longest_rally: index + 1, perfect_shots: index },
     }));
-    const importedPreferences = { hudSize: "normal", reducedEffects: false, reducedMotion: false };
+    const importedPreferences = { hudSize: "normal", reducedEffects: false, reducedMotion: false, shotHoldMs: 150 };
     const backupText = JSON.stringify({
       format: BACKUP_FORMAT, version: BACKUP_VERSION, setup: importedSetup,
       matches: importedMatches, displayPreferences: importedPreferences,

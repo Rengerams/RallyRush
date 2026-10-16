@@ -3,7 +3,7 @@ import Scoreboard from "./Scoreboard";
 import StaminaBar from "./StaminaBar";
 import { ServeIndicator } from "./ServeIndicator";
 
-export default function MatchHud({ snap, cfg, names, mouseEnabled, touchControls, intro, paused, firstServeAttempted }) {
+export default function MatchHud({ snap, cfg, names, mouseEnabled, touchControls, intro, paused, firstServeHintSeen }) {
   return (
     <div className="play-hud-corner absolute left-2 top-2 z-20 flex w-[min(22rem,calc(100vw-1rem))] flex-col gap-2 sm:left-4 sm:top-4 sm:w-[min(22rem,calc(100vw-2rem))]">
       <Scoreboard snap={snap} names={names} legend={cfg.legend} compact={snap?.state === "rally"} />
@@ -27,7 +27,7 @@ export default function MatchHud({ snap, cfg, names, mouseEnabled, touchControls
           )}
         </div>
       </details>
-      {!intro && !paused && <ServeIndicator snap={snap} showFirstServeHint={!firstServeAttempted} />}
+      {!intro && !paused && <ServeIndicator snap={snap} showFirstServeHint={!firstServeHintSeen} />}
     </div>
   );
 }

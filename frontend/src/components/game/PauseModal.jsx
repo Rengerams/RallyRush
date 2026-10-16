@@ -4,7 +4,7 @@ import * as Dialog from "@radix-ui/react-dialog";
 import { Volume2, VolumeX, Mic, MicOff, Film, BookOpen } from "lucide-react";
 import FirstSessionGuide from "@/components/game/FirstSessionGuide";
 
-export default function PauseModal({ onResume, onRestart, onQuit, sound, voice, onSound, onVoice, replays, onReplays, displayPrefs = { hudSize: "normal", reducedEffects: false, reducedMotion: false }, onDisplayPrefChange = () => {} }) {
+export default function PauseModal({ onResume, onRestart, onQuit, sound, voice, onSound, onVoice, replays, onReplays, displayPrefs = { hudSize: "normal", reducedEffects: false, reducedMotion: false, shotHoldMs: 150 }, onDisplayPrefChange = () => {} }) {
   const [confirmRestart, setConfirmRestart] = useState(false);
   const [guideOpen, setGuideOpen] = useState(false);
 
@@ -49,7 +49,7 @@ export default function PauseModal({ onResume, onRestart, onQuit, sound, voice, 
               {voice ? <Mic size={16} /> : <MicOff size={16} />} Umpire
             </button>
           </div>
-          <button data-testid="pause-replays-toggle" aria-pressed={replays} onClick={onReplays} className={`btn-ghost mt-2 flex w-full items-center justify-center gap-2 rounded-lg py-2 text-sm ${replays ? "text-[#00F0FF]" : "text-slate-500"}`}>
+          <button data-testid="pause-replays-toggle" aria-pressed={replays} onClick={onReplays} className={`btn-ghost mt-2 flex w-full items-center justify-center gap-2 rounded-lg py-2 text-sm ${replays ? "text-[#00F0FF]" : "text-slate-400"}`}>
             <Film size={16} /> Replays {replays ? "on" : "off"}
           </button>
           <section aria-label="Match display preferences" className="mt-4 rounded-xl border border-white/10 bg-black/20 p-3">
@@ -65,6 +65,11 @@ export default function PauseModal({ onResume, onRestart, onQuit, sound, voice, 
                 Reduced motion · {displayPrefs.reducedMotion ? "On" : "Off"}
               </button>
             </div>
+            <label htmlFor="shot-hold-delay" className="mt-3 block font-mono text-[10px] uppercase tracking-wider text-slate-300">Touch hold delay · {displayPrefs.shotHoldMs} ms</label>
+            <input id="shot-hold-delay" data-testid="pause-shot-hold-delay" type="range" min="100" max="250" step="25" value={displayPrefs.shotHoldMs}
+              onChange={(event) => onDisplayPrefChange("shotHoldMs", Number(event.target.value))}
+              className="mt-2 w-full accent-[#DFFF00]" aria-label="Touch shot preparation delay" />
+            <p className="mt-1 text-[11px] leading-snug text-slate-400">Lower values prepare sooner; raise it if scrolling triggers a shot.</p>
             <p className="col-span-2 mt-1 text-[11px] leading-snug text-slate-400">System reduced-motion settings are always respected.</p>
           </section>
           <button data-testid="pause-controls-guide-btn" onClick={() => setGuideOpen(true)} className="btn-ghost mt-2 flex w-full items-center justify-center gap-2 rounded-lg py-2 text-sm">

@@ -23,6 +23,13 @@ describe("responsive match camera framing", () => {
     expect(getCameraFovForAspect(Number.NaN)).toBe(46);
   });
 
+  it("covers the documented 1280×720 and 390×844 match viewports", () => {
+    expect(getCameraFovForAspect(1280 / 720)).toBe(46);
+    expect(getCameraDistanceScale(1280 / 720, 720)).toBe(1);
+    expect(getCameraFovForAspect(390 / 844)).toBe(58);
+    expect(getCameraDistanceScale(390 / 844, 844)).toBeCloseTo(0.9862, 3);
+  });
+
   it("gently enlarges the court in taller desktop windows while keeping 720p and ultrawide framing safe", () => {
     expect(getCameraDistanceScale(16 / 9, 720)).toBe(1);
     expect(getCameraDistanceScale(16 / 9, 1080)).toBeCloseTo(0.96);

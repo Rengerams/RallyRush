@@ -59,7 +59,7 @@ export default function Home() {
           </div>
         ))}
       </section>
-      <footer className="mx-auto flex max-w-[1440px] items-center justify-between px-5 py-8 font-mono text-xs uppercase tracking-[0.2em] text-slate-500 lg:px-10">
+      <footer className="mx-auto flex max-w-[1440px] items-center justify-between px-5 py-8 font-mono text-xs uppercase tracking-[0.2em] text-slate-400 lg:px-10">
         <span>Arcade tennis · single player</span>
         <Link to="/history" data-testid="home-history-link" className="flex items-center gap-1 hover:text-white">Match history <ArrowUpRight size={14} /></Link>
       </footer>

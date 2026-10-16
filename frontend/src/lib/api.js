@@ -136,16 +136,19 @@ function validateBackupSetup(setup) {
 
 function normalizeDisplayPreferences(value) {
   const source = isPlainRecord(value) ? value : {};
+  const requestedHoldMs = Number.isFinite(source.shotHoldMs) ? Math.round(source.shotHoldMs / 25) * 25 : 150;
   return {
     hudSize: source.hudSize === "large" ? "large" : "normal",
     reducedEffects: source.reducedEffects === true,
     reducedMotion: source.reducedMotion === true,
+    shotHoldMs: Math.max(100, Math.min(250, requestedHoldMs)),
   };
 }
 
 function validateBackupDisplayPreferences(value) {
   return isPlainRecord(value) && (value.hudSize === "normal" || value.hudSize === "large") &&
-    typeof value.reducedEffects === "boolean" && typeof value.reducedMotion === "boolean";
+    typeof value.reducedEffects === "boolean" && typeof value.reducedMotion === "boolean" &&
+    (value.shotHoldMs == null || (Number.isInteger(value.shotHoldMs) && value.shotHoldMs >= 100 && value.shotHoldMs <= 250 && value.shotHoldMs % 25 === 0));
 }
 
 export function parseLocalDataBackup(text) {
@@ -220,7 +223,8 @@ export function deleteLocalData(storage = globalThis.localStorage) {
   for (let index = 0; index < storage.length; index++) {
     const key = storage.key(index);
     if (key && (key === SETUP_KEY || key === MATCHES_KEY || key === DISPLAY_PREFERENCES_KEY || key === STORAGE_VERSION_KEY ||
-        key === "rally-rush:first-session-guide:v1" || key.startsWith(LEGACY_HISTORY_PREFIX))) keys.push(key);
+        key === "rally-rush:first-session-guide:v1" || key === "rally-rush:first-serve-hint:v1" ||
+        key.startsWith(LEGACY_HISTORY_PREFIX))) keys.push(key);
   }
   keys.forEach((key) => storage.removeItem(key));
 }

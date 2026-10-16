@@ -7,6 +7,7 @@ import { audio } from "@/game/audio";
 import { DIFFICULTY } from "@/game/constants";
 import { loadSetup, saveMatch } from "@/lib/api";
 import { loadMatchDisplayPreferences, saveMatchDisplayPreferences } from "@/lib/matchDisplayPreferences";
+import { hasSeenFirstServeHint, markFirstServeHintSeen } from "@/lib/serveHint";
 import { toast } from "sonner";
 import MatchHud from "@/components/game/MatchHud";
 import ShotPad from "@/components/game/ShotPad";
@@ -50,7 +51,7 @@ export default function Play() {
   const introRef = useRef(true);
   const [mouseEnabled, setMouseEnabled] = useState(false);
   const [touchControls, setTouchControls] = useState(() => typeof window !== "undefined" && (window.matchMedia?.("(pointer: coarse)").matches || (navigator.maxTouchPoints || 0) > 0));
-  const [firstServeAttempted, setFirstServeAttempted] = useState(false);
+  const [firstServeHintSeen, setFirstServeHintSeen] = useState(hasSeenFirstServeHint);
   const graphicsReady = useRef(false);
 
   const persistResult = useCallback((r) => {
@@ -97,7 +98,6 @@ export default function Play() {
     eng.replays = replaysRef.current;
     engRef.current = eng;
     matchIdRef.current = null;
-    setFirstServeAttempted(false);
     setReplay(null);
     setResult(null); setSaveState(null); setPaused(false); pausedRef.current = false;
     introRef.current = true; setIntro(true);
@@ -131,7 +131,8 @@ export default function Play() {
   const noteServeAttempt = useCallback(() => {
     const active = engRef.current;
     if (active?.state === "serve" && active.server === 0 && active.serveStage === "toss") {
-      setFirstServeAttempted(true);
+      markFirstServeHintSeen();
+      setFirstServeHintSeen(true);
     }
   }, []);
 
@@ -180,7 +181,7 @@ export default function Play() {
       <section ref={wrapRef} className="absolute inset-0" data-testid="game-canvas-wrapper">
         <GameCanvas eng={eng} reducedEffects={displayPrefs.reducedEffects} reducedMotion={displayPrefs.reducedMotion} wrapRef={wrapRef} renderActive={!intro && !paused && (!result || Boolean(replay))} onSwing={mouseSwing} onRelease={() => eng.releaseShot(eng.p.heldShot)} onPointer={pointerMove} onPointerLeave={() => eng.clearPointer()} onQuality={onQuality} onAvailability={onAvailability} />
         <MatchHud snap={snap} cfg={cfg} names={names} mouseEnabled={mouseEnabled} touchControls={touchControls}
-          intro={intro} paused={paused} firstServeAttempted={firstServeAttempted} />
+          intro={intro} paused={paused} firstServeHintSeen={firstServeHintSeen} />
 
         <div className="absolute right-2 top-2 z-20 flex flex-wrap justify-end gap-1.5 sm:right-4 sm:top-4 sm:gap-2">
           <button data-testid="camera-toggle-btn" onClick={() => { eng.clearPointer(); setCameraMode(c => c === "court" ? "broadcast" : "court"); }} title="Change gameplay camera" className="btn-ghost flex items-center gap-1.5 rounded-full bg-[#0B0E14]/85 px-2.5 py-2 font-mono text-[10px]"><Camera size={14} /><span>{cameraMode === "court" ? "Court" : "Broadcast"}</span></button>
@@ -210,7 +211,7 @@ export default function Play() {
         )}
         <div className="play-controls absolute inset-x-0 bottom-0 z-20 flex items-end justify-between gap-2 px-2 pb-[max(0.5rem,env(safe-area-inset-bottom))] pt-6 sm:gap-4 sm:px-4 sm:pb-4">
           <DPad onKey={(k, d) => { if (!pausedRef.current && !introRef.current) engRef.current?.setKey(k, d); }} />
-          <ShotPad onShot={shot} onHold={hold} onRelease={release} selectedShot={snap?.selectedShot} onSelect={id => { eng.selectedShot = id; }} />
+          <ShotPad onShot={shot} onHold={hold} onRelease={release} selectedShot={snap?.selectedShot} onSelect={id => { eng.selectedShot = id; }} prepareDelayMs={displayPrefs.shotHoldMs} />
         </div>
       </section>
     </main>
