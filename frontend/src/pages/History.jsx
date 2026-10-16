@@ -3,8 +3,12 @@ import { fetchMatches } from "@/lib/api";
 import { SURFACES, DIFFICULTY, STYLES, FORMATS } from "@/game/constants";
 import { MatchStats } from "@/components/game/MatchStats";
 
-function MatchCard({ m, i }) {
-  const surf = SURFACES[m.surface];
+export function MatchCard({ m, i = 0 }) {
+  const surf = SURFACES[m.surface] || { label: "Unknown surface", color: "transparent" };
+  const stats = m.stats && typeof m.stats === "object" && !Array.isArray(m.stats) ? m.stats : {};
+  const difficulty = DIFFICULTY[m.difficulty]?.label || "Unknown";
+  const style = STYLES[m.ai_style]?.label || "Unknown";
+  const format = FORMATS[m.match_format]?.label || "Unknown";
   const storageKey = `renffr-breakdown-${m.id}`;
   const [expanded, setExpanded] = useState(() => {
     try { return localStorage.getItem(storageKey) === "open"; } catch { return false; }
@@ -19,19 +23,19 @@ function MatchCard({ m, i }) {
       <span className={`font-display w-24 text-3xl font-black uppercase italic ${m.won ? "text-[#DFFF00]" : "text-[#E05A47]"}`}>{m.won ? "Win" : "Loss"}</span>
       <div className="min-w-[160px] flex-1">
         <p className="font-display text-2xl font-extrabold uppercase">{m.player_name}</p>
-        <p className="font-mono text-xs text-slate-500">vs {DIFFICULTY[m.difficulty].label} {STYLES[m.ai_style].label} · {FORMATS[m.match_format].label}</p>
+        <p className="font-mono text-xs text-slate-500">vs {difficulty} {style} · {format}</p>
       </div>
-      <p className="font-mono text-xl font-bold">{m.sets.map((s) => `${s[0]}-${s[1]}`).join("  ")}</p>
+      <p className="font-mono text-xl font-bold">{(Array.isArray(m.sets) ? m.sets.filter((set) => Array.isArray(set) && set.length >= 2) : []).map((set) => `${set[0]}-${set[1]}`).join("  ")}</p>
       <span className="flex items-center gap-2 font-mono text-xs text-slate-400"><span className="h-3 w-3 rounded-full" style={{ background: surf.color }} />{surf.label}</span>
       <div className="flex gap-4 font-mono text-xs text-slate-400">
-        <span>Aces <b className="text-white">{m.stats.aces}</b></span>
-        <span>Rally <b className="text-white">{m.stats.longest_rally}</b></span>
-        <span>Perfect <b className="text-white">{m.stats.perfect_shots}</b></span>
+        <span>Aces <b className="text-white">{stats.aces ?? 0}</b></span>
+        <span>Rally <b className="text-white">{stats.longest_rally ?? 0}</b></span>
+        <span>Perfect <b className="text-white">{stats.perfect_shots ?? 0}</b></span>
       </div>
       <span className="font-mono text-[11px] text-slate-500">{new Date(m.created_at).toLocaleString()}</span>
       {m.opponent_stats && <details data-testid={`history-stats-${i}`} open={expanded} onToggle={rememberExpanded} className="w-full border-t border-white/10 pt-3">
         <summary data-testid={`history-stats-toggle-${i}`} className="cursor-pointer font-mono text-xs text-[#00F0FF]">Match breakdown</summary>
-        <div className="mt-5 max-w-xl"><MatchStats stats={m.stats} opponentStats={m.opponent_stats} names={[m.player_name, `${DIFFICULTY[m.difficulty].label} AI`]} rallyLengths={m.rally_lengths} prefix={`history-${m.id}`} /></div>
+        <div className="mt-5 max-w-xl"><MatchStats stats={stats} opponentStats={m.opponent_stats} names={[m.player_name, `${DIFFICULTY[m.difficulty].label} AI`]} rallyLengths={m.rally_lengths} prefix={`history-${m.id}`} /></div>
       </details>}
     </div>
   );

@@ -1,12 +1,12 @@
 import { SETUP_KEY, DEFAULT_SETUP, SURFACES, DIFFICULTY, STYLES, FORMATS } from "@/game/constants";
 
 const MATCHES_KEY = "renffr-tennis-matches";
-const RATING_POINTS = { easy: 10, medium: 20, hard: 35, pro: 60 };
+const RATING_POINTS = Object.freeze({ easy: 10, medium: 20, hard: 35, pro: 60 });
 
 function readLocalMatches() {
   try {
     const rows = JSON.parse(localStorage.getItem(MATCHES_KEY) || "[]");
-    return Array.isArray(rows) ? rows : [];
+    return Array.isArray(rows) ? rows.filter((row) => row && typeof row === "object" && !Array.isArray(row)) : [];
   } catch {
     return [];
   }
@@ -29,26 +29,30 @@ function saveLocalMatch(payload) {
 }
 
 function fetchLocalMatches(params = {}) {
-  const player = params.player?.trim().toLowerCase();
-  return readLocalMatches().filter((match) =>
-    (!player || match.player_name.toLowerCase() === player) &&
-    (!params.surface || match.surface === params.surface)
-  ).slice(0, Number(params.limit) || 50);
+  const player = typeof params.player === "string" ? params.player.trim().toLowerCase() : "";
+  return readLocalMatches().filter((match) => {
+    const name = typeof match.player_name === "string" ? match.player_name.trim().toLowerCase() : "";
+    return (!player || name === player) && (!params.surface || match.surface === params.surface);
+  }).slice(0, Number(params.limit) || 50);
 }
 
 function localLeaderboard(mode) {
   const totals = new Map();
   for (const match of readLocalMatches()) {
     if (mode === "legend" ? !match.legend : match.legend) continue;
-    const key = match.player_name.trim().toLowerCase();
+    const playerName = typeof match.player_name === "string" ? match.player_name.trim() : "";
+    if (!playerName) continue;
+    const key = playerName.toLowerCase();
     const row = totals.get(key) || {
-      player_name: match.player_name, matches: 0, wins: 0, losses: 0,
+      player_name: playerName, matches: 0, wins: 0, losses: 0,
       win_pct: 0, rating: 0, best_rally: 0, aces: 0, perfect_shots: 0, legend: !!match.legend,
     };
     row.matches += 1;
     row.wins += Number(!!match.won);
     row.losses = row.matches - row.wins;
-    row.rating += match.rating_points || (match.won ? RATING_POINTS[match.difficulty] : 2);
+    const difficultyPoints = Object.hasOwn(RATING_POINTS, match.difficulty) ? RATING_POINTS[match.difficulty] : 0;
+    const ratingPoints = Number.isFinite(match.rating_points) ? match.rating_points : (match.won ? difficultyPoints : 2);
+    row.rating += ratingPoints;
     row.best_rally = Math.max(row.best_rally, match.stats?.longest_rally || 0);
     row.aces += match.stats?.aces || 0;
     row.perfect_shots += match.stats?.perfect_shots || 0;
@@ -63,7 +67,8 @@ export const fetchMatches = (params = {}) => Promise.resolve(fetchLocalMatches(p
 export const fetchLeaderboard = (mode = "competitive") => Promise.resolve(localLeaderboard(mode));
 
 function validateSetup(raw) {
-  const s = { ...DEFAULT_SETUP, ...raw };
+  const source = raw && typeof raw === "object" && !Array.isArray(raw) ? raw : {};
+  const s = { ...DEFAULT_SETUP, ...source };
   if (typeof s.name !== "string" || !s.name.trim() || s.name.length > 24) s.name = DEFAULT_SETUP.name;
   for (const attr of ["power", "stamina", "accuracy"]) {
     if (!Number.isInteger(s[attr]) || s[attr] < 1 || s[attr] > 10) s[attr] = DEFAULT_SETUP[attr];
@@ -72,10 +77,10 @@ function validateSetup(raw) {
   if (!s.legend && s.power + s.stamina + s.accuracy > 18) {
     s.power = 6; s.stamina = 6; s.accuracy = 6;
   }
-  if (!SURFACES[s.surface]) s.surface = DEFAULT_SETUP.surface;
-  if (!DIFFICULTY[s.difficulty]) s.difficulty = DEFAULT_SETUP.difficulty;
-  if (!STYLES[s.style]) s.style = DEFAULT_SETUP.style;
-  if (!FORMATS[s.format]) s.format = DEFAULT_SETUP.format;
+  if (!Object.hasOwn(SURFACES, s.surface)) s.surface = DEFAULT_SETUP.surface;
+  if (!Object.hasOwn(DIFFICULTY, s.difficulty)) s.difficulty = DEFAULT_SETUP.difficulty;
+  if (!Object.hasOwn(STYLES, s.style)) s.style = DEFAULT_SETUP.style;
+  if (!Object.hasOwn(FORMATS, s.format)) s.format = DEFAULT_SETUP.format;
   return s;
 }
 

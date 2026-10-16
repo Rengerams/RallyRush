@@ -1,18 +1,22 @@
 const ROWS = [["aces", "Aces"], ["winners", "Winners"], ["errors", "Errors"], ["double_faults", "Double faults"], ["perfect_shots", "Perfect shots"], ["longest_rally", "Longest rally"], ["points_won", "Points won"]];
 
-export const MatchStats = ({ stats, opponentStats = {}, names, rallyLengths = [], prefix = "match-end" }) => {
-  const average = rallyLengths.length ? (rallyLengths.reduce((a, b) => a + b, 0) / rallyLengths.length).toFixed(1) : "—";
+export const MatchStats = ({ stats = {}, opponentStats = {}, names = ["Player", "Opponent"], rallyLengths = [], prefix = "match-end" }) => {
+  const playerStats = stats && typeof stats === "object" && !Array.isArray(stats) ? stats : {};
+  const rivalStats = opponentStats && typeof opponentStats === "object" && !Array.isArray(opponentStats) ? opponentStats : {};
+  const safeNames = Array.isArray(names) ? names : ["Player", "Opponent"];
+  const rallies = Array.isArray(rallyLengths) ? rallyLengths.filter(Number.isFinite) : [];
+  const average = rallies.length ? (rallies.reduce((a, b) => a + b, 0) / rallies.length).toFixed(1) : "—";
   const buckets = [0, 0, 0, 0];
-  rallyLengths.forEach(n => buckets[n <= 3 ? 0 : n <= 6 ? 1 : n <= 9 ? 2 : 3]++);
+  rallies.forEach(n => buckets[n <= 3 ? 0 : n <= 6 ? 1 : n <= 9 ? 2 : 3]++);
   const max = Math.max(1, ...buckets);
   return <div data-testid={`${prefix}-stats-breakdown`}>
     <div className="mb-4 flex justify-between gap-5 text-xs font-bold">
-      <span data-testid={`${prefix}-player-name`} className="min-w-0 break-words text-[#00F0FF]">{names[0]}</span>
-      <span data-testid={`${prefix}-opponent-name`} className="min-w-0 break-words text-right text-[#E05A47]">{names[1]}</span>
+      <span data-testid={`${prefix}-player-name`} className="min-w-0 break-words text-[#00F0FF]">{safeNames[0] || "Player"}</span>
+      <span data-testid={`${prefix}-opponent-name`} className="min-w-0 break-words text-right text-[#E05A47]">{safeNames[1] || "Opponent"}</span>
     </div>
     <div className="space-y-3">
       {ROWS.map(([key, label]) => {
-        const p = stats[key] ?? 0, a = opponentStats?.[key] ?? 0, total = p + a || 1;
+        const p = Number.isFinite(Number(playerStats[key])) ? Number(playerStats[key]) : 0, a = Number.isFinite(Number(rivalStats[key])) ? Number(rivalStats[key]) : 0, total = p + a || 1;
         return <div key={key}>
           <div className="mb-1 flex items-center justify-between gap-2 font-mono text-xs">
             <span data-testid={`${prefix}-stat-${key}`} className="w-8 text-left text-white">{p}</span>
