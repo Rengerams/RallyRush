@@ -13,7 +13,7 @@ describe("umpire voice selection", () => {
     expect(selectUmpireVoice([voices[2]])).toBeNull();
   });
 
-  it("speaks match calls with slower, English umpire delivery", () => {
+  it("speaks match calls with clear, natural English umpire delivery", () => {
     class UtteranceMock {
       constructor(text) { this.text = text; }
     }
@@ -30,8 +30,8 @@ describe("umpire voice selection", () => {
     expect(utterance.text).toBe("Winner. Fifteen love.");
     expect(utterance.lang).toBe("en-GB");
     expect(utterance.voice).toBe(voice);
-    expect(utterance.rate).toBe(0.94);
-    expect(utterance.pitch).toBe(0.82);
+    expect(utterance.rate).toBe(0.9);
+    expect(utterance.pitch).toBe(0.96);
   });
 });
 
