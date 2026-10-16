@@ -52,6 +52,18 @@ test.describe("real browser interactions", () => {
     await expect(page.getByTestId("engine-input")).toHaveText("none");
   });
 
+  test("lost pointer capture cancels a prepared shot", async ({ page }) => {
+    const button = page.getByTestId("shot-btn-flat");
+    await touchPointer(button, "pointerdown");
+    await page.waitForTimeout(175);
+    await expect(page.getByTestId("engine-input")).toHaveText("flat");
+    await touchPointer(button, "lostpointercapture");
+
+    await expect(page.getByTestId("events")).toContainText('["cancel","flat"]');
+    await expect(page.getByTestId("events")).not.toContainText('["release","flat"]');
+    await expect(page.getByTestId("engine-input")).toHaveText("none");
+  });
+
   test("a sideways swipe remains a scroll gesture and does not fire a shot", async ({ page }) => {
     const button = page.getByTestId("shot-btn-flat");
     await touchPointer(button, "pointerdown", 18, 20, 20);
