@@ -10,6 +10,18 @@ export function getMatchAccuracy(result) {
   return Math.round((perfectShots / totalShots) * 100);
 }
 
+export function getCoachingNote(result) {
+  const stats = result?.stats && typeof result.stats === "object" && !Array.isArray(result.stats) ? result.stats : {};
+  const shots = Number(stats.total_shots) || 0;
+  const perfect = Number(stats.perfect_shots) || 0;
+  const errors = Number(stats.errors) || 0;
+  const winners = Number(stats.winners) || 0;
+  if (shots < 5) return "Play a few more rallies to get a useful timing and consistency tip.";
+  if (perfect / shots < 0.35) return `Timing focus: ${perfect} of ${shots} shots had perfect timing. Try the Timing Practice drill before your next match.`;
+  if (errors >= 3 && errors > winners) return `Consistency focus: you made ${errors} errors and hit ${winners} winners. Try using a higher-margin shot and aim away from the lines.`;
+  return `Good contact: ${perfect} of ${shots} shots were perfectly timed, with ${errors} errors and ${winners} winners. Keep varying your placement.`;
+}
+
 export default function MatchEndModal({ result, names, saveState, onRematch, onLeaderboard, onSetup, onReplay, canReplay, onRetry }) {
   const stats = result.stats && typeof result.stats === "object" && !Array.isArray(result.stats) ? result.stats : {};
   const accuracy = getMatchAccuracy(result);
@@ -30,6 +42,10 @@ export default function MatchEndModal({ result, names, saveState, onRematch, onL
             <button data-testid="match-end-replay-btn" disabled={!canReplay} onClick={onReplay} className="btn-ghost flex items-center gap-2 rounded-full px-3 py-2 text-xs disabled:opacity-40"><Film size={14} />Final point</button>
           </div>
           <MatchStats stats={stats} opponentStats={result.opponentStats} names={names} rallyLengths={result.rally_lengths} />
+          <section data-testid="match-coaching-note" aria-label="Post-match coaching" className="mt-4 rounded-xl border border-[#00F0FF]/20 bg-[#00F0FF]/5 p-3">
+            <h3 className="font-mono text-[10px] font-bold uppercase tracking-wider text-[#00F0FF]">Coach’s note</h3>
+            <p className="mt-1 text-sm leading-relaxed text-slate-200">{getCoachingNote(result)}</p>
+          </section>
           <div className="mt-5 flex flex-wrap items-center gap-2">
             <p data-testid="match-end-save-status" role="status" className="flex items-center gap-2 font-mono text-xs text-slate-400">
               {saveState === "saving" && <><Loader2 size={14} className="animate-spin" /> Saving match…</>}
