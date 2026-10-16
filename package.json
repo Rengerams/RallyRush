@@ -1,0 +1,184 @@
+{
+  "name": "rally-rush",
+  "version": "0.2.0",
+  "private": true,
+  "dependencies": {
+    "@radix-ui/react-accordion": "^1.3.1",
+    "@radix-ui/react-alert-dialog": "^1.2.1",
+    "@radix-ui/react-aspect-ratio": "^1.2.0",
+    "@radix-ui/react-avatar": "^1.3.1",
+    "@radix-ui/react-checkbox": "^1.4.1",
+    "@radix-ui/react-collapsible": "^1.2.1",
+    "@radix-ui/react-context-menu": "^2.4.1",
+    "@radix-ui/react-dialog": "^1.3.1",
+    "@radix-ui/react-dropdown-menu": "^2.2.1",
+    "@radix-ui/react-hover-card": "^1.2.1",
+    "@radix-ui/react-label": "^2.1.17",
+    "@radix-ui/react-menubar": "^1.2.1",
+    "@radix-ui/react-navigation-menu": "^1.4.1",
+    "@radix-ui/react-popover": "^1.3.1",
+    "@radix-ui/react-progress": "^1.2.1",
+    "@radix-ui/react-radio-group": "^1.5.1",
+    "@radix-ui/react-scroll-area": "^1.4.0",
+    "@radix-ui/react-select": "^2.4.1",
+    "@radix-ui/react-separator": "^1.2.0",
+    "@radix-ui/react-slider": "^1.6.1",
+    "@radix-ui/react-slot": "^1.5.0",
+    "@radix-ui/react-switch": "^1.4.1",
+    "@radix-ui/react-tabs": "^1.2.1",
+    "@radix-ui/react-toast": "^1.3.1",
+    "@radix-ui/react-toggle": "^1.2.1",
+    "@radix-ui/react-toggle-group": "^1.2.1",
+    "@radix-ui/react-tooltip": "^1.4.1",
+    "@tanstack/react-query": "^5.104.3",
+    "class-variance-authority": "0.7.1",
+    "clsx": "2.1.1",
+    "cmdk": "1.1.1",
+    "embla-carousel-react": "8.6.0",
+    "framer-motion": "^14.3.0",
+    "http-cache-semantics": "^4.3.0",
+    "input-otp": "1.5.0",
+    "lucide-react": "^1.57.0",
+    "next-themes": "0.4.6",
+    "radix-ui": "^1.8.1",
+    "react": "^19.3.1",
+    "react-day-picker": "^10.0.2",
+    "react-dom": "^19.3.1",
+    "react-hook-form": "^7.90.0",
+    "react-resizable-panels": "^4.14.5",
+    "react-router-dom": "7.18.4",
+    "sonner": "2.0.8",
+    "tailwind-merge": "3.7.0",
+    "tailwindcss-animate": "1.0.7",
+    "three": "^0.186.1",
+    "undici": "^7.30.1",
+    "vaul": "1.1.2"
+  },
+  "scripts": {
+    "start": "vite --config frontend/vite.config.mjs",
+    "build": "vite build --config frontend/vite.config.mjs",
+    "test": "vitest run --config frontend/vite.config.mjs",
+    "desktop": "node frontend/scripts/desktop-dev.cjs",
+    "desktop:dist": "npm run build && electron-builder --win nsis"
+  },
+  "devDependencies": {
+    "@tailwindcss/vite": "4.3.3",
+    "@vitejs/plugin-react": "6.1.2",
+    "electron": "^44.7.2",
+    "electron-builder": "^26.15.3",
+    "tailwindcss": "4.3.3",
+    "vite": "8.3.4",
+    "vitest": "5.0.5"
+  },
+  "license": "MIT",
+  "homepage": ".",
+  "main": "frontend/desktop/main.cjs",
+  "build": {
+    "appId": "com.renffr.open",
+    "productName": "Rally Rush",
+    "directories": {
+      "output": "frontend/release"
+    },
+    "files": [
+      "frontend/dist/**/*",
+      "frontend/desktop/**/*",
+      "package.json",
+      "!node_modules/**/*"
+    ],
+    "asar": true,
+    "win": {
+      "target": [
+        "nsis"
+      ],
+      "artifactName": "Rally-Rush-${version}-Windows-Setup.${ext}"
+    },
+    "nsis": {
+      "oneClick": false,
+      "allowToChangeInstallationDirectory": true,
+      "createDesktopShortcut": true,
+      "createStartMenuShortcut": true
+    }
+  },
+  "overrides": {
+    "react": "^19.3.1",
+    "react-dom": "^19.3.1",
+    "react-router": "7.18.4",
+    "node-forge": "1.4.0",
+    "fast-uri": "3.1.8",
+    "flatted": "3.4.2",
+    "qs": "6.16.0",
+    "diff": "4.0.4",
+    "follow-redirects": "1.16.0",
+    "path-to-regexp": "0.1.13",
+    "underscore": "1.13.8",
+    "@babel/plugin-transform-modules-systemjs": "7.29.4",
+    "shell-quote": "1.9.0",
+    "jsonpath": "1.3.0",
+    "nth-check": "2.0.1",
+    "serialize-javascript": "7.0.5",
+    "uuid": "11.1.1",
+    "@tootallnate/once": "2.0.1",
+    "axios": {
+      "form-data": "4.0.6"
+    },
+    "jsdom": {
+      "form-data": "3.0.5"
+    },
+    "postcss-svgo": {
+      "svgo": "2.8.4"
+    },
+    "postcss-load-config": {
+      "yaml": "2.8.3"
+    },
+    "cosmiconfig": {
+      "yaml": "1.10.3"
+    },
+    "cssnano": {
+      "yaml": "1.10.3"
+    },
+    "svgo": {
+      "js-yaml": "3.15.2"
+    },
+    "@istanbuljs/load-nyc-config": {
+      "js-yaml": "3.15.2"
+    },
+    "css-loader": {
+      "postcss": "8.5.28"
+    },
+    "css-minimizer-webpack-plugin": {
+      "postcss": "8.5.28"
+    },
+    "filelist": {
+      "minimatch": "5.1.8"
+    },
+    "anymatch": {
+      "picomatch": "2.3.2"
+    },
+    "micromatch": {
+      "picomatch": "2.3.2"
+    },
+    "readdirp": {
+      "picomatch": "2.3.2"
+    },
+    "jest-util": {
+      "picomatch": "2.3.2"
+    },
+    "tinyglobby": {
+      "picomatch": "4.0.4"
+    },
+    "http-proxy-middleware": "^2.0.10",
+    "@electron/get": "^5.1.0",
+    "@electron/asar": "^4.3.1",
+    "tailwindcss": {
+      "postcss-selector-parser": "^7.1.6"
+    },
+    "@tailwindcss/vite": {
+      "postcss-selector-parser": "^7.1.6"
+    }
+  },
+  "description": "Arcade-style 3D tennis game for desktop and browser.",
+  "author": "Renffr",
+  "allowScripts": {
+    "electron-winstaller@5.4.0": true
+  }
+}
