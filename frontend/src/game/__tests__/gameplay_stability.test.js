@@ -119,13 +119,11 @@ test("an early prepared swing expires without auto-hitting", () => {
 });
 
 test("the AI changes tactics when the player rushes the net or stays deep", () => {
-  const e = new TennisEngine(cfg);
-  const random = vi.spyOn(Math, "random").mockReturnValue(0.1);
+  const e = new TennisEngine(cfg, undefined, { rng: () => 0.1 });
   e.p.z = 3.5;
   expect(e.aiPickShot()).toBe(SHOTS.lob);
   e.p.z = 13;
   expect(e.aiPickShot()).toBe(SHOTS.dropshot);
-  random.mockRestore();
 });
 
 test("a mistimed tap expires and reports a miss without hitting the ball", () => {

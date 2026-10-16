@@ -1,22 +1,20 @@
-import { SURFACES, SHOTS, DIFFICULTY, STYLES, FORMATS } from "./constants";
+import { BALL, SURFACES, SHOTS, DIFFICULTY, STYLES, FORMATS } from "./constants";
 import { stepBall, solveShot, isIn, predictIntercept } from "./physics";
 import { createScore, awardPoint, currentServer, pointLabels, scoreCall } from "./scoring";
 import { audio } from "./audio";
 import { recordFrame, startReplay, stepReplay, endReplay } from "./replay";
 import { pointerInput, movementDirection } from "./input";
+import { ENGINE_TUNING } from "./tuning";
 
-const SIM = 0.82;
-const PHYSICS_STEP = 1 / 120;
-const MAX_CATCHUP_STEPS = 30;
-const rand = (a, b) => a + Math.random() * (b - a);
 const lerp = (a, b, t) => a + (b - a) * t;
 const clamp = (v, a, b) => Math.max(a, Math.min(b, v));
 const blankStats = () => ({ aces: 0, double_faults: 0, winners: 0, errors: 0, perfect_shots: 0, total_shots: 0, longest_rally: 0, points_won: 0 });
 
 export class TennisEngine {
-  constructor(cfg, onEvent) {
+  constructor(cfg, onEvent, { rng = Math.random } = {}) {
     this.cfg = cfg;
     this.onEvent = onEvent || (() => {});
+    this.rng = typeof rng === "function" ? rng : Math.random;
     this.surf = SURFACES[cfg.surface];
     this.diff = DIFFICULTY[cfg.difficulty];
     this.style = STYLES[cfg.style];
@@ -50,6 +48,8 @@ export class TennisEngine {
   }
 
   emit(e) { this.onEvent(e); }
+  random() { return this.rng(); }
+  rand(min, max) { return min + this.random() * (max - min); }
   call(text, speak = true) { this.emit({ type: "call", text }); if (speak) audio.say(text); }
 
   setupPoint() {
@@ -67,7 +67,7 @@ export class TennisEngine {
     Object.assign(a, { plan: null, homeZ: this.style.homeZ, rolled: false, whiff: false, wild: false, letGo: false });
     Object.assign(this.ball, { vx: 0, vy: 0, vz: 0, spin: 0, netHit: false, y: 1 });
     this.serveStage = "hold";
-    this.aiServeT = rand(0.9, 1.5);
+    this.aiServeT = this.rand(...ENGINE_TUNING.aiServeDelay);
     this.lastHitter = null;
     this.bounces = 0;
     this.isServe = true;
@@ -104,7 +104,7 @@ export class TennisEngine {
     if (this.state !== "rally" || !buf || buf.shot !== id || !buf.prepared) return;
     buf.released = true;
     buf.releaseDistance = Math.hypot(this.ball.x - this.p.x, this.ball.z - this.p.z);
-    buf.exp = this.time + 0.18;
+    buf.exp = this.time + ENGINE_TUNING.shotBufferWindow;
     this.attemptPlayerHit();
   }
 
@@ -112,8 +112,8 @@ export class TennisEngine {
     const p = this.p;
     const { dx, dz } = this.moveDir();
     if (this.state !== "rally" || p.sliding > 0 || (dx === 0 && dz === 0)) return;
-    p.sliding = 0.55; p.sdx = dx; p.sdz = dz;
-    p.stamina = Math.max(0, p.stamina - 6);
+    p.sliding = ENGINE_TUNING.slideDuration; p.sdx = dx; p.sdz = dz;
+    p.stamina = Math.max(0, p.stamina - ENGINE_TUNING.slideStaminaCost);
   }
 
   moveDir() {
@@ -129,7 +129,7 @@ export class TennisEngine {
     if (this.state !== "rally") return;
     const p = this.p;
     // Preparing a return is not a swing. Animate only at contact (or on a missed tap).
-    p.buffered = { shot: id, exp: this.time + 0.18, prepared: p.heldShot === id };
+    p.buffered = { shot: id, exp: this.time + ENGINE_TUNING.shotBufferWindow, prepared: p.heldShot === id };
     this.attemptPlayerHit();
   }
 
@@ -139,8 +139,8 @@ export class TennisEngine {
 
   deviate(target, acc, dist) {
     const dev = Math.tan(((1 - acc) * 14 * 2.5 * Math.PI) / 180) * dist;
-    target.x += rand(-1, 1) * dev;
-    target.z += rand(-1, 1) * dev * 0.8;
+    target.x += this.rand(-1, 1) * dev;
+    target.z += this.rand(-1, 1) * dev * 0.8;
   }
 
   launch(who, shot, target, h, quality) {
@@ -157,7 +157,7 @@ export class TennisEngine {
     st.total_shots++;
     if (quality === "perfect") st.perfect_shots++;
     audio.hit(quality === "perfect" ? 1.2 : 0.9);
-    if (who === 0) Object.assign(this.a, { plan: null, reactT: 0.42 * this.diff.reaction, rolled: false, whiff: false, wild: false, letGo: false });
+    if (who === 0) Object.assign(this.a, { plan: null, reactT: ENGINE_TUNING.aiReactionDelay * this.diff.reaction, rolled: false, whiff: false, wild: false, letGo: false });
     this.emit({ type: "shot", who, shot: shot.label, quality });
   }
 
@@ -165,11 +165,11 @@ export class TennisEngine {
     const b = this.ball;
     if (this.serveStage === "hold") {
       this.serveStage = "toss";
-      Object.assign(b, { x: this.p.x + 0.35, z: this.p.z, vx: this.p.vx, vz: this.p.vz, vy: 5.2 });
+      Object.assign(b, { x: this.p.x + ENGINE_TUNING.servePlayerOffsetX, z: this.p.z, vx: this.p.vx, vz: this.p.vz, vy: ENGINE_TUNING.serveTossSpeed });
       return;
     }
     if (this.serveStage !== "toss") return;
-    if (Math.hypot(b.x - this.p.x, b.z - this.p.z) > 2.5) return;
+    if (Math.hypot(b.x - this.p.x, b.z - this.p.z) > ENGINE_TUNING.serveContactRadius) return;
     const quality = b.y >= 2.25 ? "perfect" : b.y >= 1.75 ? "good" : "late";
     this.p.swing = 0.25; this.p.side = 1;
     let force = this.power();
@@ -190,17 +190,17 @@ export class TennisEngine {
     const b = this.ball, p = this.p, buf = p.buffered;
     if (!buf || this.lastHitter === 0 || b.z < 0) return;
     if (this.isServe && this.bounces === 0) return;
-    if (b.y > (buf.shot === "smash" ? 3.4 : 2.7)) return;
+    if (b.y > (buf.shot === "smash" ? ENGINE_TUNING.smashContactHeight : ENGINE_TUNING.playerContactHeight)) return;
     const d = Math.hypot(b.x - p.x, b.z - p.z);
-    if (d > 2.5) return;
+    if (d > ENGINE_TUNING.playerContactRadius) return;
     const approaching = (b.x - p.x) * b.vx + (b.z - p.z) * b.vz < 0;
     if (buf.prepared && !buf.released) return;
-    if (buf.prepared && (!approaching || d > 1.04)) return;
+    if (buf.prepared && (!approaching || d > ENGINE_TUNING.preparedContactRadius)) return;
     const timingDistance = buf.prepared ? buf.releaseDistance : d;
-    const quality = timingDistance <= 0.62 ? "perfect"
-      : timingDistance <= 1.04 ? "good"
-      : timingDistance <= 1.65 ? "early" : "late";
-    if (!buf.prepared && quality === "late" && approaching && this.time < buf.exp - 0.02) return;
+    const quality = timingDistance <= ENGINE_TUNING.perfectTimingDistance ? "perfect"
+      : timingDistance <= ENGINE_TUNING.goodTimingDistance ? "good"
+      : timingDistance <= ENGINE_TUNING.lateTimingDistance ? "early" : "late";
+    if (!buf.prepared && quality === "late" && approaching && this.time < buf.exp - ENGINE_TUNING.lateTapGracePeriod) return;
     p.buffered = null;
     this.playerHit(buf.shot, quality);
   }
@@ -216,7 +216,7 @@ export class TennisEngine {
     if (quality === "perfect") force *= 1.08;
     if (quality === "late") { force *= 0.88; acc *= 0.9; }
     const aim = this.keys.right ? 1 : this.keys.left ? -1 : 0;
-    let tx = aim !== 0 ? aim * 3.3 : clamp(-b.x * 0.35 + rand(-1.4, 1.4), -3, 3);
+    let tx = aim !== 0 ? aim * 3.3 : clamp(-b.x * 0.35 + this.rand(-1.4, 1.4), -3, 3);
     if (quality === "perfect") tx *= 1.08;
     const target = { x: tx, z: -shot.depth };
     if (this.pointerAim) target.x = this.pointerAim.x;
@@ -225,7 +225,7 @@ export class TennisEngine {
   }
 
   aiPickShot() {
-    const r = Math.random();
+    const r = this.random();
     const b = this.ball;
     if (b.y > 1.8 && b.z > -9 && (this.cfg.style === "aggressive" || r < 0.4)) return SHOTS.smash;
     if (this.p.z < 4.5 && r < 0.42) return SHOTS.lob;
@@ -241,28 +241,28 @@ export class TennisEngine {
   aiHit() {
     const a = this.a, p = this.p, d = this.diff;
     const shot = this.aiPickShot();
-    const quality = Math.random() < d.perfect ? "perfect" : "good";
+    const quality = this.random() < d.perfect ? "perfect" : "good";
     a.swing = 0.25; a.side = this.ball.x >= a.x ? -1 : 1;
-    const predictedX = clamp(p.x + p.vx * 0.42, -3.5, 3.5);
+    const predictedX = clamp(p.x + p.vx * ENGINE_TUNING.aiLookahead, -3.5, 3.5);
     const targetOpenSide = predictedX >= 0 ? -1 : 1;
-    const tx = Math.random() < 0.72
-      ? targetOpenSide * rand(1.8, 3.4)
-      : clamp(predictedX * 0.45 + rand(-0.6, 0.6), -1.4, 1.4);
-    const shortBall = p.z > 12.5 && shot.id !== "lob" && Math.random() < 0.35;
+    const tx = this.random() < 0.72
+      ? targetOpenSide * this.rand(...ENGINE_TUNING.aiAimSpread)
+      : clamp(predictedX * 0.45 + this.rand(-0.6, 0.6), -1.4, 1.4);
+    const shortBall = p.z > 12.5 && shot.id !== "lob" && this.random() < 0.35;
     const target = { x: tx, z: shortBall ? Math.min(shot.depth, 5.4) : shot.depth };
     this.deviate(target, d.acc, 20);
-    if (a.wild) { target.x += rand(-1, 1) * 3; target.z += rand(-0.5, 1) * 3; }
-    if (this.cfg.style === "netrusher") a.homeZ = shot.id !== "lob" && Math.random() < 0.6 ? -4.5 : this.style.homeZ;
+    if (a.wild) { target.x += this.rand(-1, 1) * 3; target.z += this.rand(-0.5, 1) * 3; }
+    if (this.cfg.style === "netrusher") a.homeZ = shot.id !== "lob" && this.random() < 0.6 ? -4.5 : this.style.homeZ;
     this.launch(1, shot, target, shot.h * d.power * (quality === "perfect" ? 1.08 : 1), quality);
   }
 
   aiServe() {
     const d = this.diff;
-    const quality = Math.random() < d.perfect ? "perfect" : "good";
+    const quality = this.random() < d.perfect ? "perfect" : "good";
     this.a.swing = 0.25;
-    const target = { x: this.boxSign * rand(1.0, 3.6), z: SHOTS.serve.depth };
+    const target = { x: this.boxSign * this.rand(1.0, 3.6), z: SHOTS.serve.depth };
     this.deviate(target, d.acc * 0.97, 18);
-    if (Math.random() < d.error * 0.5) { target.x += rand(-1, 1) * 2; target.z += rand(0, 2); }
+    if (this.random() < d.error * 0.5) { target.x += this.rand(-1, 1) * 2; target.z += this.rand(0, 2); }
     this.state = "rally";
     this.launch(1, SHOTS.serve, target, SHOTS.serve.h * d.power * 0.95 * (quality === "perfect" ? 1.06 : 1), quality);
   }
@@ -270,18 +270,18 @@ export class TennisEngine {
   update(dtReal) {
     if (!Number.isFinite(dtReal) || dtReal <= 0 || this.state === "matchOver") return;
     if (this.state === "replay") return this.stepReplay(dtReal);
-    this.simCarry += Math.min(dtReal, 0.25) * SIM;
+    this.simCarry += Math.min(dtReal, 0.25) * ENGINE_TUNING.simulationScale;
     let steps = 0;
-    while (this.simCarry >= PHYSICS_STEP && steps < MAX_CATCHUP_STEPS) {
-      this.simCarry -= PHYSICS_STEP;
-      this.advance(PHYSICS_STEP);
+    while (this.simCarry >= ENGINE_TUNING.physicsStep && steps < ENGINE_TUNING.maxCatchupSteps) {
+      this.simCarry -= ENGINE_TUNING.physicsStep;
+      this.advance(ENGINE_TUNING.physicsStep);
       steps++;
       if (this.state === "replay" || this.state === "matchOver") {
         this.simCarry = 0;
         break;
       }
     }
-    if (steps >= MAX_CATCHUP_STEPS) this.simCarry = Math.min(this.simCarry, PHYSICS_STEP);
+    if (steps >= ENGINE_TUNING.maxCatchupSteps) this.simCarry = Math.min(this.simCarry, ENGINE_TUNING.physicsStep);
   }
 
   advance(dt) {
@@ -310,7 +310,7 @@ export class TennisEngine {
     p.swing = Math.max(0, p.swing - dt);
     if (!["serve", "rally", "pointOver", "faultPause"].includes(this.state)) { p.vx = p.vz = 0; return; }
     if (p.heldShot && this.state === "rally" && this.lastHitter === 1) {
-      p.buffered = { shot: p.heldShot, exp: this.time + 0.18, prepared: true };
+      p.buffered = { shot: p.heldShot, exp: this.time + ENGINE_TUNING.shotBufferWindow, prepared: true };
     }
     if (p.buffered) {
       this.attemptPlayerHit();
@@ -324,17 +324,17 @@ export class TennisEngine {
     const { dx, dz } = this.moveDir();
     const moving = dx !== 0 || dz !== 0;
     p.sprint = moving && this.keys.sprint && p.stamina > 0.5 && p.sliding <= 0;
-    p.stamina = clamp(p.stamina + (p.sprint ? -15 : 10) * dt, 0, p.cap);
+    p.stamina = clamp(p.stamina + (p.sprint ? -ENGINE_TUNING.sprintStaminaDrain : ENGINE_TUNING.staminaRecovery) * dt, 0, p.cap);
     if (p.sliding > 0) p.sliding -= dt;
-    const speed = 5.5 * this.surf.speed * lerp(1, 0.72, this.fatigue()) * (p.sprint ? 1.48 : 1);
-    const tvx = p.sliding > 0 ? p.sdx * 9.5 : dx * speed;
-    const tvz = p.sliding > 0 ? p.sdz * 9.5 : dz * speed;
-    const rate = (tvx * tvx + tvz * tvz > p.vx * p.vx + p.vz * p.vz ? 28 : 34) * dt;
+    const speed = ENGINE_TUNING.playerMoveSpeed * this.surf.speed * lerp(1, 0.72, this.fatigue()) * (p.sprint ? ENGINE_TUNING.sprintSpeedMultiplier : 1);
+    const tvx = p.sliding > 0 ? p.sdx * ENGINE_TUNING.slideSpeed : dx * speed;
+    const tvz = p.sliding > 0 ? p.sdz * ENGINE_TUNING.slideSpeed : dz * speed;
+    const rate = (tvx * tvx + tvz * tvz > p.vx * p.vx + p.vz * p.vz ? ENGINE_TUNING.playerAcceleration : ENGINE_TUNING.playerBraking) * dt;
     const ddx = tvx - p.vx, ddz = tvz - p.vz;
     const dm = Math.hypot(ddx, ddz);
     if (dm <= rate) { p.vx = tvx; p.vz = tvz; } else { p.vx += (ddx / dm) * rate; p.vz += (ddz / dm) * rate; }
-    p.x = clamp(p.x + p.vx * dt, -7, 7);
-    p.z = clamp(p.z + p.vz * dt, 0.7, 14.6);
+    p.x = clamp(p.x + p.vx * dt, ENGINE_TUNING.playerBounds.minX, ENGINE_TUNING.playerBounds.maxX);
+    p.z = clamp(p.z + p.vz * dt, ENGINE_TUNING.playerBounds.minZ, ENGINE_TUNING.playerBounds.maxZ);
   }
 
   updateAI(dt) {
@@ -355,11 +355,11 @@ export class TennisEngine {
     a.z = clamp(a.z, -14.6, -0.7);
     if (!incoming || a.reactT > 0 || a.letGo || a.whiff || b.z >= 0) return;
     if (this.isServe && this.bounces === 0) return;
-    if (this.bounces === 0 && a.z < -6.5) return;
-    if (b.y > 2.6 || Math.hypot(b.x - a.x, b.z - a.z) > 1.7) return;
+    if (this.bounces === 0 && a.z < ENGINE_TUNING.aiVolleyPositionZ) return;
+    if (b.y > ENGINE_TUNING.aiReachHeight || Math.hypot(b.x - a.x, b.z - a.z) > ENGINE_TUNING.aiReachRadius) return;
     if (!a.rolled) {
       a.rolled = true;
-      if (Math.random() < d.error) { if (Math.random() < 0.5) { a.whiff = true; a.swing = 0.25; return; } a.wild = true; }
+      if (this.random() < d.error) { if (this.random() < 0.5) { a.whiff = true; a.swing = 0.25; return; } a.wild = true; }
     }
     this.aiHit();
   }
@@ -374,7 +374,7 @@ export class TennisEngine {
 
   aiComputeTarget(dt) {
     const a = this.a, b = this.ball, d = this.diff;
-    const speed = 5 * d.move * this.surf.speed;
+    const speed = ENGINE_TUNING.aiSpeed * d.move * this.surf.speed;
     const incoming = this.state === "rally" && this.lastHitter === 0;
     let tx = clamp(-b.x * 0.15, -2, 2);
     let tz = a.homeZ;
@@ -383,7 +383,7 @@ export class TennisEngine {
       if (a.reactT > 0) { tx = a.x; tz = a.z; }
       else {
         if (!a.plan || this.time - a.planT > 0.12) {
-          a.plan = predictIntercept({ ball: b, ai: a, speed, surf: this.surf, volleyOK: a.z > -6.5, serveBox: this.isServe ? this.boxSign : 0, startBounces: this.bounces });
+      a.plan = predictIntercept({ ball: b, ai: a, speed, surf: this.surf, volleyOK: a.z > ENGINE_TUNING.aiVolleyPositionZ, serveBox: this.isServe ? this.boxSign : 0, startBounces: this.bounces });
           a.planT = this.time;
           if (a.plan.firstOut && d.smart && this.bounces === 0) a.letGo = true;
         }
@@ -400,7 +400,7 @@ export class TennisEngine {
       const s = this.server === 0 ? this.p : this.a;
       if (this.serveStage === "hold") { b.x = s.x + 0.35; b.z = s.z; b.y = 1; b.vx = b.vy = b.vz = 0; return; }
       b.x += b.vx * dt; b.z += b.vz * dt;
-      b.vy -= 9.81 * dt; b.y += b.vy * dt;
+      b.vy -= BALL.gravity * dt; b.y += b.vy * dt;
       if (b.y < 0.9 && b.vy < 0) { this.serveStage = "hold"; this.aiServeT = 0.6; }
       return;
     }

@@ -15,6 +15,14 @@ const cfg = {
   format: "quick",
 };
 
+const seededRandom = (seed) => {
+  let state = seed >>> 0;
+  return () => {
+    state = (Math.imul(state, 1664525) + 1013904223) >>> 0;
+    return state / 0x1_0000_0000;
+  };
+};
+
 // Module: movement and pointer input rules
 describe("input movement and aiming", () => {
   test("keyboard movement overrides pointer target direction", () => {
@@ -67,6 +75,22 @@ test("shot keys cannot silently skip an active replay", () => {
   e.state = "replay";
   e.pressShot("flat");
   expect(e.state).toBe("replay");
+});
+
+test("injected random sources make AI shot selection repeatable", () => {
+  const firstEvents = [];
+  const secondEvents = [];
+  const first = new TennisEngine(cfg, (event) => firstEvents.push(event), { rng: seededRandom(1234) });
+  const second = new TennisEngine(cfg, (event) => secondEvents.push(event), { rng: seededRandom(1234) });
+
+  expect(first.aiServeT).toBe(second.aiServeT);
+  expect(Array.from({ length: 12 }, () => first.aiPickShot().id))
+    .toEqual(Array.from({ length: 12 }, () => second.aiPickShot().id));
+
+  first.aiHit();
+  second.aiHit();
+  expect(firstEvents).toEqual(secondEvents);
+  expect(first.ball).toEqual(second.ball);
 });
 
 // Module: engine update guard behavior

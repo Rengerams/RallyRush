@@ -2,23 +2,20 @@ import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Pause, Camera, Film, MousePointer2 } from "lucide-react";
 import { TennisEngine } from "@/game/engine";
+import { attachPlayKeyboardControls } from "@/game/playKeyboardControls";
 import { audio } from "@/game/audio";
-import { SHOT_BY_KEY, SURFACES, DIFFICULTY, STYLES } from "@/game/constants";
+import { DIFFICULTY } from "@/game/constants";
 import { loadSetup, saveMatch } from "@/lib/api";
 import { loadMatchDisplayPreferences, saveMatchDisplayPreferences } from "@/lib/matchDisplayPreferences";
 import { toast } from "sonner";
-import Scoreboard from "@/components/game/Scoreboard";
+import MatchHud from "@/components/game/MatchHud";
 import ShotPad from "@/components/game/ShotPad";
 import DPad from "@/components/game/DPad";
 import Callouts from "@/components/game/Callouts";
-import StaminaBar from "@/components/game/StaminaBar";
 import PauseModal from "@/components/game/PauseModal";
 import MatchEndModal from "@/components/game/MatchEndModal";
 import MatchIntro from "@/components/game/MatchIntro";
 import GameCanvas from "@/components/game/GameCanvas";
-import { ServeIndicator } from "@/components/game/ServeIndicator";
-
-const KEYMAP = { ArrowLeft: "left", KeyA: "left", ArrowRight: "right", KeyD: "right", ArrowUp: "up", KeyW: "up", ArrowDown: "down", KeyS: "down", ShiftLeft: "sprint", ShiftRight: "sprint" };
 
 export default function Play() {
   const nav = useNavigate();
@@ -127,60 +124,23 @@ export default function Play() {
     engRef.current?.clearInput();
     setPaused(pausedRef.current);
   }, []);
-  const noteServeAttempt = () => {
+  const noteServeAttempt = useCallback(() => {
     const active = engRef.current;
     if (active?.state === "serve" && active.server === 0 && active.serveStage === "toss") {
       setFirstServeAttempted(true);
     }
-  };
+  }, []);
 
-  // eslint-disable-next-line react-hooks/exhaustive-deps -- introRef is a ref, setIntro is a stable setter
   useEffect(() => {
-    const down = (e) => {
-      const eng = engRef.current;
-      if (!eng || !graphicsReady.current) return;
-      const target = e.target;
-      const isEditable = target instanceof HTMLElement &&
-        (target.isContentEditable || target.matches("input, textarea, select, [role='textbox']"));
-      if (isEditable) return;
-      if (["Space", "ArrowUp", "ArrowDown", "ArrowLeft", "ArrowRight"].includes(e.code)) e.preventDefault();
-      if (introRef.current) return;
-      if (eng.state === "matchOver") return;
-      if (e.code === "Escape" || e.code === "KeyP") {
-        if (e.repeat) return;
-        // Let the open Radix pause dialog handle Escape so it resumes exactly once.
-        if (e.code === "Escape" && pausedRef.current) return;
-        e.preventDefault();
-        togglePause();
-        return;
-      }
-      if (pausedRef.current || e.repeat) return;
-      audio.unlock();
-      if (KEYMAP[e.code]) eng.setKey(KEYMAP[e.code], true);
-      if (e.code === "Space") eng.slide();
-      if (e.code === "Enter" && eng.state === "replay") eng.endReplay();
-      const digit = e.code.startsWith("Digit") ? e.code.slice(5) : e.code.startsWith("Numpad") ? e.code.slice(6) : null;
-      if (digit && SHOT_BY_KEY[digit]) {
-        noteServeAttempt();
-        eng.holdShot(SHOT_BY_KEY[digit]);
-      }
-    };
-    const up = (e) => {
-      if (KEYMAP[e.code]) engRef.current?.setKey(KEYMAP[e.code], false);
-      const digit = e.code.replace(/^(Digit|Numpad)/, "");
-      if (SHOT_BY_KEY[digit]) engRef.current?.releaseShot(SHOT_BY_KEY[digit]);
-    };
-    const blur = () => {
-      const eng = engRef.current;
-      if (!eng) return;
-      eng.clearInput();
-      if (!pausedRef.current && !introRef.current && eng.state !== "matchOver") togglePause();
-    };
-    window.addEventListener("keydown", down);
-    window.addEventListener("keyup", up);
-    window.addEventListener("blur", blur);
-    return () => { window.removeEventListener("keydown", down); window.removeEventListener("keyup", up); window.removeEventListener("blur", blur); };
-  }, [togglePause]);
+    return attachPlayKeyboardControls({
+      engineRef: engRef,
+      graphicsReady,
+      pausedRef,
+      introRef,
+      togglePause,
+      noteServeAttempt,
+    });
+  }, [togglePause, noteServeAttempt]);
 
 
   // eslint-disable-next-line react-hooks/exhaustive-deps -- introRef is a ref, setIntro is a stable setter
@@ -216,30 +176,8 @@ export default function Play() {
     <main className="play-page fixed inset-0 z-30 h-[100dvh] w-screen overflow-hidden bg-[#0B0E14]" data-testid="play-page" data-hud-size={displayPrefs.hudSize}>
       <section ref={wrapRef} className="absolute inset-0" data-testid="game-canvas-wrapper">
         <GameCanvas eng={eng} reducedEffects={displayPrefs.reducedEffects} reducedMotion={displayPrefs.reducedMotion} wrapRef={wrapRef} renderActive={!intro && !paused && (!result || Boolean(replay))} onSwing={mouseSwing} onRelease={() => eng.releaseShot(eng.p.heldShot)} onPointer={pointerMove} onPointerLeave={() => eng.clearPointer()} onQuality={onQuality} onAvailability={onAvailability} />
-        <div className="play-hud-corner absolute left-2 top-2 z-20 flex w-[min(22rem,calc(100vw-1rem))] flex-col gap-2 sm:left-4 sm:top-4 sm:w-[min(22rem,calc(100vw-2rem))]">
-          <Scoreboard snap={snap} names={names} legend={cfg.legend} compact={snap?.state === "rally"} />
-          <StaminaBar value={snap?.stamina ?? 1} sprint={snap?.sprint} />
-          <details className="rounded-xl border border-white/10 bg-[#0B0E14]/80 px-3 py-2 font-mono text-[10px] text-slate-300 backdrop-blur-md">
-            <summary className="cursor-pointer font-semibold uppercase tracking-wider text-[#00F0FF] outline-none focus-visible:ring-2 focus-visible:ring-[#00F0FF]">Match details and controls</summary>
-            <div className="mt-2 grid gap-1 sm:grid-cols-2">
-              <p>Surface · <span className="text-white">{SURFACES[cfg.surface].label}</span></p>
-              <p>Opponent · <span className="text-white">{DIFFICULTY[cfg.difficulty].label} {STYLES[cfg.style].label}</span></p>
-              <p>Rally · <span data-testid="rally-count" className="text-[#DFFF00]">{snap?.rally ?? 0}</span></p>
-              <p data-testid="keyboard-control-hint">Keyboard · WASD/arrows move · 1–7 hold/release a shot · Shift sprint · Space slide · Esc pause</p>
-              {mouseEnabled && <p data-testid="pointer-control-hint">Mouse · move to run · right-click to aim · hold/release left-click to swing</p>}
-              {touchControls
-                ? <p data-testid="touch-control-hint" className="text-[#DFFF00]">Touch · arrows move · hold/release a shot button · swipe the shot strip sideways to reach Serve</p>
-                : <p data-testid="onscreen-control-hint">On-screen arrows move · hold/release a shot button</p>}
-              <p>Enter · skip replay</p>
-              {snap?.state === "serve" && snap.server === 0 && (
-                <p data-testid="serve-hint" className="text-[#DFFF00]">
-                  {snap.serveStage === "hold" ? "Ready to serve" : "Ball in the air"}{snap.faults ? " · 2nd serve" : ""}
-                </p>
-              )}
-            </div>
-          </details>
-          {!intro && !paused && <ServeIndicator snap={snap} showFirstServeHint={!firstServeAttempted} />}
-        </div>
+        <MatchHud snap={snap} cfg={cfg} names={names} mouseEnabled={mouseEnabled} touchControls={touchControls}
+          intro={intro} paused={paused} firstServeAttempted={firstServeAttempted} />
 
         <div className="absolute right-2 top-2 z-20 flex flex-wrap justify-end gap-1.5 sm:right-4 sm:top-4 sm:gap-2">
           <button data-testid="camera-toggle-btn" onClick={() => { eng.clearPointer(); setCameraMode(c => c === "court" ? "broadcast" : "court"); }} title="Change gameplay camera" className="btn-ghost flex items-center gap-1.5 rounded-full bg-[#0B0E14]/85 px-2.5 py-2 font-mono text-[10px]"><Camera size={14} /><span>{cameraMode === "court" ? "Court" : "Broadcast"}</span></button>

@@ -1,4 +1,5 @@
 import { BALL, COURT } from "./constants";
+import { ENGINE_TUNING } from "./tuning";
 
 function netCollision(b, pz) {
   b.z = Math.sign(pz) * 0.06;
@@ -16,7 +17,7 @@ function groundBounce(b, surf) {
   if (b.spin >= 0.8) { b.vz *= 1.08; b.vy *= 1.1; }
   else if (b.spin <= -0.8) { b.vz *= 0.88; b.vy *= 0.65; }
   b.spin *= 0.5;
-  if (b.vy < 0.4) b.vy = 0;
+  if (b.vy < ENGINE_TUNING.bounceStopSpeed) b.vy = 0;
 }
 
 export function stepBall(b, dt, surf) {
@@ -43,17 +44,19 @@ export function solveShot(from, target, h, spin, minClear) {
   const dx = target.x - from.x;
   const dz = target.z - from.z;
   const dist = Math.hypot(dx, dz);
-  const clear = Math.min(minClear, 0.15 + Math.abs(from.z) * 0.35);
+  // Cap unusually large design margins for contact points close to the net.
+  const clearanceLimit = ENGINE_TUNING.netClearanceBase + Math.abs(from.z) * ENGINE_TUNING.netClearancePerMeter;
+  const clear = Math.min(minClear, clearanceLimit);
   let speed = h;
   let out = null;
-  for (let i = 0; i < 30 && speed > h * 0.4; i++) {
+  for (let i = 0; i < ENGINE_TUNING.shotSearchIterations && speed > h * ENGINE_TUNING.shotSpeedFloorRatio; i++) {
     const t = dist / speed;
     const vy = (-from.y + 0.5 * g * t * t) / t;
     out = { vx: dx / t, vy, vz: dz / t };
     const tn = Math.abs(from.z / out.vz);
     const yNet = from.y + vy * tn - 0.5 * g * tn * tn;
     if (yNet >= COURT.netH + clear) return out;
-    speed *= 0.93;
+    speed *= ENGINE_TUNING.shotSpeedReduction;
   }
   return out;
 }
