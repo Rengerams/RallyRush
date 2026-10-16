@@ -6,12 +6,14 @@ This directory contains the Rally Rush 0.2.0 game client and Electron desktop ap
 
 Requires Node.js and npm.
 
+Run these commands from the repository root:
+
 ```bash
 npm ci --legacy-peer-deps
 npm run desktop
 ```
 
-This starts Vite and opens the game in an Electron window. For browser-based development, use `npm start`; Vite prints the local URL.
+This starts Vite and opens the game in an Electron window. For browser-based development, run `npm start` from the repository root; Vite prints the local URL.
 
 ## Test and build
 
@@ -20,15 +22,15 @@ npm test
 npm run build
 ```
 
-Vite writes the optimized browser build to `dist/`.
+Vite writes the optimized browser build to `frontend/dist/`.
 
-On Windows, create the desktop installer with:
+On Windows, create the desktop installer from the repository root with:
 
 ```bash
 npm run desktop:dist
 ```
 
-The installer is written to `release/`. The installed desktop app does not require a separate browser, Node.js, backend service, or database.
+The installer is written to `frontend/release/`. The installed desktop app does not require a separate browser, Node.js, backend service, or database.
 
 ## Main source areas
 
