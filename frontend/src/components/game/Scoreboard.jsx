@@ -1,6 +1,6 @@
 function Row({ name, labels, games, history, serving, idx, legend, compact }) {
   return (
-    <div className={`scoreboard-row flex min-w-0 items-center gap-1.5 ${compact ? "px-2 py-1" : "px-3 py-2"}`} data-testid={`scoreboard-row-${idx}`} aria-label={`${name}${serving ? ", serving" : ""}`}>
+    <div className={`scoreboard-row flex min-w-0 items-center gap-1.5 ${compact ? "px-2 py-1" : "px-3 py-2"}`} data-testid={`scoreboard-row-${idx}`} role="group" aria-label={`${name}${serving ? ", serving" : ""}`}>
       <span aria-label={serving ? "Serving" : undefined} className={`h-1.5 w-1.5 shrink-0 rounded-full ${serving ? "bg-[#DFFF00] shadow-[0_0_10px_#DFFF00]" : "bg-transparent"}`} data-testid={`scoreboard-server-${idx}`} />
       <span data-testid={`scoreboard-name-${idx}`} className={`font-display min-w-0 flex-1 truncate text-sm font-extrabold uppercase ${legend ? "gold-shimmer" : ""}`}>{name}</span>
       {history.map((h, i) => <span key={`set-${i}-${h[0]}-${h[1]}`} aria-label={`Set ${i + 1}: ${h[0]}-${h[1]}`} className="w-5 shrink-0 text-center font-mono text-[10px] text-slate-500">{h[idx]}</span>)}
