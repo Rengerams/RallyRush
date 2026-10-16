@@ -7,6 +7,33 @@
 
 This plan builds on the existing single-player game: 3D tennis simulation, four AI difficulty levels and styles, five court surfaces, seven shot types, two match formats, point replays, and local match records.
 
+## Progress overview — 16 October 2026
+
+**Current release:** 0.2.0  
+**0.3.0 status:** Proposed; implementation has not started.  
+**Project board:** [Rally Rush 0.3.0](https://github.com/users/Rengerams/projects/3/views/2)
+
+| Project status | Items |
+| --- | ---: |
+| Backlog | 33 |
+| Ready | 0 |
+| In progress | 0 |
+| In review | 0 |
+| Done | 0 |
+
+| 0.3.0 initiative | Issue | Sub-issues complete |
+| --- | ---: | ---: |
+| First-session tutorial and onboarding | #41 | 0/3 |
+| Match HUD, controls, and accessibility | #39 | 0/3 |
+| Practice mode and training drills | #40 | 0/3 |
+| Local settings and data controls | #42 | 0/3 |
+| Match presets, replay, and post-match coaching | #43 | 0/3 |
+| Release validation and Windows installer | #44 | 0/3 |
+| Gameplay feel and graphics polish | #63 | 0/4 |
+| Larger desktop match view and compact score HUD | #64 | 0/3 |
+
+This is a dated snapshot. Use the project board for live status; update this section when an initiative changes status.
+
 ## Goals
 
 1. Help a first-time player understand movement, shot choice, and release timing before a full match.
