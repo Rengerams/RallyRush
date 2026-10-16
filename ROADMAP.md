@@ -34,6 +34,32 @@ This plan builds on the existing single-player game: 3D tennis simulation, four 
 
 This is a dated snapshot. Use the project board for live status; update this section when an initiative changes status.
 
+## Relative work order and complexity
+
+This roadmap uses P0 → P1 → P2 as a relative order, not calendar commitments. The sequence may change as implementation reveals dependencies.
+
+| Initiative | Issue | Priority | Size |
+| --- | ---: | :---: | :---: |
+| First-session tutorial and onboarding | #41 | P0 | M |
+| Match HUD, controls, and accessibility | #39 | P0 | L |
+| Larger desktop match view and compact score HUD | #64 | P0 | M |
+| Practice mode and training drills | #40 | P1 | L |
+| Local settings and data controls | #42 | P1 | L |
+| Release validation and Windows installer | #44 | P1 | M |
+| Match presets, replay, and post-match coaching | #43 | P2 | L |
+| Gameplay feel and graphics polish | #63 | P2 | XL |
+
+**Size means relative implementation complexity within this roadmap.** S is small, M medium, L large, and XL extra large. These labels do not represent hours, days, deadlines, or an assumed person's work speed. Revisit a size if an issue is split or its scope changes. Size issues individually when selecting them for active work; the parent sizes are coarse planning guides.
+
+### Suggested phases
+
+1. **P0 — playable foundation:** work through the tutorial, match HUD/accessibility, and desktop match view so a new player can learn, play, and see the court clearly.
+2. **P1 — practice and dependable data:** after core match flows are usable, add practice drills and local data controls. Record the baseline test/build state early; finish #44's full validation, installer, and release checks after the chosen features are complete.
+3. **P2 — depth and gameplay polish:** once the core flows and practice are stable, add match presets/replay/coaching and tune movement, ball contact, AI, court presentation, fans, and referees through playtests.
+4. **Release gate — #44:** pass the agreed quality checks and Windows installation/upgrade tests before publishing 0.3.0.
+
+No start dates, target dates, or iteration assignments are set yet.
+
 ## Goals
 
 1. Help a first-time player understand movement, shot choice, and release timing before a full match.
