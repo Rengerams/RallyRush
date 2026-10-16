@@ -2,7 +2,7 @@ import { beforeEach, describe, expect, it, vi } from "vitest";
 import { DEFAULT_SETUP, SETUP_KEY } from "@/game/constants";
 import {
   BACKUP_FORMAT, BACKUP_VERSION, DISPLAY_PREFERENCES_KEY, MATCHES_KEY,
-  STORAGE_VERSION_KEY, deleteLocalData, exportLocalData, importLocalData, migrateLocalStorage,
+  STORAGE_VERSION_KEY, deleteLocalData, exportLocalData, importLocalData, migrateLocalStorage, parseLocalDataBackup,
 } from "../api";
 
 const values = new Map();
@@ -37,7 +37,7 @@ describe("local data backup", () => {
 
     values.clear();
     expect(importLocalData(backupText, storage)).toMatchObject({ matchCount: 1, setup: { name: "Renger" } });
-    expect(JSON.parse(storage.getItem(MATCHES_KEY))).toEqual([match]);
+    expect(JSON.parse(storage.getItem(MATCHES_KEY))).toMatchObject([match]);
     expect(JSON.parse(storage.getItem(DISPLAY_PREFERENCES_KEY))).toEqual({ hudSize: "large", reducedEffects: true, reducedMotion: true, shotHoldMs: 150 });
   });
 
@@ -100,6 +100,23 @@ describe("local data backup", () => {
     const backup = exportLocalData(storage);
     expect(new TextEncoder().encode(backup).byteLength).toBeGreaterThan(1_000_000);
     expect(() => importLocalData(backup, storage)).not.toThrow();
+  });
+
+  it("normalizes malformed legacy history before export so accepted records are safe for History", () => {
+    values.set(MATCHES_KEY, JSON.stringify([{
+      player_name: "  Renger ", won: "yes", difficulty: "toString", surface: "__proto__",
+      created_at: "not a date", stats: { aces: "many", total_shots: -1 }, opponent_stats: { aces: null },
+      sets: [[1, "bad"]], rally_lengths: "not an array", unexpected: { nested: true },
+    }]));
+
+    const safeRecord = parseLocalDataBackup(exportLocalData(storage)).matches[0];
+    expect(safeRecord).toMatchObject({
+      player_name: "Renger", won: false, difficulty: "medium", surface: "hard",
+      created_at: "1970-01-01T00:00:00.000Z", stats: { aces: 0, total_shots: 0 },
+      opponent_stats: { aces: 0 }, sets: [], rally_lengths: [],
+    });
+    expect(safeRecord.unexpected).toBeUndefined();
+    expect(Number.isFinite(Date.parse(safeRecord.created_at))).toBe(true);
   });
 
   it.each([
@@ -182,9 +199,10 @@ describe("local data backup", () => {
       format: BACKUP_FORMAT, version: BACKUP_VERSION, setup: importedSetup,
       matches: importedMatches, displayPreferences: importedPreferences,
     });
+    const normalizedMatches = parseLocalDataBackup(backupText).matches;
     const importedValues = [
       [SETUP_KEY, JSON.stringify(importedSetup)],
-      [MATCHES_KEY, JSON.stringify(importedMatches)],
+      [MATCHES_KEY, JSON.stringify(normalizedMatches)],
       [DISPLAY_PREFERENCES_KEY, JSON.stringify(importedPreferences)],
     ];
     const totalBytes = (entries) => [...entries].reduce((sum, [key, value]) => sum + key.length + value.length, 0);

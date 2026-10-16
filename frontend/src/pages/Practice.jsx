@@ -2,7 +2,8 @@ import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { Link } from "react-router-dom";
 import { ArrowLeft, Pause, Play, RotateCcw } from "lucide-react";
 import { TennisEngine } from "@/game/engine";
-import { attachPlayKeyboardControls } from "@/game/playKeyboardControls";
+import { useGameLoop } from "@/game/useGameLoop";
+import { useGameKeyboardControls } from "@/game/useGameKeyboardControls";
 import { audio } from "@/game/audio";
 import { FORMATS } from "@/game/constants";
 import { createScore } from "@/game/scoring";
@@ -143,7 +144,7 @@ export default function Practice() {
   }, [finishAttempt, mode, resetPoint]);
 
   const engine = useMemo(() => {
-    const next = new TennisEngine(cfg, onEngineEvent, { rng: randomFromSeed(0x51a7e) });
+    const next = new TennisEngine(cfg, onEngineEvent, { rng: randomFromSeed(0x51a7e), audio });
     next.score.gamesPlayed = practiceServer(mode);
     next.setupPoint();
     next.replays = false;
@@ -152,17 +153,10 @@ export default function Practice() {
 
   useEffect(() => {
     engineRef.current = engine;
-    let raf, last = performance.now();
-    const loop = (time) => {
-      const dt = (time - last) / 1000;
-      last = time;
-      if (startedRef.current && !pausedRef.current && graphicsReady.current) engine.update(dt);
-      raf = requestAnimationFrame(loop);
-    };
-    raf = requestAnimationFrame(loop);
-    const timer = setInterval(() => setSnap(engine.snapshot()), 100);
-    return () => { cancelAnimationFrame(raf); clearInterval(timer); };
   }, [engine]);
+
+  const canUpdate = useCallback(() => startedRef.current && !pausedRef.current && graphicsReady.current, []);
+  useGameLoop(engine, canUpdate, setSnap);
 
   const togglePause = useCallback(() => {
     if (!startedRef.current || pendingRef.current) return;
@@ -170,10 +164,9 @@ export default function Practice() {
     engineRef.current?.clearInput();
   }, [sendDrillEvent]);
 
-  useEffect(() => attachPlayKeyboardControls({
-    engineRef, graphicsReady, pausedRef, introRef: { current: false }, togglePause,
-    noteServeAttempt: () => {},
-  }), [togglePause]);
+  const keyboardIntroRef = useMemo(() => ({ current: false }), []);
+  const noteServeAttempt = useCallback(() => {}, []);
+  useGameKeyboardControls({ engineRef, graphicsReady, pausedRef, introRef: keyboardIntroRef, togglePause, noteServeAttempt });
 
   const start = () => {
     audio.unlock();

@@ -33,8 +33,8 @@ describe("local data validation", () => {
       { player_name: "  Renger ", surface: "hard" },
     ]));
 
-    await expect(fetchMatches({ player: "renger" })).resolves.toEqual([
-      { player_name: "  Renger ", surface: "hard" },
+    await expect(fetchMatches({ player: "renger" })).resolves.toMatchObject([
+      { player_name: "Renger", surface: "hard", won: false, created_at: "1970-01-01T00:00:00.000Z", stats: { aces: 0 } },
     ]);
   });
 
