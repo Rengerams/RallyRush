@@ -7,6 +7,23 @@ import { createScore, awardPoint, pointLabels } from "../scoring";
 const cfg = { name: "Tester", power: 6, stamina: 6, accuracy: 6,
   difficulty: "medium", style: "baseline", surface: "hard", format: "quick" };
 
+function playTimedServe(seed) {
+  let state = seed >>> 0;
+  const rng = () => {
+    state = (Math.imul(state, 1664525) + 1013904223) >>> 0;
+    return state / 0x1_0000_0000;
+  };
+  const events = [];
+  const e = new TennisEngine({ ...cfg, difficulty: "easy" }, (event) => events.push(event), { rng });
+  e.score.gamesPlayed = 0;
+  e.setupPoint();
+  e.pressShot("flat");
+  for (let i = 0; i < 120 && e.ball.y < 2.25; i++) e.update(1 / 120);
+  e.pressShot("flat");
+  const serve = events.find((event) => event.type === "shot" && event.who === 0);
+  return { quality: serve?.quality, velocity: [e.ball.vx, e.ball.vy, e.ball.vz] };
+}
+
 test("simulation advances almost equally at 20 and 60 FPS", () => {
   const a = new TennisEngine(cfg), b = new TennisEngine(cfg);
   a.aiServeT = b.aiServeT = 100;
@@ -141,6 +158,13 @@ test("a mistimed tap expires and reports a miss without hitting the ball", () =>
   expect(e.p.buffered).toBeNull();
   expect(events.some((event) => event.type === "shot" && event.quality === "miss")).toBe(true);
   expect(e.lastHitter).toBe(1);
+});
+
+test("a timed player serve has repeatable quality and trajectory for a fixed seed", () => {
+  const first = playTimedServe(0x52a7e);
+  expect(first.quality).toBe("perfect");
+  expect(first.velocity.every(Number.isFinite)).toBe(true);
+  expect(first).toEqual(playTimedServe(0x52a7e));
 });
 
 test("advantage scoreboard shows forty on the other side", () => {
