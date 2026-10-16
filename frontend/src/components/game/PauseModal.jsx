@@ -9,6 +9,7 @@ export default function PauseModal({ onResume, onRestart, onQuit, sound, voice, 
   const [guideOpen, setGuideOpen] = useState(false);
 
   return (
+    <>
     <Dialog.Root open onOpenChange={(open) => !open && onResume()}>
       <Dialog.Portal>
         <Dialog.Overlay className="fixed inset-0 z-50 bg-[#0B0E14]/70 backdrop-blur-md" />
@@ -58,5 +59,6 @@ export default function PauseModal({ onResume, onRestart, onQuit, sound, voice, 
       </Dialog.Portal>
     </Dialog.Root>
     <FirstSessionGuide open={guideOpen} onOpenChange={setGuideOpen} />
+    </>
   );
 }
