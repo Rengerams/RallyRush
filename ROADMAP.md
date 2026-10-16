@@ -10,7 +10,7 @@ This plan builds on the existing single-player game: 3D tennis simulation, four 
 ## Goals
 
 1. Help a first-time player understand movement, shot choice, and release timing before a full match.
-2. Make the match HUD and controls easier to read on desktop and small screens, while keeping the court and stadium visible during play.
+2. Make the match HUD and controls easier to read on desktop and small screens, while scaling the desktop game view appropriately for larger windows and keeping the court and stadium visible.
 3. Keep match results and ranking behavior transparent and protect local save data.
 4. Add a low-pressure way to practice the core timing mechanic.
 5. Make rallies and player movement feel more convincing without losing responsive arcade controls.
@@ -30,8 +30,10 @@ This plan builds on the existing single-player game: 3D tennis simulation, four 
 - Make the active server, shot selection, stamina, and current timing feedback legible at laptop and mobile widths.
 - Show keyboard, pointer, and touch instructions in the appropriate control context.
 - Keep controls collapsible so the court remains the visual focus.
-- During every active match, on every screen size and in every match mode, hide or collapse the branded header/logo and non-gameplay chrome so the court and stadium remain the focus. Keep the normal court-and-stadium framing; do not force fullscreen or crop the scene to fill the display.
-- Keep score and essential controls visible, and keep branding on Setup and Pause screens.
+- During every active match and match mode, hide the branded header/logo and other non-gameplay chrome so the court and stadium remain the focus.
+- Scale the game view to use more of the available window on large desktop screens, while keeping the full court and stadium framed. Do not force a web-style fullscreen mode or crop the scene.
+- Keep the score as a compact overlay and essential controls accessible without taking over the view.
+- Use Esc to open the in-game pause menu and return to the match when resumed. Keep branding on Setup and Pause screens.
 
 **Accessibility and preferences**
 - Add text-size options for the HUD and controls.
@@ -43,7 +45,7 @@ This plan builds on the existing single-player game: 3D tennis simulation, four 
 - A new player can reach and start a match without guessing which keys perform the basic actions.
 - Tutorial can be skipped and replayed without changing saved player settings.
 - Play, Pause, and Match End remain usable at 1280×720 and 390×844.
-- During every active match, the court and stadium remain visible without the logo/header taking space from gameplay; do not force fullscreen or crop the scene, and keep score and essential controls usable at all sizes.
+- During every active match, the game view scales up on large desktop windows, the court and stadium remain framed, and no logo/header takes space from gameplay. The score stays compact, essential controls remain usable, and Esc opens the pause menu.
 - All gameplay actions remain available through keyboard and on-screen controls.
 
 ### P1 — Practice mode
@@ -111,7 +113,7 @@ Make rallies feel more convincing and readable while keeping Rally Rush's respon
 ## Suggested delivery sequence
 
 1. **Discovery and baseline:** record current test/build status, inspect layout at desktop and narrow widths, and capture a small set of first-time-player observations.
-2. **UI foundation:** implement responsive HUD refinements, match layout without the branded header on every screen size, preferences storage, reduced-motion support, and control-context help.
+2. **UI foundation:** implement responsive HUD refinements, compact match HUD and adaptive desktop game view, preferences storage, reduced-motion support, and control-context help.
 3. **Tutorial:** add reusable tutorial steps and test skip, replay, and completion flows.
 4. **Practice:** build drills on existing engine events; add focused engine and UI tests.
 5. **Local data tools:** add versioned import/export, validation, confirmation, and migration tests.
@@ -142,7 +144,7 @@ Make rallies feel more convincing and readable while keeping Rally Rush's respon
 | Tutorial interrupts experienced players | Make it skippable and replayable; remember completion locally. |
 | Import overwrites valued match history | Preview, validate, and require explicit confirmation; offer export first. |
 | Extra HUD options increase layout complexity | Test actual desktop and narrow-screen sizes and retain sensible defaults. |
-| Hiding the header changes court framing or hides useful match information | Preserve the court-and-stadium view, keep score and essential controls visible, and test at 1280×720 and 390×844. |
+| Scaling the game view hides stadium or crowds the HUD | Preserve court-and-stadium framing, keep score compact and controls accessible, and test large desktop windows plus 1280×720 and 390×844. |
 | Practice accidentally affects rankings | Keep practice data separate from match records and test this invariant. |
 | Gameplay tuning feels sluggish or unfair | Preserve responsive controls and use playtests across surfaces, shots, and difficulty levels. |
 | Performance drops from extra effects | Keep visual options optional and test on modest integrated graphics. |
@@ -150,7 +152,7 @@ Make rallies feel more convincing and readable while keeping Rally Rush's respon
 ## Success measures
 
 - First-time testers can start a match and complete a return without help.
-- During every match, testers see the court and stadium without the logo/header; the scene is not forced to fullscreen or cropped, and controls remain usable on desktop and mobile.
+- During every match, testers see a larger court-and-stadium view on large desktop screens without the logo/header; the score remains compact and Esc opens the pause menu.
 - Fewer missed actions caused by unclear controls or hidden feedback.
 - Gameplay testers can describe how timing, shot choice, and court surface change rallies, while controls remain responsive.
 - Practice gives repeatable and understandable timing feedback.
