@@ -7,7 +7,7 @@ import { audio } from "@/game/audio";
 import { FORMATS } from "@/game/constants";
 import { createScore } from "@/game/scoring";
 import { loadSetup } from "@/lib/api";
-import { createTimingDrillState, gradeServeOutcome, isServeLaunchEvent, isTargetHit, PRACTICE_ATTEMPT_COUNT, summarizeTimingAttempts, TIMING_GRADE_ORDER, transitionTimingDrill } from "@/lib/practiceTiming";
+import { createTimingDrillState, gradeServeOutcome, isServeLaunchEvent, isTargetHit, PRACTICE_ATTEMPT_COUNT, practiceServer, summarizeTimingAttempts, TIMING_GRADE_ORDER, transitionTimingDrill } from "@/lib/practiceTiming";
 import GameCanvas from "@/components/game/GameCanvas";
 import DPad from "@/components/game/DPad";
 import ShotPad from "@/components/game/ShotPad";
@@ -38,6 +38,8 @@ export default function Practice() {
   const [drill, setDrill] = useState(drillRef.current);
   const [mode, setMode] = useState("return");
   const [targetLane, setTargetLane] = useState("center");
+  const targetLaneRef = useRef(targetLane);
+  targetLaneRef.current = targetLane;
   const [lastGrade, setLastGrade] = useState(null);
   const [lastTargetHit, setLastTargetHit] = useState(null);
   const [snap, setSnap] = useState(null);
@@ -63,7 +65,7 @@ export default function Practice() {
     if (!engine) return;
     engine.clearInput();
     engine.score = createScore(FORMATS.quick);
-    engine.score.gamesPlayed = mode === "return" ? 1 : 0;
+    engine.score.gamesPlayed = practiceServer(mode);
     engine.stats = [
       { aces: 0, double_faults: 0, winners: 0, errors: 0, perfect_shots: 0, total_shots: 0, longest_rally: 0, points_won: 0 },
       { aces: 0, double_faults: 0, winners: 0, errors: 0, perfect_shots: 0, total_shots: 0, longest_rally: 0, points_won: 0 },
@@ -73,12 +75,12 @@ export default function Practice() {
     engine.replayFrames = [];
     engine.faults = 0;
     engine.p.stamina = engine.p.cap;
-    if (mode === "target") engine.pointerAim = { x: TARGET_X[targetLane], z: -8 };
     engine.setupPoint();
+    if (mode === "target") engine.pointerAim = { x: TARGET_X[targetLaneRef.current], z: -8 };
     serveGradeRef.current = null;
     setLastGrade(null);
     setLastTargetHit(null);
-  }, [mode, sendDrillEvent, targetLane]);
+  }, [mode, sendDrillEvent]);
 
   const finishAttempt = useCallback((grade, targetHit) => {
     const previousLength = drillRef.current.attempts.length;
@@ -113,7 +115,7 @@ export default function Practice() {
       if (event.type === "bounce" && event.who === 0 && serveGradeRef.current) {
         const grade = serveGradeRef.current;
         serveGradeRef.current = null;
-        finishAttempt(grade, event.in && isTargetHit(event.x, targetLane));
+        finishAttempt(grade, event.in && isTargetHit(event.x, targetLaneRef.current));
       }
       if (event.type === "call" && event.winner !== undefined) {
         const grade = serveGradeRef.current;
@@ -131,11 +133,11 @@ export default function Practice() {
         else resetPoint();
       }, 0);
     }
-  }, [finishAttempt, mode, resetPoint, targetLane]);
+  }, [finishAttempt, mode, resetPoint]);
 
   const engine = useMemo(() => {
     const next = new TennisEngine(cfg, onEngineEvent, { rng: randomFromSeed(0x51a7e) });
-    next.score.gamesPlayed = mode === "return" ? 1 : 0;
+    next.score.gamesPlayed = practiceServer(mode);
     next.setupPoint();
     next.replays = false;
     return next;
@@ -215,6 +217,7 @@ export default function Practice() {
       : `Toss in the air${snap.faults ? " · second serve" : ""} — press near the peak.`;
 
   const changeTargetLane = (lane) => {
+    targetLaneRef.current = lane;
     setTargetLane(lane);
     if (mode === "target" && engineRef.current) engineRef.current.pointerAim = { x: TARGET_X[lane], z: -8 };
   };

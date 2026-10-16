@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { createTimingDrillState, gradeServeOutcome, isServeLaunchEvent, isTargetHit, PRACTICE_ATTEMPT_COUNT, summarizeTimingAttempts, TIMING_GRADE_ORDER, transitionTimingDrill } from "../practiceTiming";
+import { createTimingDrillState, gradeServeOutcome, isServeLaunchEvent, isTargetHit, PRACTICE_ATTEMPT_COUNT, practiceServer, summarizeTimingAttempts, TIMING_GRADE_ORDER, transitionTimingDrill } from "../practiceTiming";
 
 describe("timing drill summary", () => {
   it("scores legal serves by timing and faults as misses", () => {
@@ -22,6 +22,12 @@ describe("timing drill summary", () => {
     expect(isTargetHit(1.2, "right")).toBe(true);
     expect(isTargetHit(2, "left")).toBe(false);
     expect(isTargetHit(Number.NaN, "center")).toBe(false);
+  });
+
+  it("starts receiver drills with the AI serving and serve practice with the player serving", () => {
+    expect(practiceServer("return")).toBe(1);
+    expect(practiceServer("target")).toBe(1);
+    expect(practiceServer("serve")).toBe(0);
   });
 
   it("counts grades in the match engine's order and gives a focused tip", () => {
