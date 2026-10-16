@@ -114,6 +114,11 @@ export class TennisEngine {
     this.attemptPlayerHit();
   }
 
+  cancelShot(id) {
+    if (this.p.heldShot === id) this.p.heldShot = null;
+    if (this.p.buffered?.shot === id) this.p.buffered = null;
+  }
+
   slide() {
     const p = this.p;
     const { dx, dz } = this.moveDir();

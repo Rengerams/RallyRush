@@ -1,8 +1,22 @@
-import { useRef } from "react";
+import { useEffect, useRef } from "react";
 import { SHOT_LIST } from "@/game/constants";
 
-export default function ShotPad({ onShot, onHold, onRelease, selectedShot = "flat", onSelect, prepareDelayMs = 150 }) {
+export default function ShotPad({ onShot, onHold, onRelease, onCancel, selectedShot = "flat", onSelect, prepareDelayMs = 150 }) {
   const touchGesture = useRef(null);
+  useEffect(() => () => clearTimeout(touchGesture.current?.timer), []);
+
+  const finishGesture = (event, cancelled = false) => {
+    const gesture = touchGesture.current;
+    if (!gesture || gesture.id !== event.pointerId) return;
+    clearTimeout(gesture.timer);
+    touchGesture.current = null;
+    if (gesture.panning) return;
+    if (cancelled) {
+      if (gesture.holding) onCancel?.(gesture.shot);
+    } else if (gesture.holding) onRelease?.(gesture.shot);
+    else onShot?.(gesture.shot);
+  };
+
   return (
     <div className="play-shotpad rounded-xl border border-white/10 bg-[#0B0E14]/80 p-2 backdrop-blur-md">
       <p className="sr-only">Shots</p>
@@ -12,23 +26,23 @@ export default function ShotPad({ onShot, onHold, onRelease, selectedShot = "fla
             aria-label={`${s.label} shot, key ${s.key}. ${s.desc}`}
             aria-pressed={selectedShot === s.id} title={`${s.key} · ${s.label}: ${s.desc}`}
             onPointerDown={(e) => {
-              if (e.button !== 0) return;
+              if (e.button !== 0 || touchGesture.current) return;
               onSelect?.(s.id);
+              const target = e.currentTarget;
+              const gesture = { id: e.pointerId, shot: s.id, x: e.clientX, y: e.clientY, holding: false, panning: false, timer: null };
+              touchGesture.current = gesture;
+              const prepare = () => {
+                if (touchGesture.current !== gesture || gesture.panning) return;
+                gesture.holding = true;
+                try { target.setPointerCapture(gesture.id); } catch { /* The pointer may already be released. */ }
+                onHold?.(s.id);
+              };
               if (e.pointerType === "touch") {
-                const target = e.currentTarget;
-                const gesture = { id: e.pointerId, x: e.clientX, y: e.clientY, target, holding: false, panning: false, timer: null };
-                touchGesture.current = gesture;
-                gesture.timer = setTimeout(() => {
-                  if (touchGesture.current !== gesture || gesture.panning) return;
-                  gesture.holding = true;
-                  try { target.setPointerCapture(gesture.id); } catch { /* The pointer may already have been released. */ }
-                  onHold?.(s.id);
-                }, prepareDelayMs);
-                return;
+                gesture.timer = setTimeout(prepare, prepareDelayMs);
+              } else {
+                e.preventDefault();
+                prepare();
               }
-              e.preventDefault();
-              e.currentTarget.setPointerCapture(e.pointerId);
-              onHold?.(s.id);
             }}
             onPointerMove={(e) => {
               const gesture = touchGesture.current;
@@ -39,36 +53,9 @@ export default function ShotPad({ onShot, onHold, onRelease, selectedShot = "fla
                 clearTimeout(gesture.timer);
               }
             }}
-            onPointerUp={(e) => {
-              const gesture = touchGesture.current;
-              if (gesture?.id === e.pointerId) {
-                clearTimeout(gesture.timer);
-                touchGesture.current = null;
-                if (gesture.panning) return;
-                if (gesture.holding) onRelease?.(s.id);
-                else onShot?.(s.id);
-                return;
-              }
-              onRelease?.(s.id);
-            }}
-            onPointerCancel={(e) => {
-              const gesture = touchGesture.current;
-              if (gesture?.id === e.pointerId) {
-                clearTimeout(gesture.timer);
-                touchGesture.current = null;
-                if (gesture.holding) onRelease?.(s.id);
-                return;
-              }
-              onRelease?.(s.id);
-            }}
-            onLostPointerCapture={(e) => {
-              const gesture = touchGesture.current;
-              if (gesture?.id === e.pointerId) {
-                clearTimeout(gesture.timer);
-                touchGesture.current = null;
-                if (gesture.holding) onRelease?.(s.id);
-              } else onRelease?.(s.id);
-            }}
+            onPointerUp={(e) => finishGesture(e)}
+            onPointerCancel={(e) => finishGesture(e, true)}
+            onLostPointerCapture={(e) => finishGesture(e, true)}
             onClick={(e) => {
               // Pointer input already fired on press; keep keyboard/screen-reader clicks usable.
               if (e.detail === 0) { onSelect?.(s.id); onShot?.(s.id); }

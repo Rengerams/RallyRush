@@ -66,6 +66,23 @@ describe("ShotPad touch interactions", () => {
     expect(onRelease).not.toHaveBeenCalled();
   });
 
+  it("cancels a prepared hold without treating it as a release", () => {
+    vi.useFakeTimers();
+    const onHold = vi.fn();
+    const onRelease = vi.fn();
+    const onCancel = vi.fn();
+    render(<ShotPad onHold={onHold} onRelease={onRelease} onCancel={onCancel} prepareDelayMs={125} />);
+    const button = screen.getByTestId("shot-btn-flat");
+
+    fireEvent.pointerDown(button, { pointerId: 11, pointerType: "touch", button: 0, clientX: 10, clientY: 10 });
+    act(() => { vi.advanceTimersByTime(125); });
+    fireEvent.pointerCancel(button, { pointerId: 11, pointerType: "touch" });
+
+    expect(onHold).toHaveBeenCalledWith("flat");
+    expect(onCancel).toHaveBeenCalledWith("flat");
+    expect(onRelease).not.toHaveBeenCalled();
+  });
+
   it("lets a horizontal touch swipe pan without firing a shot", () => {
     const onShot = vi.fn();
     const onHold = vi.fn();

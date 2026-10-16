@@ -34,8 +34,10 @@ jobs:
           cache: npm
           cache-dependency-path: package-lock.json
       - run: npm ci --legacy-peer-deps
+      - run: npx playwright install chromium
       - run: npm run lint
       - run: npm test
+      - run: npm run test:browser
       - run: npm run desktop:dist
       - uses: actions/upload-artifact@v7
         with:
