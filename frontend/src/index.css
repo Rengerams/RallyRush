@@ -161,9 +161,6 @@ body {
   font-size: 9px;
 }
 
-.play-shotpad details {
-  display: none;
-}
 
 .play-hud-corner {
   pointer-events: auto;
