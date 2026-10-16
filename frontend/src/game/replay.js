@@ -1,4 +1,4 @@
-const entityFrame = (p) => ({ x: p.x, z: p.z, vx: p.vx || 0, vz: p.vz || 0, swing: p.swing, side: p.side, sprint: !!p.sprint, sliding: p.sliding || 0, overhead: !!p.overhead });
+const entityFrame = (p) => ({ x: p.x, z: p.z, vx: p.vx || 0, vz: p.vz || 0, swing: p.swing, side: p.side, sprint: !!p.sprint, sliding: p.sliding || 0, overhead: !!p.overhead, serveSwing: !!p.serveSwing });
 
 export function recordFrame(e) {
   const { x, y, z } = e.ball;
