@@ -14,14 +14,16 @@ const CONTENT_SECURITY_POLICY = [
   "frame-ancestors 'none'",
 ].join("; ");
 
-session.defaultSession.webRequest.onHeadersReceived((details, callback) => {
-  callback({
-    responseHeaders: {
-      ...details.responseHeaders,
-      "Content-Security-Policy": [CONTENT_SECURITY_POLICY],
-    },
+function applyContentSecurityPolicy() {
+  session.defaultSession.webRequest.onHeadersReceived((details, callback) => {
+    callback({
+      responseHeaders: {
+        ...details.responseHeaders,
+        "Content-Security-Policy": [CONTENT_SECURITY_POLICY],
+      },
+    });
   });
-});
+}
 
 function createWindow() {
   const window = new BrowserWindow({
@@ -51,6 +53,7 @@ function createWindow() {
 }
 
 app.whenReady().then(() => {
+  applyContentSecurityPolicy();
   createWindow();
   app.on("activate", () => {
     if (BrowserWindow.getAllWindows().length === 0) createWindow();
