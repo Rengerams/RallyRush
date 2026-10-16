@@ -5,6 +5,7 @@ import { audio } from "./audio";
 import { recordFrame, startReplay, stepReplay, endReplay } from "./replay";
 import { pointerInput, movementDirection } from "./input";
 import { ENGINE_TUNING } from "./tuning";
+import { gradeTimingDistance } from "./timing";
 
 const lerp = (a, b, t) => a + (b - a) * t;
 const clamp = (v, a, b) => Math.max(a, Math.min(b, v));
@@ -197,9 +198,7 @@ export class TennisEngine {
     if (buf.prepared && !buf.released) return;
     if (buf.prepared && (!approaching || d > ENGINE_TUNING.preparedContactRadius)) return;
     const timingDistance = buf.prepared ? buf.releaseDistance : d;
-    const quality = timingDistance <= ENGINE_TUNING.perfectTimingDistance ? "perfect"
-      : timingDistance <= ENGINE_TUNING.goodTimingDistance ? "good"
-      : timingDistance <= ENGINE_TUNING.lateTimingDistance ? "early" : "late";
+    const quality = gradeTimingDistance(timingDistance);
     if (!buf.prepared && quality === "late" && approaching && this.time < buf.exp - ENGINE_TUNING.lateTapGracePeriod) return;
     p.buffered = null;
     this.playerHit(buf.shot, quality);
