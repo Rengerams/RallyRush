@@ -63,7 +63,7 @@
     "playtest:ai": "vitest run --config frontend/vite.config.mjs src/game/__tests__/aiPlaytest.test.js --reporter=verbose --silent=false",
     "lint": "eslint frontend/src --max-warnings=0",
     "desktop": "node frontend/scripts/desktop-dev.cjs",
-    "desktop:dist": "npm run build && electron-builder --win nsis"
+    "desktop:dist": "npm run build && electron-builder --win nsis --publish never"
   },
   "devDependencies": {
     "@eslint/js": "^10.0.1",
