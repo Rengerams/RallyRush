@@ -498,7 +498,7 @@ export class TennisEngine {
     const s = this.score;
     return {
       labels: pointLabels(s), games: [...s.games], sets: [...s.sets], setHistory: s.setHistory.map((x) => [...x]),
-      server: this.server, tiebreak: s.tiebreak, stamina: this.p.stamina / this.p.cap, sprint: this.p.sprint,
+      server: currentServer(s), tiebreak: s.tiebreak, stamina: this.p.stamina / this.p.cap, sprint: this.p.sprint,
       state: this.state, serveStage: this.serveStage, rally: this.rally, faults: this.faults,
       selectedShot: this.selectedShot,
       serveHeight: this.state === "serve" && this.serveStage === "toss" ? clamp((this.ball.y - 1) / 1.4, 0, 1) : 0,
