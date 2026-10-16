@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { Pause, Play as PlayIcon, Camera, Film, MousePointer2 } from "lucide-react";
+import { Pause, Camera, Film, MousePointer2 } from "lucide-react";
 import { TennisEngine } from "@/game/engine";
 import { attachPlayKeyboardControls } from "@/game/playKeyboardControls";
 import { audio } from "@/game/audio";
@@ -57,10 +57,7 @@ export default function Play() {
     }).then((saved) => {
       if (matchIdRef.current === matchId) setSaveState(saved.storage === "local" ? "saved-local" : "saved");
     }).catch(() => {
-      if (matchIdRef.current === matchId) {
-        setSaveState("error");
-        toast.error("Match could not be saved. Check available storage and try again.", { id: "match-save-error" });
-      }
+      if (matchIdRef.current === matchId) setSaveState("error");
     });
   }, [cfg]);
 
@@ -193,9 +190,8 @@ export default function Play() {
         {intro && <MatchIntro key={seed} cfg={cfg} names={names} onDone={endIntro} />}
         {replay && !paused && (
           <div data-testid="replay-banner" className="pointer-events-none absolute inset-x-3 bottom-24 z-20 flex flex-wrap items-center justify-between gap-2 border border-white/10 bg-[#0B0E14]/90 px-3 py-2 sm:bottom-20">
-            <span data-testid="replay-outcome" className="font-display text-base font-black uppercase italic text-[#00F0FF]">Replay · {replay}</span>
-            <button data-testid="replay-pause-btn" aria-label={snap?.replayPaused ? "Resume replay" : "Pause replay"} onClick={() => { if (engRef.current) engRef.current.replayPaused = !engRef.current.replayPaused; }} className="btn-ghost pointer-events-auto rounded-full p-2">{snap?.replayPaused ? <PlayIcon size={14} /> : <Pause size={14} />}</button>
-            <button data-testid="replay-speed-btn" aria-label={`Replay speed ${snap?.replaySpeed ?? 1} times; change speed`} onClick={() => { if (engRef.current) engRef.current.replaySpeed = ({ 0.5: 1, 1: 1.5, 1.5: 0.5 })[engRef.current.replaySpeed] ?? 1; }} className="btn-ghost pointer-events-auto rounded-full px-3 py-1 font-mono text-[10px]">{snap?.replaySpeed ?? 1}×</button>
+            <span className="font-display text-base font-black uppercase italic text-[#00F0FF]">Replay · {replay}</span>
+            <span data-testid="replay-speed" className="font-mono text-[10px] text-white">{snap?.replaySpeed ?? 0.65}×</span>
             <button data-testid="replay-skip-btn" onClick={() => engRef.current?.endReplay()} className="btn-ghost pointer-events-auto rounded-full px-3 py-1 font-mono text-[10px]">Skip</button>
             <div data-testid="replay-progress" role="progressbar" aria-valuenow={Math.round((snap?.replayProgress || 0) * 100)} aria-valuemin={0} aria-valuemax={100} aria-label="Replay progress" className="h-0.5 w-full bg-white/15"><div className="h-full bg-[#00F0FF]" style={{ width: `${(snap?.replayProgress || 0) * 100}%` }} /></div>
           </div>

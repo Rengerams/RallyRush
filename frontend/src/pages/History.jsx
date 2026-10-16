@@ -23,7 +23,7 @@ export function MatchCard({ m, i = 0 }) {
       <span className={`font-display w-24 text-3xl font-black uppercase italic ${m.won ? "text-[#DFFF00]" : "text-[#E05A47]"}`}>{m.won ? "Win" : "Loss"}</span>
       <div className="min-w-[160px] flex-1">
         <p className="font-display text-2xl font-extrabold uppercase">{m.player_name}</p>
-        <p className="font-mono text-xs text-slate-400">vs {difficulty} {style} · {format}</p>
+        <p className="font-mono text-xs text-slate-500">vs {difficulty} {style} · {format}</p>
       </div>
       <p className="font-mono text-xl font-bold">{(Array.isArray(m.sets) ? m.sets.filter((set) => Array.isArray(set) && set.length >= 2) : []).map((set) => `${set[0]}-${set[1]}`).join("  ")}</p>
       <span className="flex items-center gap-2 font-mono text-xs text-slate-400"><span className="h-3 w-3 rounded-full" style={{ background: surf.color }} />{surf.label}</span>
@@ -32,7 +32,7 @@ export function MatchCard({ m, i = 0 }) {
         <span>Rally <b className="text-white">{stats.longest_rally ?? 0}</b></span>
         <span>Perfect <b className="text-white">{stats.perfect_shots ?? 0}</b></span>
       </div>
-      <span className="font-mono text-[11px] text-slate-400">{new Date(m.created_at).toLocaleString()}</span>
+      <span className="font-mono text-[11px] text-slate-500">{new Date(m.created_at).toLocaleString()}</span>
       {m.opponent_stats && <details data-testid={`history-stats-${i}`} open={expanded} onToggle={rememberExpanded} className="w-full border-t border-white/10 pt-3">
         <summary data-testid={`history-stats-toggle-${i}`} className="cursor-pointer font-mono text-xs text-[#00F0FF]">Match breakdown</summary>
         <div className="mt-5 max-w-xl"><MatchStats stats={stats} opponentStats={m.opponent_stats} names={[m.player_name, `${difficulty} AI`]} rallyLengths={m.rally_lengths} prefix={`history-${m.id}`} /></div>
@@ -66,8 +66,8 @@ export default function History() {
         ))}
       </div>
       <div className="mt-8 space-y-3">
-        {rows === null && <p className="text-slate-400">Loading…</p>}
-        {rows?.length === 0 && <p data-testid="history-empty" className="text-slate-400">No matches found.</p>}
+        {rows === null && <p className="text-slate-500">Loading…</p>}
+        {rows?.length === 0 && <p data-testid="history-empty" className="text-slate-500">No matches found.</p>}
         {rows?.map((m, i) => <MatchCard key={m.id} m={m} i={i} />)}
       </div>
     </main>

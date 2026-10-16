@@ -3,7 +3,7 @@ export default function StaminaBar({ value, sprint }) {
   const color = value > 0.6 ? "#22C55E" : value > 0.3 ? "#EAB308" : "#E05A47";
   return (
     <div className="rounded-2xl border border-white/10 bg-[#121824] p-4">
-      <div className="flex justify-between font-mono text-[10px] uppercase tracking-[0.25em] text-slate-400">
+      <div className="flex justify-between font-mono text-[10px] uppercase tracking-[0.25em] text-slate-500">
         <span>Stamina {sprint && <span className="text-[#DFFF00]">· sprint</span>}</span>
         <span data-testid="stamina-value">{pct}%</span>
       </div>
