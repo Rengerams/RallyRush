@@ -15,6 +15,8 @@ on:
       - main
     paths:
       - "frontend/**"
+      - "package.json"
+      - "package-lock.json"
       - ".github/workflows/desktop-windows.yml"
   workflow_dispatch:
 
