@@ -2,7 +2,7 @@ import { useEffect, useRef, useState } from "react";
 import { RotateCcw } from "lucide-react";
 import { ThreeView } from "@/game/three/ThreeView";
 
-export default function GameCanvas({ eng, wrapRef, renderActive = true, onSwing, onRelease, onPointer, onPointerLeave, onQuality, onAvailability }) {
+export default function GameCanvas({ eng, wrapRef, renderActive = true, reducedEffects = false, onSwing, onRelease, onPointer, onPointerLeave, onQuality, onAvailability }) {
   const ref = useRef(null), viewRef = useRef(null);
   const [error, setError] = useState(null), [retry, setRetry] = useState(0);
   const [pageVisible, setPageVisible] = useState(() => typeof document === "undefined" || document.visibilityState !== "hidden");
@@ -20,6 +20,7 @@ export default function GameCanvas({ eng, wrapRef, renderActive = true, onSwing,
     try { view = new ThreeView(canvas, eng); }
     catch { setError("3D graphics could not start on this browser."); onAvailability?.(false); return undefined; }
     viewRef.current = view;
+    if (reducedEffects) view.reduceEffects();
     onAvailability?.(true);
     const fit = () => {
       const width = wrapRef.current.clientWidth || window.innerWidth;
@@ -39,6 +40,10 @@ export default function GameCanvas({ eng, wrapRef, renderActive = true, onSwing,
       canvas.removeEventListener("webglcontextlost", contextLost); view.dispose(); viewRef.current = null; onAvailability?.(false);
     };
   }, [eng, wrapRef, onQuality, onAvailability, retry]);
+
+  useEffect(() => {
+    if (reducedEffects) viewRef.current?.reduceEffects();
+  }, [reducedEffects]);
 
   useEffect(() => {
     if (!renderActive || !pageVisible || error || !viewRef.current) return undefined;
