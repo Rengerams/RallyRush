@@ -22,11 +22,10 @@ export default function GameCanvas({ eng, wrapRef, renderActive = true, onSwing,
     viewRef.current = view;
     onAvailability?.(true);
     const fit = () => {
-      const width = wrapRef.current.clientWidth;
-      const mobile = window.innerWidth < 1024;
-      const maxH = Math.max(300, window.innerHeight - (mobile ? 230 : 145));
-      const height = Math.min(maxH, width * (mobile ? 0.95 : 0.68));
-      canvas.style.width = `${width}px`; canvas.style.height = `${height}px`;
+      const width = wrapRef.current.clientWidth || window.innerWidth;
+      const height = wrapRef.current.clientHeight || window.innerHeight;
+      canvas.style.width = `${width}px`;
+      canvas.style.height = `${height}px`;
       view.setSize(width, height);
     };
     fit();
@@ -60,7 +59,7 @@ export default function GameCanvas({ eng, wrapRef, renderActive = true, onSwing,
   }, [renderActive, pageVisible, error, retry, onQuality]);
 
   const point = (event) => viewRef.current?.courtPoint(event.clientX, event.clientY);
-  return <div className="relative" data-testid="3d-game-surface">
+  return <div className="play-canvas relative h-full w-full" data-testid="3d-game-surface">
     <canvas key={retry} ref={ref} data-testid="game-canvas" data-view-mode="3d" aria-label="3D tennis court"
       onPointerMove={e => { if (e.pointerType === "mouse") onPointer?.(point(e), !!(e.buttons & 2)); }}
       onPointerLeave={() => { onPointerLeave?.(); onRelease?.(); }}
@@ -73,7 +72,7 @@ export default function GameCanvas({ eng, wrapRef, renderActive = true, onSwing,
       onPointerUp={e => { if (e.button === 0) onRelease?.(); if (e.button === 2) onPointerLeave?.(); }}
       onPointerCancel={() => { onPointerLeave?.(); onRelease?.(); }}
       onLostPointerCapture={() => onRelease?.()}
-      className="block touch-none rounded-xl border border-white/10" style={{ cursor: "crosshair" }} />
+      className="block touch-none" style={{ cursor: "crosshair" }} />
     {error && <div data-testid="webgl-error" role="alert" className="absolute inset-0 z-40 flex flex-col items-center justify-center gap-4 bg-[#121824] p-5 text-center">
       <p>{error}</p><button data-testid="webgl-retry-btn" onClick={() => setRetry(n => n + 1)} className="btn-volt flex items-center gap-2 rounded-full px-5 py-3"><RotateCcw size={16} />Retry 3D</button>
     </div>}
