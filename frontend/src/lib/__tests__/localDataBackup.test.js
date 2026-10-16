@@ -93,6 +93,7 @@ describe("local data backup", () => {
     values.set(MATCHES_KEY, "matches");
     values.set(DISPLAY_PREFERENCES_KEY, "prefs");
     values.set("rally-rush:first-session-guide:v1", "complete");
+    values.set("rally-rush:first-serve-hint:v1", "seen");
     values.set(STORAGE_VERSION_KEY, "1");
     values.set("renffr-breakdown-match-1", "open");
     values.set("another-app:settings", "keep");

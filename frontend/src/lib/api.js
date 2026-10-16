@@ -223,7 +223,8 @@ export function deleteLocalData(storage = globalThis.localStorage) {
   for (let index = 0; index < storage.length; index++) {
     const key = storage.key(index);
     if (key && (key === SETUP_KEY || key === MATCHES_KEY || key === DISPLAY_PREFERENCES_KEY || key === STORAGE_VERSION_KEY ||
-        key === "rally-rush:first-session-guide:v1" || key.startsWith(LEGACY_HISTORY_PREFIX))) keys.push(key);
+        key === "rally-rush:first-session-guide:v1" || key === "rally-rush:first-serve-hint:v1" ||
+        key.startsWith(LEGACY_HISTORY_PREFIX))) keys.push(key);
   }
   keys.forEach((key) => storage.removeItem(key));
 }
