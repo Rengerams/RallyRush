@@ -27,6 +27,7 @@ Rally Rush (v0.2.0) is a single-player, arcade-style 3D tennis game for Windows 
 ## Table of contents
 
 - [Features](#features)
+- [What’s new in 0.3.0](#whats-new-in-030)
 - [Screenshots](#screenshots)
 - [Download (Windows)](#windows-desktop)
 - [Controls](#controls)
@@ -37,6 +38,41 @@ Rally Rush (v0.2.0) is a single-player, arcade-style 3D tennis game for Windows 
 - [Reporting bugs & feedback](#reporting-bugs--feedback)
 - [Roadmap](#next-version)
 - [License](#license)
+
+## What’s new in 0.3.0
+
+Rally Rush 0.3.0 is all about getting into the match faster, seeing more of the court, and making every rally feel clearer. The release is still in validation; these are the features in the 0.3.0 update.
+
+### Find your feet, then find your game
+
+- A short, skippable first-session guide teaches movement, sprinting, sliding, shot choice, timing, and the scoreboard. Replay it from Setup or Pause whenever you need a refresher.
+- Three Practice drills let you sharpen your timing, work on your serve, or aim at a chosen court lane. Practice attempts stay out of match history and leaderboard results.
+- Clearer control hints help keyboard, mouse, and touch players get started.
+
+### The court takes center stage
+
+- A larger, responsive match view gives the court and stadium more room while keeping the action framed.
+- Follow points, games, sets, and the active server between rallies, with a compact score display during play.
+- Editable quick-play presets set the surface, AI style, difficulty, and match format; you can still customize your player and match.
+- Improved keyboard focus, contrast, and screen-reader announcements make match feedback easier to follow, with reduced-motion support for callouts.
+
+### Rallies with a little more rhythm
+
+- Tuned acceleration, turning, sliding, recovery, and stamina make movement feel more deliberate.
+- Contact, spin, and court-surface bounce have been tuned alongside gameplay stability.
+- AI difficulty has a repeatable playtest baseline across matchups.
+
+### Replay the point. Learn from the match.
+
+- Pause or resume replays and choose playback speed.
+- Review the final point and get a post-match coaching note based on your stats.
+
+### More match-day atmosphere, your data stays yours
+
+- A clearer serve follow-through, more present match music, and referee calls that help you catch score changes.
+- Export local data, preview and validate a backup before importing it, or clear your local game data deliberately.
+
+For the full release notes and validation status, see [Rally Rush 0.3.0 release notes](docs/release-notes-0.3.0-draft.md).
 
 ## Features
 
