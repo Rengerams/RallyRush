@@ -24,6 +24,7 @@ export const ENGINE_TUNING = Object.freeze({
   slideStaminaCost: 6,
   sprintStaminaDrain: 15,
   staminaRecovery: 10,
+  walkingStaminaRecovery: 4,
   playerAcceleration: 28,
   playerBraking: 34,
   playerBounds: { minX: -7, maxX: 7, minZ: 0.7, maxZ: 14.6 },
