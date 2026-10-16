@@ -21,8 +21,14 @@ describe("match display preferences", () => {
   it("persists the chosen HUD, motion, and effects preferences", () => {
     const storage = makeStorage();
     const saved = saveMatchDisplayPreferences({ hudSize: "large", reducedMotion: true, reducedEffects: true }, storage);
-    expect(saved).toEqual({ hudSize: "large", reducedMotion: true, reducedEffects: true });
+    expect(saved).toEqual({ hudSize: "large", reducedMotion: true, reducedEffects: true, shotHoldMs: 150 });
     expect(loadMatchDisplayPreferences(storage)).toEqual(saved);
+  });
+
+  it("clamps the touch preparation delay to supported increments", () => {
+    const storage = makeStorage();
+    expect(saveMatchDisplayPreferences({ shotHoldMs: 178 }, storage).shotHoldMs).toBe(175);
+    expect(saveMatchDisplayPreferences({ shotHoldMs: 400 }, storage).shotHoldMs).toBe(250);
   });
 
   it("normalizes unknown or malformed preference values", () => {

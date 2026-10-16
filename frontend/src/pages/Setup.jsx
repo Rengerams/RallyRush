@@ -53,13 +53,13 @@ export default function Setup() {
         <aside className="space-y-6">
           <LegendCard active={cfg.legend} onToggle={toggleLegend} />
           <div className="rounded-2xl border border-white/10 bg-[#121824] p-5">
-            <label className="font-mono text-[11px] uppercase tracking-[0.25em] text-slate-500" htmlFor="pname">Player name</label>
+            <label className="font-mono text-[11px] uppercase tracking-[0.25em] text-slate-400" htmlFor="pname">Player name</label>
             <input id="pname" data-testid="setup-name-input" value={cfg.name} disabled={cfg.legend} maxLength={24} onChange={(e) => set("name", e.target.value)}
               className="mt-2 w-full rounded-lg border border-white/10 bg-[#0B0E14] px-4 py-3 font-display text-2xl font-bold uppercase outline-none transition-colors focus:border-[#DFFF00] disabled:opacity-60" />
             <div className="mt-6 space-y-5">
               {ATTRS.map((a) => <AttrSlider key={a} attr={a} value={cfg[a]} disabled={cfg.legend} onChange={(v) => setAttr(a, v)} />)}
             </div>
-            <p data-testid="setup-budget" className="mt-5 font-mono text-xs text-slate-500">
+            <p data-testid="setup-budget" className="mt-5 font-mono text-xs text-slate-400">
               {cfg.legend ? "Legend preset · budget unlocked" : `Attribute budget ${used}/${ATTR_BUDGET}`}
             </p>
           </div>

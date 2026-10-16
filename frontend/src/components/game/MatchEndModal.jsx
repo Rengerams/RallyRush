@@ -19,7 +19,7 @@ export default function MatchEndModal({ result, names, saveState, onRematch, onL
         <Dialog.Overlay className="fixed inset-0 z-50 bg-[#0B0E14]/85 backdrop-blur-md" />
         <Dialog.Content data-testid="match-end-modal" aria-describedby="match-end-description" className="fixed inset-x-3 top-1/2 z-50 max-h-[calc(100dvh-1.5rem)] w-auto max-w-[500px] -translate-y-1/2 overflow-y-auto overscroll-contain rounded-2xl border border-white/10 bg-[#121824] p-5 outline-none fade-up sm:left-1/2 sm:right-auto sm:w-full sm:-translate-x-1/2 sm:p-7">
           <div className="flex items-center justify-between gap-3">
-            <div className="flex items-center gap-3"><Trophy className={result.won ? "text-[#DFFF00]" : "text-slate-500"} size={24} /><p className="font-mono text-[10px] uppercase text-slate-400">Game, set & match</p></div>
+            <div className="flex items-center gap-3"><Trophy className={result.won ? "text-[#DFFF00]" : "text-slate-400"} size={24} /><p className="font-mono text-[10px] uppercase text-slate-400">Game, set & match</p></div>
             <span data-testid="match-end-duration" className="font-mono text-xs text-slate-400">{Math.floor(result.duration_sec / 60)}:{String(result.duration_sec % 60).padStart(2, "0")}</span>
           </div>
           <Dialog.Title id="match-result-title" data-testid="match-end-title" className={`font-display mt-2 text-5xl font-black uppercase italic ${result.won ? "text-[#DFFF00]" : "text-[#E05A47]"}`}>{result.won ? "Victory" : "Defeat"}</Dialog.Title>

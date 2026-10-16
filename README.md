@@ -42,7 +42,7 @@ Rally Rush (v0.2.0) is a single-player, arcade-style 3D tennis game for Windows 
 
 - 3D tennis simulation with ball physics, player movement, stamina, sprinting, slides, and recorded point replays.
 - Seven shot types: flat, topspin, slice, lob, drop shot, serve, and smash. Each shot has a timing grade (Miss → Perfect).
-- Five court surfaces: Hard Court, Clay, Grass, Kunstgras (artificial grass), and Smashcourt (affects bounce & movement).
+- Five court surfaces: Hard Court, Clay, Grass, Artificial Grass, and Smashcourt (affects bounce & movement).
 - Four AI difficulty levels and four AI play styles.
 - Player setup: name, attribute distribution (Power, Stamina, Accuracy), or Legend preset.
 - Two match formats: Quick Set and Original Rules (best of three sets).

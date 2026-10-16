@@ -1,7 +1,7 @@
 import { useRef } from "react";
 import { SHOT_LIST } from "@/game/constants";
 
-export default function ShotPad({ onShot, onHold, onRelease, selectedShot = "flat", onSelect }) {
+export default function ShotPad({ onShot, onHold, onRelease, selectedShot = "flat", onSelect, prepareDelayMs = 150 }) {
   const touchGesture = useRef(null);
   return (
     <div className="play-shotpad rounded-xl border border-white/10 bg-[#0B0E14]/80 p-2 backdrop-blur-md">
@@ -23,7 +23,7 @@ export default function ShotPad({ onShot, onHold, onRelease, selectedShot = "fla
                   gesture.holding = true;
                   try { target.setPointerCapture(gesture.id); } catch { /* The pointer may already have been released. */ }
                   onHold?.(s.id);
-                }, 140);
+                }, prepareDelayMs);
                 return;
               }
               e.preventDefault();

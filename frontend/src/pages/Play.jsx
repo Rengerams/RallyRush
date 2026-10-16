@@ -210,7 +210,7 @@ export default function Play() {
         )}
         <div className="play-controls absolute inset-x-0 bottom-0 z-20 flex items-end justify-between gap-2 px-2 pb-[max(0.5rem,env(safe-area-inset-bottom))] pt-6 sm:gap-4 sm:px-4 sm:pb-4">
           <DPad onKey={(k, d) => { if (!pausedRef.current && !introRef.current) engRef.current?.setKey(k, d); }} />
-          <ShotPad onShot={shot} onHold={hold} onRelease={release} selectedShot={snap?.selectedShot} onSelect={id => { eng.selectedShot = id; }} />
+          <ShotPad onShot={shot} onHold={hold} onRelease={release} selectedShot={snap?.selectedShot} onSelect={id => { eng.selectedShot = id; }} prepareDelayMs={displayPrefs.shotHoldMs} />
         </div>
       </section>
     </main>
