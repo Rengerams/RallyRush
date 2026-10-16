@@ -8,7 +8,7 @@ export default function MatchEndModal({ result, names, saveState, onRematch, onL
     <Dialog.Root open>
       <Dialog.Portal>
         <Dialog.Overlay className="fixed inset-0 z-50 bg-[#0B0E14]/85 backdrop-blur-md" />
-        <Dialog.Content data-testid="match-end-modal" aria-describedby="match-end-description" className="fixed inset-x-3 top-1/2 z-50 max-h-[calc(100dvh-1.5rem)] w-auto max-w-[500px] -translate-y-1/2 overflow-y-auto rounded-2xl border border-white/10 bg-[#121824] p-5 outline-none fade-up sm:left-1/2 sm:right-auto sm:w-full sm:-translate-x-1/2 sm:p-7">
+        <Dialog.Content data-testid="match-end-modal" aria-describedby="match-end-description" className="fixed inset-x-3 top-1/2 z-50 max-h-[calc(100dvh-1.5rem)] w-auto max-w-[500px] -translate-y-1/2 overflow-y-auto overscroll-contain rounded-2xl border border-white/10 bg-[#121824] p-5 outline-none fade-up sm:left-1/2 sm:right-auto sm:w-full sm:-translate-x-1/2 sm:p-7">
           <div className="flex items-center justify-between gap-3">
             <div className="flex items-center gap-3"><Trophy className={result.won ? "text-[#DFFF00]" : "text-slate-500"} size={24} /><p className="font-mono text-[10px] uppercase text-slate-400">Game, set & match</p></div>
             <span data-testid="match-end-duration" className="font-mono text-xs text-slate-400">{Math.floor(result.duration_sec / 60)}:{String(result.duration_sec % 60).padStart(2, "0")}</span>
@@ -30,9 +30,9 @@ export default function MatchEndModal({ result, names, saveState, onRematch, onL
             </p>
             {saveState === "error" && <button data-testid="match-end-retry-save-btn" onClick={onRetry} className="btn-ghost flex items-center gap-1 rounded-full px-3 py-1 text-xs"><RotateCcw size={12} />Retry</button>}
           </div>
-          <div className="mt-5 grid grid-cols-3 gap-2">
-            <button data-testid="match-end-rematch-btn" onClick={onRematch} className="btn-volt rounded-full py-3 font-display text-lg font-extrabold uppercase">Rematch</button>
-            <button data-testid="match-end-leaderboard-btn" onClick={onLeaderboard} className="btn-ghost rounded-full py-3 font-display text-lg font-bold uppercase">Ranks</button>
+          <div className="mt-5 grid grid-cols-3 gap-1.5 sm:gap-2">
+            <button data-testid="match-end-rematch-btn" onClick={onRematch} className="btn-volt rounded-full py-3 font-display text-base font-extrabold uppercase sm:text-lg">Rematch</button>
+            <button data-testid="match-end-leaderboard-btn" onClick={onLeaderboard} className="btn-ghost rounded-full py-3 font-display text-base font-bold uppercase sm:text-lg">Ranks</button>
             <button data-testid="match-end-setup-btn" onClick={onSetup} className="btn-ghost rounded-full py-3 font-display text-lg font-bold uppercase">Setup</button>
           </div>
         </Dialog.Content>
