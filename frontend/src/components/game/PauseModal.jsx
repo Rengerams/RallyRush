@@ -4,7 +4,7 @@ import * as Dialog from "@radix-ui/react-dialog";
 import { Volume2, VolumeX, Mic, MicOff, Film, BookOpen } from "lucide-react";
 import FirstSessionGuide from "@/components/game/FirstSessionGuide";
 
-export default function PauseModal({ onResume, onRestart, onQuit, sound, voice, onSound, onVoice, replays, onReplays }) {
+export default function PauseModal({ onResume, onRestart, onQuit, sound, voice, onSound, onVoice, replays, onReplays, displayPrefs, onDisplayPrefChange }) {
   const [confirmRestart, setConfirmRestart] = useState(false);
   const [guideOpen, setGuideOpen] = useState(false);
 
@@ -52,6 +52,20 @@ export default function PauseModal({ onResume, onRestart, onQuit, sound, voice, 
           <button data-testid="pause-replays-toggle" aria-pressed={replays} onClick={onReplays} className={`btn-ghost mt-2 flex w-full items-center justify-center gap-2 rounded-lg py-2 text-sm ${replays ? "text-[#00F0FF]" : "text-slate-500"}`}>
             <Film size={16} /> Replays {replays ? "on" : "off"}
           </button>
+          <section aria-label="Match display preferences" className="mt-4 rounded-xl border border-white/10 bg-black/20 p-3">
+            <h3 className="font-mono text-[10px] uppercase tracking-wider text-slate-300">Accessibility</h3>
+            <div className="mt-2 grid grid-cols-2 gap-2">
+              <button type="button" data-testid="pause-hud-size-toggle" aria-pressed={displayPrefs.hudSize === "large"} onClick={() => onDisplayPrefChange("hudSize", displayPrefs.hudSize === "large" ? "normal" : "large")} className="btn-ghost rounded-lg px-2 py-2 text-xs">
+                HUD text · {displayPrefs.hudSize === "large" ? "Large" : "Normal"}
+              </button>
+              <button type="button" data-testid="pause-reduced-effects-toggle" aria-pressed={displayPrefs.reducedEffects} onClick={() => onDisplayPrefChange("reducedEffects", !displayPrefs.reducedEffects)} className="btn-ghost rounded-lg px-2 py-2 text-xs">
+                Reduced effects · {displayPrefs.reducedEffects ? "On" : "Off"}
+              </button>
+              <button type="button" data-testid="pause-reduced-motion-toggle" aria-pressed={displayPrefs.reducedMotion} onClick={() => onDisplayPrefChange("reducedMotion", !displayPrefs.reducedMotion)} className="btn-ghost col-span-2 rounded-lg px-2 py-2 text-xs">
+                Reduced motion · {displayPrefs.reducedMotion ? "On" : "Off"}
+              </button>
+            </div>
+          </section>
           <button data-testid="pause-controls-guide-btn" onClick={() => setGuideOpen(true)} className="btn-ghost mt-2 flex w-full items-center justify-center gap-2 rounded-lg py-2 text-sm">
             <BookOpen size={16} /> Controls guide
           </button>
