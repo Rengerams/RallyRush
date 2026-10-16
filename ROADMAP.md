@@ -7,13 +7,41 @@
 
 This plan builds on the existing single-player game: 3D tennis simulation, four AI difficulty levels and styles, five court surfaces, seven shot types, two match formats, point replays, and local match records.
 
+## Progress overview — 16 October 2026
+
+**Current release:** 0.2.0  
+**0.3.0 status:** Proposed; implementation has not started.  
+**Project board:** [Rally Rush 0.3.0](https://github.com/users/Rengerams/projects/3/views/2)
+
+| Project status | Items |
+| --- | ---: |
+| Backlog | 33 |
+| Ready | 0 |
+| In progress | 0 |
+| In review | 0 |
+| Done | 0 |
+
+| 0.3.0 initiative | Issue | Sub-issues complete |
+| --- | ---: | ---: |
+| First-session tutorial and onboarding | #41 | 0/3 |
+| Match HUD, controls, and accessibility | #39 | 0/3 |
+| Practice mode and training drills | #40 | 0/3 |
+| Local settings and data controls | #42 | 0/3 |
+| Match presets, replay, and post-match coaching | #43 | 0/3 |
+| Release validation and Windows installer | #44 | 0/3 |
+| Gameplay feel and graphics polish | #63 | 0/4 |
+| Larger desktop match view and compact score HUD | #64 | 0/3 |
+
+This is a dated snapshot. Use the project board for live status; update this section when an initiative changes status.
+
 ## Goals
 
 1. Help a first-time player understand movement, shot choice, and release timing before a full match.
-2. Make the match HUD and controls easier to read on desktop and small screens.
+2. Make the match HUD and controls easier to read on desktop and small screens, while scaling the desktop game view appropriately for larger windows and keeping the court and stadium visible.
 3. Keep match results and ranking behavior transparent and protect local save data.
 4. Add a low-pressure way to practice the core timing mechanic.
-5. Preserve stable frame pacing and installer behavior on supported Windows systems.
+5. Make rallies and player movement feel more convincing without losing responsive arcade controls.
+6. Polish the court, players, crowd, and match feedback while preserving stable frame pacing and installer behavior on supported Windows systems.
 
 ## Release scope
 
@@ -29,6 +57,10 @@ This plan builds on the existing single-player game: 3D tennis simulation, four 
 - Make the active server, shot selection, stamina, and current timing feedback legible at laptop and mobile widths.
 - Show keyboard, pointer, and touch instructions in the appropriate control context.
 - Keep controls collapsible so the court remains the visual focus.
+- During every active match and match mode, hide the branded header/logo and other non-gameplay chrome so the court and stadium remain the focus.
+- Use televised tennis coverage as a framing reference: make the court and stadium occupy much more of the available game window on large desktop screens, without cropping the court or losing the arena context.
+- Keep points, games, and sets visible between points. During rallies, show the score in a small overlay in a top corner; keep essential controls accessible without taking over the view.
+- Use Esc to open the in-game pause menu and return to the match when resumed. Keep branding on Setup and Pause screens.
 
 **Accessibility and preferences**
 - Add text-size options for the HUD and controls.
@@ -40,6 +72,7 @@ This plan builds on the existing single-player game: 3D tennis simulation, four 
 - A new player can reach and start a match without guessing which keys perform the basic actions.
 - Tutorial can be skipped and replayed without changing saved player settings.
 - Play, Pause, and Match End remain usable at 1280×720 and 390×844.
+- During every active match, the game view scales up on large desktop windows, the court and stadium remain framed, and no logo/header takes space from gameplay. Points, games, and sets are visible between points and in a small top-corner overlay during rallies; essential controls remain usable, and Esc opens the pause menu.
 - All gameplay actions remain available through keyboard and on-screen controls.
 
 ### P1 — Practice mode
@@ -87,15 +120,33 @@ After onboarding and practice are stable:
 - Replay controls do not alter the live match state or saved result.
 - Match presets are editable and do not silently replace player attributes.
 
+### P2 — Gameplay feel and graphics polish
+
+Make rallies feel more convincing and readable while keeping Rally Rush's responsive arcade identity.
+
+- Tune acceleration, turning, footwork, sliding, and recovery so movement feels grounded and court surfaces matter without making controls sluggish.
+- Make ball and racket contact clearer; shot timing, shot type, spin, and surface bounce should produce consistent, readable results.
+- Refine AI positioning, recovery, and shot selection through playtests; higher difficulty should not come only from faster reactions or shots.
+- Polish court materials, lighting, shadows, player animations, crowd/fan and referee presentation, and ball impact cues.
+- Keep visual effects optional, preserve the reduced-effects setting, and keep the ball and gameplay feedback easy to read.
+
+**Acceptance checks**
+- Playtests can distinguish the effect of timing, shot type, and court surface while controls remain responsive.
+- Physics and scoring changes have deterministic coverage and do not regress tennis rules or replay state.
+- AI difficulty feels fair across the existing levels and styles.
+- Visual polish keeps the stylized arcade look and stable frame pacing on modest integrated graphics.
+- Reduced visual effects remains available.
+
 ## Suggested delivery sequence
 
 1. **Discovery and baseline:** record current test/build status, inspect layout at desktop and narrow widths, and capture a small set of first-time-player observations.
-2. **UI foundation:** implement responsive HUD refinements, preferences storage, reduced-motion support, and control-context help.
+2. **UI foundation:** implement responsive HUD refinements, compact match HUD and adaptive desktop game view, preferences storage, reduced-motion support, and control-context help.
 3. **Tutorial:** add reusable tutorial steps and test skip, replay, and completion flows.
 4. **Practice:** build drills on existing engine events; add focused engine and UI tests.
 5. **Local data tools:** add versioned import/export, validation, confirmation, and migration tests.
-6. **Polish and release candidate:** tune replay and match summary, run the full test/build pipeline, package Windows, then test installation and saved data.
-7. **0.3.0 release:** publish the installer, release notes, known limitations, and updated consumer documentation.
+6. **Gameplay and visual polish:** tune movement, ball behavior, and AI; improve court and match feedback; playtest responsiveness and frame pacing.
+7. **Polish and release candidate:** tune replay and match summary, run the full test/build pipeline, package Windows, then test installation and saved data.
+8. **0.3.0 release:** publish the installer, release notes, known limitations, and updated consumer documentation.
 
 ## Quality gates
 
@@ -120,13 +171,17 @@ After onboarding and practice are stable:
 | Tutorial interrupts experienced players | Make it skippable and replayable; remember completion locally. |
 | Import overwrites valued match history | Preview, validate, and require explicit confirmation; offer export first. |
 | Extra HUD options increase layout complexity | Test actual desktop and narrow-screen sizes and retain sensible defaults. |
+| Broadcast-style scaling hides stadium or crowds the HUD | Preserve court-and-stadium framing, keep points, games, and sets readable between points and compact during rallies, with controls accessible, and test large desktop windows plus 1280×720 and 390×844. |
 | Practice accidentally affects rankings | Keep practice data separate from match records and test this invariant. |
+| Gameplay tuning feels sluggish or unfair | Preserve responsive controls and use playtests across surfaces, shots, and difficulty levels. |
 | Performance drops from extra effects | Keep visual options optional and test on modest integrated graphics. |
 
 ## Success measures
 
 - First-time testers can start a match and complete a return without help.
+- During every match, testers see a larger court-and-stadium view on large desktop screens without the logo/header; points, games, and sets remain visible between points and in a small top-corner overlay during rallies, and Esc opens the pause menu.
 - Fewer missed actions caused by unclear controls or hidden feedback.
+- Gameplay testers can describe how timing, shot choice, and court surface change rallies, while controls remain responsive.
 - Practice gives repeatable and understandable timing feedback.
 - Players can back up, restore, and intentionally clear local records.
 - The Windows installer passes clean-install and upgrade checks on Windows 10 build 19045 and Windows 11 x64.
