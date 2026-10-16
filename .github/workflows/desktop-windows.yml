@@ -36,6 +36,8 @@ jobs:
       - run: npm ci --legacy-peer-deps
       - run: npm run lint
       - run: npm test
+      - run: npx playwright install chromium
+      - run: npm run test:browser
       - run: npm run desktop:dist
       - uses: actions/upload-artifact@v7
         with:

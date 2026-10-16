@@ -57,6 +57,19 @@ test("simulation rejects nonfinite frame intervals", () => {
   expect(e.time).toBe(0);
 });
 
+test("cancelling a held shot clears its pending buffer", () => {
+  const e = new TennisEngine(cfg);
+  e.state = "rally";
+  e.lastHitter = 1;
+  e.holdShot("topspin");
+
+  expect(e.p.heldShot).toBe("topspin");
+  expect(e.p.buffered?.shot).toBe("topspin");
+  e.cancelShot("topspin");
+  expect(e.p.heldShot).toBeNull();
+  expect(e.p.buffered).toBeNull();
+});
+
 test("grass bounce stays lower than hard court and preserves more horizontal speed", () => {
   const before = { x: 0, y: 0.01, z: 4, vx: 1, vy: -5, vz: 12, spin: 0, netHit: false };
   const hard = { ...before }, grass = { ...before };

@@ -293,7 +293,7 @@ export default function Practice() {
 
         {started && !summary && <div className="play-controls absolute inset-x-0 bottom-0 z-20 flex items-end justify-between gap-2 px-2 pb-[max(0.5rem,env(safe-area-inset-bottom))] pt-6 sm:gap-4 sm:px-4 sm:pb-4">
           <DPad onKey={(key, down) => { if (!pausedRef.current && !pendingRef.current) engineRef.current?.setKey(key, down); }} />
-          <ShotPad onShot={press} onHold={hold} onRelease={release} selectedShot={snap?.selectedShot} onSelect={(id) => { engine.selectedShot = id; }} prepareDelayMs={displayPrefs.shotHoldMs} />
+          <ShotPad onShot={press} onHold={hold} onRelease={release} onCancel={id => engineRef.current?.cancelShot(id)} selectedShot={snap?.selectedShot} onSelect={(id) => { engine.selectedShot = id; }} prepareDelayMs={displayPrefs.shotHoldMs} />
         </div>}
       </section>
     </main>

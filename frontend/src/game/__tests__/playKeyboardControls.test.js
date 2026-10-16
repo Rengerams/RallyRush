@@ -57,4 +57,24 @@ describe("play keyboard controls", () => {
     expect(engine.clearInput).toHaveBeenCalledOnce();
     expect(togglePause).toHaveBeenCalledOnce();
   });
+
+  it("leaves keyboard shortcuts inside dialogs to the dialog", () => {
+    const target = createEventTarget();
+    const engine = { state: "rally", setKey: vi.fn(), holdShot: vi.fn(), releaseShot: vi.fn() };
+    const togglePause = vi.fn();
+    attachPlayKeyboardControls({
+      engineRef: { current: engine }, graphicsReady: { current: true }, pausedRef: { current: true },
+      introRef: { current: false }, togglePause, noteServeAttempt: vi.fn(),
+    }, target);
+    const dialogButton = { closest: vi.fn(() => ({})) };
+
+    target.dispatch("keydown", { target: dialogButton, code: "KeyP" });
+    target.dispatch("keydown", { target: dialogButton, code: "ArrowDown" });
+    target.dispatch("keyup", { target: dialogButton, code: "ArrowDown" });
+
+    expect(togglePause).not.toHaveBeenCalled();
+    expect(engine.setKey).not.toHaveBeenCalled();
+    expect(engine.holdShot).not.toHaveBeenCalled();
+    expect(engine.releaseShot).not.toHaveBeenCalled();
+  });
 });

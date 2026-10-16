@@ -12,6 +12,8 @@ export function attachPlayKeyboardControls({ engineRef, graphicsReady, pausedRef
     const engine = engineRef.current;
     if (!engine || !graphicsReady.current) return;
     const eventTarget = event.target;
+    // Dialogs own their keyboard interactions, including the pause shortcut.
+    if (eventTarget?.closest?.('[role="dialog"], [role="alertdialog"]')) return;
     const isEditable = typeof HTMLElement !== "undefined" && eventTarget instanceof HTMLElement &&
       (eventTarget.isContentEditable || eventTarget.matches("input, textarea, select, [role='textbox']"));
     if (isEditable) return;
@@ -37,6 +39,7 @@ export function attachPlayKeyboardControls({ engineRef, graphicsReady, pausedRef
     }
   };
   const up = (event) => {
+    if (event.target?.closest?.('[role="dialog"], [role="alertdialog"]')) return;
     if (KEYMAP[event.code]) engineRef.current?.setKey(KEYMAP[event.code], false);
     const digit = event.code.replace(/^(Digit|Numpad)/, "");
     if (SHOT_BY_KEY[digit]) engineRef.current?.releaseShot(SHOT_BY_KEY[digit]);
