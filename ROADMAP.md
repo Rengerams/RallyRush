@@ -30,7 +30,7 @@ This plan builds on the existing single-player game: 3D tennis simulation, four 
 - Make the active server, shot selection, stamina, and current timing feedback legible at laptop and mobile widths.
 - Show keyboard, pointer, and touch instructions in the appropriate control context.
 - Keep controls collapsible so the court remains the visual focus.
-- On desktop during an active match, let the court use the available viewport; hide or collapse the branded header/logo and other non-gameplay chrome. Keep the score and essential controls visible.
+- During every active match, on every screen size and in every match mode, hide or collapse the branded header/logo and non-gameplay chrome so the court is the focus. On desktop, let the court use the available viewport; on smaller screens, preserve usable controls.
 - Keep branding on Setup and Pause screens, where it does not compete with the court.
 
 **Accessibility and preferences**
@@ -43,7 +43,7 @@ This plan builds on the existing single-player game: 3D tennis simulation, four 
 - A new player can reach and start a match without guessing which keys perform the basic actions.
 - Tutorial can be skipped and replayed without changing saved player settings.
 - Play, Pause, and Match End remain usable at 1280×720 and 390×844.
-- During desktop play, the court is the main view and the logo/header does not take space from it; score and essential controls remain visible.
+- During every active match, the court is the main view and the logo/header does not take space from it; on desktop it uses the available viewport, while score and essential controls remain usable at all sizes.
 - All gameplay actions remain available through keyboard and on-screen controls.
 
 ### P1 — Practice mode
@@ -111,7 +111,7 @@ Make rallies feel more convincing and readable while keeping Rally Rush's respon
 ## Suggested delivery sequence
 
 1. **Discovery and baseline:** record current test/build status, inspect layout at desktop and narrow widths, and capture a small set of first-time-player observations.
-2. **UI foundation:** implement responsive HUD refinements, court-first desktop match layout, preferences storage, reduced-motion support, and control-context help.
+2. **UI foundation:** implement responsive HUD refinements, court-first match layout on every screen size, preferences storage, reduced-motion support, and control-context help.
 3. **Tutorial:** add reusable tutorial steps and test skip, replay, and completion flows.
 4. **Practice:** build drills on existing engine events; add focused engine and UI tests.
 5. **Local data tools:** add versioned import/export, validation, confirmation, and migration tests.
@@ -150,7 +150,7 @@ Make rallies feel more convincing and readable while keeping Rally Rush's respon
 ## Success measures
 
 - First-time testers can start a match and complete a return without help.
-- During desktop matches, testers see the court as the main view without the logo/header taking up play space.
+- During every match, testers see the court as the main view without the logo/header taking up play space; controls remain usable on desktop and mobile.
 - Fewer missed actions caused by unclear controls or hidden feedback.
 - Gameplay testers can describe how timing, shot choice, and court surface change rallies, while controls remain responsive.
 - Practice gives repeatable and understandable timing feedback.
