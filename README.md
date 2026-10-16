@@ -7,7 +7,7 @@
 [![Browser playable](https://img.shields.io/badge/Browser-playable-4285F4?style=flat-square)](#run-from-source)
 [![Offline single-player](https://img.shields.io/badge/Play-offline%20single--player-208A5D?style=flat-square)](#features)
 
-Rally Rush (v0.2.0) is a single-player, arcade-style 3D tennis game for Windows and the browser. Play fast matches against AI opponents, build a player, and master seven shot types across five court surfaces.
+Rally Rush is a single-player, arcade-style 3D tennis game for Windows and the browser. Play fast matches against AI opponents, build a player, and master seven shot types across five court surfaces.
 
 > Local play only: matches, match history, and leaderboard entries are saved on this device. There is no online multiplayer, account system, or shared online ranking.
 
