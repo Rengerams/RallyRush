@@ -9,6 +9,7 @@ import { loadSetup, storeSetup } from "@/lib/api";
 import FirstSessionGuide from "@/components/game/FirstSessionGuide";
 import LocalDataControls from "@/components/game/LocalDataControls";
 import { hasCompletedTutorial } from "@/lib/tutorial";
+import { applySetupPreset, SETUP_PRESETS } from "@/game/setupPresets";
 
 const ATTRS = ["power", "stamina", "accuracy"];
 
@@ -29,7 +30,11 @@ export default function Setup() {
   const nav = useNavigate();
   const [cfg, setCfg] = useState(loadSetup);
   const [guideOpen, setGuideOpen] = useState(() => !hasCompletedTutorial());
-  const set = (k, v) => setCfg((c) => ({ ...c, [k]: v }));
+  const [selectedPreset, setSelectedPreset] = useState(null);
+  const set = (k, v) => {
+    setSelectedPreset(null);
+    setCfg((c) => ({ ...c, [k]: v }));
+  };
   const used = ATTRS.reduce((s, a) => s + cfg[a], 0);
 
   const setAttr = (attr, v) => {
@@ -72,6 +77,19 @@ export default function Setup() {
           </div>
         </aside>
         <section className="space-y-8">
+          <section aria-labelledby="quick-preset-title" className="rounded-2xl border border-white/10 bg-[#121824] p-5">
+            <div className="flex flex-wrap items-baseline justify-between gap-2">
+              <h2 id="quick-preset-title" className="font-display text-2xl font-black uppercase italic">Quick-play presets</h2>
+              <p className="font-mono text-[10px] text-slate-400">Only match settings change · edit any choice below</p>
+            </div>
+            <div className="mt-4 grid gap-2 sm:grid-cols-3" role="group" aria-label="Quick-play presets">
+              {SETUP_PRESETS.map((preset) => <button key={preset.id} type="button" data-testid={`setup-preset-${preset.id}`} aria-pressed={selectedPreset === preset.id} onClick={() => applyPreset(preset.id)} className={`rounded-xl border p-3 text-left transition-colors ${selectedPreset === preset.id ? "border-[#DFFF00]/60 bg-[#DFFF00]/10" : "border-white/10 bg-black/10 hover:border-white/25"}`}>
+                <span className="block font-mono text-xs font-bold uppercase text-white">{preset.label}</span>
+                <span className="mt-1 block text-[11px] leading-snug text-slate-300">{preset.detail}</span>
+              </button>)}
+            </div>
+            <p className="mt-3 font-mono text-[10px] text-slate-400">Your player name and attributes stay as you set them.</p>
+          </section>
           <OptionGroup label="AI difficulty" options={Object.values(DIFFICULTY).map((d) => ({ ...d, desc: `${Math.round(d.error * 100)}% error · ${d.move}x speed` }))} value={cfg.difficulty} onChange={(v) => set("difficulty", v)} testPrefix="setup-difficulty" />
           <OptionGroup label="AI play style" options={Object.values(STYLES)} value={cfg.style} onChange={(v) => set("style", v)} testPrefix="setup-style" />
           <OptionGroup label="Court surface" cols={5} options={Object.values(SURFACES)} value={cfg.surface} onChange={(v) => set("surface", v)} testPrefix="setup-surface" />
