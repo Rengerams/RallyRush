@@ -7,7 +7,7 @@ const HERO = `${import.meta.env.BASE_URL}tennis-hero.svg`;
 const features = [
   { icon: Gauge, title: "Timing is everything", text: "Every swing graded Miss · Late · Good · Perfect, straight from the original shot engine." },
   { icon: Zap, title: "4 AI minds", text: "Easy to Pro, playing Baseline, Net Rusher, Defensive or Aggressive tennis." },
-  { icon: Wind, title: "5 surfaces", text: "Hard, Clay, Grass, Kunstgras and Smashcourt each change bounce, skid and footspeed." },
+  { icon: Wind, title: "5 surfaces", text: "Hard, Clay, Grass, Artificial Grass and Smashcourt each change bounce, skid and footspeed." },
 ];
 
 export default function Home() {
@@ -59,7 +59,7 @@ export default function Home() {
           </div>
         ))}
       </section>
-      <footer className="mx-auto flex max-w-[1440px] items-center justify-between px-5 py-8 font-mono text-xs uppercase tracking-[0.2em] text-slate-500 lg:px-10">
+      <footer className="mx-auto flex max-w-[1440px] items-center justify-between px-5 py-8 font-mono text-xs uppercase tracking-[0.2em] text-slate-400 lg:px-10">
         <span>Arcade tennis · single player</span>
         <Link to="/history" data-testid="home-history-link" className="flex items-center gap-1 hover:text-white">Match history <ArrowUpRight size={14} /></Link>
       </footer>
