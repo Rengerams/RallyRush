@@ -49,7 +49,7 @@ export default function PauseModal({ onResume, onRestart, onQuit, sound, voice, 
               {voice ? <Mic size={16} /> : <MicOff size={16} />} Umpire
             </button>
           </div>
-          <button data-testid="pause-replays-toggle" aria-pressed={replays} onClick={onReplays} className={`btn-ghost mt-2 flex w-full items-center justify-center gap-2 rounded-lg py-2 text-sm ${replays ? "text-[#00F0FF]" : "text-slate-400"}`}>
+          <button data-testid="pause-replays-toggle" aria-pressed={replays} onClick={onReplays} className={`btn-ghost mt-2 flex w-full items-center justify-center gap-2 rounded-lg py-2 text-sm ${replays ? "text-[#00F0FF]" : "text-slate-500"}`}>
             <Film size={16} /> Replays {replays ? "on" : "off"}
           </button>
           <section aria-label="Match display preferences" className="mt-4 rounded-xl border border-white/10 bg-black/20 p-3">

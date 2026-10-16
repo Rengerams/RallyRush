@@ -39,7 +39,7 @@ export const MatchStats = ({ stats = {}, opponentStats = {}, names = ["Player", 
         {buckets.map((count, i) => <div key={i} className="text-center font-mono text-[10px]">
           <span data-testid={`${prefix}-rally-bucket-${i}`} className="text-slate-300">{count}</span>
           <div className="mt-1 flex h-12 items-end bg-white/5"><div className="w-full bg-[#DFFF00]/80" style={{ height: `${count / max * 100}%` }} /></div>
-          <span className="mt-1 block text-slate-400">{["0–3", "4–6", "7–9", "10+"][i]}</span>
+          <span className="mt-1 block text-slate-500">{["0–3", "4–6", "7–9", "10+"][i]}</span>
         </div>)}
       </div>
     </div>
