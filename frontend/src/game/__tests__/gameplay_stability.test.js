@@ -53,7 +53,7 @@ test("snapshot announces the next server immediately after a game-ending point",
   e.score.points = [3, 0];
   e.state = "rally";
 
-  e.endPoint(0, "Winner");
+  awardPoint(e.score, 0);
 
   expect(e.server).toBe(0);
   expect(e.snapshot().server).toBe(1);
@@ -67,7 +67,7 @@ test("snapshot announces a tie-break service rotation immediately", () => {
   e.server = 0;
   e.state = "rally";
 
-  e.endPoint(0, "Winner");
+  awardPoint(e.score, 0);
 
   expect(e.server).toBe(0);
   expect(e.snapshot().server).toBe(1);
