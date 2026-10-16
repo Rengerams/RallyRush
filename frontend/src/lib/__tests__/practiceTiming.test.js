@@ -1,7 +1,15 @@
 import { describe, expect, it } from "vitest";
-import { createTimingDrillState, PRACTICE_ATTEMPT_COUNT, summarizeTimingAttempts, TIMING_GRADE_ORDER, transitionTimingDrill } from "../practiceTiming";
+import { createTimingDrillState, gradeServeOutcome, PRACTICE_ATTEMPT_COUNT, summarizeTimingAttempts, TIMING_GRADE_ORDER, transitionTimingDrill } from "../practiceTiming";
 
 describe("timing drill summary", () => {
+  it("scores legal serves by timing and faults as misses", () => {
+    expect(gradeServeOutcome("perfect")).toBe("perfect");
+    expect(gradeServeOutcome("good")).toBe("good");
+    expect(gradeServeOutcome("late")).toBe("late");
+    expect(gradeServeOutcome("perfect", true)).toBe("miss");
+    expect(gradeServeOutcome(undefined)).toBe("miss");
+  });
+
   it("counts grades in the match engine's order and gives a focused tip", () => {
     const summary = summarizeTimingAttempts(["miss", "late", "good", "perfect", "early"]);
     expect(PRACTICE_ATTEMPT_COUNT).toBe(10);

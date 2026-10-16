@@ -1,6 +1,10 @@
 export const PRACTICE_ATTEMPT_COUNT = 10;
 export const TIMING_GRADE_ORDER = ["perfect", "good", "early", "late", "miss"];
 
+export function gradeServeOutcome(quality, fault = false) {
+  return !fault && TIMING_GRADE_ORDER.includes(quality) && quality !== "miss" ? quality : "miss";
+}
+
 export function createTimingDrillState() {
   return { started: false, paused: true, pending: false, attempts: [] };
 }
