@@ -202,7 +202,7 @@ function drum(start, vol = 0.6) {
 function musicKick(start, volume = 0.12) {
   const c = ac();
   if (!c || !musicBus) return;
-  const t = c.currentTime + start;
+  const t = start;
   const osc = c.createOscillator();
   const gain = c.createGain();
   osc.type = "sine";
@@ -218,7 +218,7 @@ function musicKick(start, volume = 0.12) {
 function musicSnare(start, volume = 0.035) {
   const c = ac();
   if (!c || !noiseBuf || !musicBus) return;
-  const t = c.currentTime + start;
+  const t = start;
   const source = c.createBufferSource();
   const filter = c.createBiquadFilter();
   const gain = c.createGain();
@@ -235,7 +235,7 @@ function musicSnare(start, volume = 0.035) {
 function musicHat(start, volume = 0.009) {
   const c = ac();
   if (!c || !noiseBuf || !musicBus) return;
-  const t = c.currentTime + start;
+  const t = start;
   const source = c.createBufferSource();
   const filter = c.createBiquadFilter();
   const gain = c.createGain();
