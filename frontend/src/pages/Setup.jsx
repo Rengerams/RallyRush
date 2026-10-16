@@ -81,10 +81,16 @@ export default function Setup() {
             className="btn-ghost rounded-full px-4 py-3 font-mono text-xs font-semibold uppercase">
             Controls guide
           </button>
-          <button type="button" data-testid="setup-start-match-btn" onClick={start}
-            className="btn-volt flex-1 rounded-full py-4 font-display text-xl font-black uppercase italic tracking-wide md:flex-none md:px-16">
-            Start match
-          </button>
+          <div className="flex flex-1 items-center gap-2 md:flex-none">
+            <button type="button" data-testid="setup-practice-btn" onClick={() => nav("/practice")}
+              className="btn-ghost flex-1 rounded-full px-3 py-3 font-mono text-[10px] font-semibold uppercase sm:px-4 sm:text-xs">
+              Practice timing
+            </button>
+            <button type="button" data-testid="setup-start-match-btn" onClick={start}
+              className="btn-volt flex-1 rounded-full py-4 font-display text-xl font-black uppercase italic tracking-wide md:flex-none md:px-16">
+              Start match
+            </button>
+          </div>
         </div>
       </div>
       <FirstSessionGuide open={guideOpen} onOpenChange={setGuideOpen} />
