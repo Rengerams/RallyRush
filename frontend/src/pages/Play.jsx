@@ -44,6 +44,7 @@ export default function Play() {
   const [intro, setIntro] = useState(true);
   const introRef = useRef(true);
   const [mouseEnabled, setMouseEnabled] = useState(false);
+  const [touchControls, setTouchControls] = useState(() => typeof window !== "undefined" && (window.matchMedia?.("(pointer: coarse)").matches || (navigator.maxTouchPoints || 0) > 0));
   const [firstServeAttempted, setFirstServeAttempted] = useState(false);
   const graphicsReady = useRef(false);
 
@@ -79,6 +80,15 @@ export default function Play() {
 
   useEffect(() => { eng.cameraMode = cameraMode; }, [eng, cameraMode]);
   useEffect(() => { eng.mouseEnabled = mouseEnabled; if (!mouseEnabled) eng.clearPointer(); }, [eng, mouseEnabled]);
+
+  useEffect(() => {
+    if (typeof window === "undefined") return undefined;
+    const coarse = window.matchMedia("(pointer: coarse)");
+    const update = () => setTouchControls(coarse.matches || (navigator.maxTouchPoints || 0) > 0);
+    update();
+    coarse.addEventListener?.("change", update);
+    return () => coarse.removeEventListener?.("change", update);
+  }, []);
 
   // eslint-disable-next-line react-hooks/exhaustive-deps -- refs (engRef, pausedRef, introRef) and globals (cancelAnimationFrame) are stable
   useEffect(() => {
@@ -215,12 +225,12 @@ export default function Play() {
               <p>Surface · <span className="text-white">{SURFACES[cfg.surface].label}</span></p>
               <p>Opponent · <span className="text-white">{DIFFICULTY[cfg.difficulty].label} {STYLES[cfg.style].label}</span></p>
               <p>Rally · <span data-testid="rally-count" className="text-[#DFFF00]">{snap?.rally ?? 0}</span></p>
-              <p>WASD / arrows · move</p>
-              <p>1–7 · hold, release near contact</p>
-              <p>Shift · sprint · Space · slide</p>
-              <p>Esc · pause · Enter · skip replay</p>
-              <p>On-screen arrows move · hold/release a shot button</p>
-              {mouseEnabled && <p>Mouse: move to run · right-click to aim · hold/release left-click to swing</p>}
+              <p data-testid="keyboard-control-hint">Keyboard · WASD/arrows move · 1–7 hold/release a shot · Shift sprint · Space slide · Esc pause</p>
+              {mouseEnabled && <p data-testid="pointer-control-hint">Mouse · move to run · right-click to aim · hold/release left-click to swing</p>}
+              {touchControls
+                ? <p data-testid="touch-control-hint" className="text-[#DFFF00]">Touch · arrows move · hold/release a shot button · swipe the shot strip sideways to reach Serve</p>
+                : <p data-testid="onscreen-control-hint">On-screen arrows move · hold/release a shot button</p>}
+              <p>Enter · skip replay</p>
               {snap?.state === "serve" && snap.server === 0 && (
                 <p data-testid="serve-hint" className="text-[#DFFF00]">
                   {snap.serveStage === "hold" ? "Ready to serve" : "Ball in the air"}{snap.faults ? " · 2nd serve" : ""}
