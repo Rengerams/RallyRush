@@ -49,7 +49,7 @@ export default function GameCanvas({ eng, wrapRef, renderActive = true, reducedE
     syncMotion();
     preference?.addEventListener?.("change", syncMotion);
     return () => preference?.removeEventListener?.("change", syncMotion);
-  }, [reducedMotion, retry]);
+  }, [eng, reducedMotion, retry]);
 
   useEffect(() => {
     if (reducedEffects) viewRef.current?.reduceEffects();
