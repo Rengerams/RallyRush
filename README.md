@@ -97,8 +97,11 @@ From the repository root:
 
 ```bash
 npm test
+npm run playtest:ai
 npm run build
 ```
+
+`npm run playtest:ai` simulates 384 deterministic quick matches across the four AI difficulties, four play styles, three benchmark player profiles, and eight fixed seeds. It prints win rate, rally length, errors, and aces for each matchup.
 
 Create the Windows installer (on Windows):
 

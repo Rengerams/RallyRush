@@ -41,9 +41,16 @@ export default function Setup() {
     const others = used - cfg[attr];
     set(attr, Math.min(v, ATTR_BUDGET - others));
   };
-  const toggleLegend = () => setCfg((c) => (c.legend
+  const toggleLegend = () => {
+    setSelectedPreset(null);
+    setCfg((c) => (c.legend
     ? { ...c, legend: false, name: DEFAULT_SETUP.name, power: 6, stamina: 6, accuracy: 6 }
     : { ...c, legend: true, ...LEGEND }));
+  };
+  const applyPreset = (presetId) => {
+    setSelectedPreset(presetId);
+    setCfg((current) => applySetupPreset(current, presetId));
+  };
   const persistSetup = () => {
     const final = { ...cfg, name: cfg.name.trim().slice(0, 24) || "Player" };
     storeSetup(final);
