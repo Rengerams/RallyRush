@@ -39,9 +39,3 @@ jobs:
       - run: npm test
       - run: npm run test:browser
       - run: npm run desktop:dist
-      - uses: actions/upload-artifact@v7
-        with:
-          name: Rally-Rush-Windows
-          path: frontend/release/*.exe
-          if-no-files-found: error
-          retention-days: 14
