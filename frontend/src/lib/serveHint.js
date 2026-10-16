@@ -1,6 +1,8 @@
+import { getSafeStorage } from "@/lib/safeStorage";
+
 export const FIRST_SERVE_HINT_KEY = "rally-rush:first-serve-hint:v1";
 
-export function hasSeenFirstServeHint(storage = globalThis.localStorage) {
+export function hasSeenFirstServeHint(storage = getSafeStorage()) {
   try {
     return storage?.getItem(FIRST_SERVE_HINT_KEY) === "seen";
   } catch {
@@ -8,7 +10,7 @@ export function hasSeenFirstServeHint(storage = globalThis.localStorage) {
   }
 }
 
-export function markFirstServeHintSeen(storage = globalThis.localStorage) {
+export function markFirstServeHintSeen(storage = getSafeStorage()) {
   try {
     storage?.setItem(FIRST_SERVE_HINT_KEY, "seen");
   } catch {

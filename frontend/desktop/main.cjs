@@ -1,25 +1,18 @@
 const path = require("node:path");
 const { app, BrowserWindow, session, shell } = require("electron");
-
-const CONTENT_SECURITY_POLICY = [
-  "default-src 'self'",
-  "script-src 'self'",
-  "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com",
-  "font-src 'self' data: https://fonts.gstatic.com",
-  "img-src 'self' data: blob:",
-  "connect-src 'self' http://localhost:* ws://localhost:* https://fonts.googleapis.com https://fonts.gstatic.com",
-  "object-src 'none'",
-  "base-uri 'self'",
-  "form-action 'self'",
-  "frame-ancestors 'none'",
-].join("; ");
+const { createContentSecurityPolicy } = require("./csp.cjs");
 
 function applyContentSecurityPolicy() {
+  const isDevelopment = Boolean(process.env.DESKTOP_START_URL);
+  const policy = createContentSecurityPolicy({
+    development: isDevelopment,
+    nonce: process.env.DESKTOP_CSP_NONCE,
+  });
   session.defaultSession.webRequest.onHeadersReceived((details, callback) => {
     callback({
       responseHeaders: {
         ...details.responseHeaders,
-        "Content-Security-Policy": [CONTENT_SECURITY_POLICY],
+        "Content-Security-Policy": [policy],
       },
     });
   });

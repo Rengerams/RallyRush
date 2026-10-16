@@ -2,11 +2,13 @@ import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { Link } from "react-router-dom";
 import { ArrowLeft, Pause, Play, RotateCcw } from "lucide-react";
 import { TennisEngine } from "@/game/engine";
-import { attachPlayKeyboardControls } from "@/game/playKeyboardControls";
+import { useGameLoop } from "@/game/useGameLoop";
+import { useGameKeyboardControls } from "@/game/useGameKeyboardControls";
 import { audio } from "@/game/audio";
 import { FORMATS } from "@/game/constants";
 import { createScore } from "@/game/scoring";
 import { loadSetup } from "@/lib/api";
+import { loadMatchDisplayPreferences } from "@/lib/matchDisplayPreferences";
 import { createTimingDrillState, gradeServeOutcome, isServeLaunchEvent, isTargetHit, PRACTICE_ATTEMPT_COUNT, practiceServer, summarizeTimingAttempts, TIMING_GRADE_ORDER, transitionTimingDrill } from "@/lib/practiceTiming";
 import GameCanvas from "@/components/game/GameCanvas";
 import DPad from "@/components/game/DPad";
@@ -26,6 +28,7 @@ const TARGET_X = { left: -3.1, center: 0, right: 3.1 };
 
 export default function Practice() {
   const savedSetup = useMemo(loadSetup, []);
+  const displayPrefs = useMemo(loadMatchDisplayPreferences, []);
   const cfg = useMemo(() => ({ ...savedSetup, difficulty: "easy", format: "quick" }), [savedSetup]);
   const engineRef = useRef(null);
   const wrapRef = useRef(null);
@@ -44,6 +47,11 @@ export default function Practice() {
   const [lastTargetHit, setLastTargetHit] = useState(null);
   const [snap, setSnap] = useState(null);
   const [quality, setQuality] = useState(false);
+
+  useEffect(() => {
+    document.documentElement.dataset.reducedMotion = displayPrefs.reducedMotion ? "true" : "false";
+    return () => { delete document.documentElement.dataset.reducedMotion; };
+  }, [displayPrefs.reducedMotion]);
 
   const sendDrillEvent = useCallback((event) => {
     const next = transitionTimingDrill(drillRef.current, event);
@@ -136,7 +144,7 @@ export default function Practice() {
   }, [finishAttempt, mode, resetPoint]);
 
   const engine = useMemo(() => {
-    const next = new TennisEngine(cfg, onEngineEvent, { rng: randomFromSeed(0x51a7e) });
+    const next = new TennisEngine(cfg, onEngineEvent, { rng: randomFromSeed(0x51a7e), audio });
     next.score.gamesPlayed = practiceServer(mode);
     next.setupPoint();
     next.replays = false;
@@ -145,17 +153,10 @@ export default function Practice() {
 
   useEffect(() => {
     engineRef.current = engine;
-    let raf, last = performance.now();
-    const loop = (time) => {
-      const dt = (time - last) / 1000;
-      last = time;
-      if (startedRef.current && !pausedRef.current && graphicsReady.current) engine.update(dt);
-      raf = requestAnimationFrame(loop);
-    };
-    raf = requestAnimationFrame(loop);
-    const timer = setInterval(() => setSnap(engine.snapshot()), 100);
-    return () => { cancelAnimationFrame(raf); clearInterval(timer); };
   }, [engine]);
+
+  const canUpdate = useCallback(() => startedRef.current && !pausedRef.current && graphicsReady.current, []);
+  useGameLoop(engine, canUpdate, setSnap);
 
   const togglePause = useCallback(() => {
     if (!startedRef.current || pendingRef.current) return;
@@ -163,10 +164,9 @@ export default function Practice() {
     engineRef.current?.clearInput();
   }, [sendDrillEvent]);
 
-  useEffect(() => attachPlayKeyboardControls({
-    engineRef, graphicsReady, pausedRef, introRef: { current: false }, togglePause,
-    noteServeAttempt: () => {},
-  }), [togglePause]);
+  const keyboardIntroRef = useMemo(() => ({ current: false }), []);
+  const noteServeAttempt = useCallback(() => {}, []);
+  useGameKeyboardControls({ engineRef, graphicsReady, pausedRef, introRef: keyboardIntroRef, togglePause, noteServeAttempt });
 
   const start = () => {
     audio.unlock();
@@ -223,9 +223,9 @@ export default function Practice() {
   };
 
   return (
-    <main className="play-page fixed inset-0 z-30 h-[100dvh] w-screen overflow-hidden bg-[#0B0E14]" data-testid="practice-page">
+    <main className="play-page fixed inset-0 z-30 h-[100dvh] w-screen overflow-hidden bg-[#0B0E14]" data-testid="practice-page" data-hud-size={displayPrefs.hudSize}>
       <section ref={wrapRef} className="absolute inset-0">
-        <GameCanvas eng={engine} wrapRef={wrapRef} renderActive={started && !paused && !summary}
+        <GameCanvas eng={engine} wrapRef={wrapRef} reducedEffects={displayPrefs.reducedEffects} reducedMotion={displayPrefs.reducedMotion} renderActive={started && !paused && !summary}
           onSwing={mouseSwing} onRelease={() => engineRef.current?.releaseShot(engineRef.current?.p.heldShot)}
           onPointer={pointerMove} onPointerLeave={() => engineRef.current?.clearPointer()}
           onAvailability={onAvailability} onQuality={onQuality} />
@@ -293,7 +293,7 @@ export default function Practice() {
 
         {started && !summary && <div className="play-controls absolute inset-x-0 bottom-0 z-20 flex items-end justify-between gap-2 px-2 pb-[max(0.5rem,env(safe-area-inset-bottom))] pt-6 sm:gap-4 sm:px-4 sm:pb-4">
           <DPad onKey={(key, down) => { if (!pausedRef.current && !pendingRef.current) engineRef.current?.setKey(key, down); }} />
-          <ShotPad onShot={press} onHold={hold} onRelease={release} selectedShot={snap?.selectedShot} onSelect={(id) => { engine.selectedShot = id; }} />
+          <ShotPad onShot={press} onHold={hold} onRelease={release} selectedShot={snap?.selectedShot} onSelect={(id) => { engine.selectedShot = id; }} prepareDelayMs={displayPrefs.shotHoldMs} />
         </div>}
       </section>
     </main>

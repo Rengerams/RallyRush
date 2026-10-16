@@ -1,26 +1,31 @@
-import { SETUP_KEY, DEFAULT_SETUP, SURFACES, DIFFICULTY, STYLES, FORMATS } from "@/game/constants";
+import { SETUP_KEY, DEFAULT_SETUP } from "@/game/constants";
+import { normalizeDisplayPreferences, normalizeSetup, normalizeStoredMatch, isPlainRecord, validateBackupDisplayPreferences, validateBackupMatch, validateBackupSetup } from "@/lib/gameDataSchemas";
+import { getSafeStorage } from "@/lib/safeStorage";
 
 export const MATCHES_KEY = "renffr-tennis-matches";
 export const DISPLAY_PREFERENCES_KEY = "rally-rush.match-display-preferences";
 export const BACKUP_FORMAT = "rally-rush-local-data";
 export const BACKUP_VERSION = 1;
-export const MAX_BACKUP_BYTES = 1_000_000;
+export const MAX_BACKUP_BYTES = 10_000_000;
 export const STORAGE_VERSION_KEY = "rally-rush.storage-version";
 const STORAGE_VERSION = 1;
 const LEGACY_HISTORY_PREFIX = "renffr-breakdown-";
 const RATING_POINTS = Object.freeze({ easy: 10, medium: 20, hard: 35, pro: 60 });
+let memorySetupFallback = null;
+let memoryMatchesFallback = [];
 
-function readLocalMatches(storage = globalThis.localStorage) {
+function readLocalMatches(storage = getSafeStorage()) {
+  if (!storage) return memoryMatchesFallback.map((row, index) => normalizeStoredMatch(row, index)).filter(Boolean);
   migrateLocalStorage(storage);
   try {
     const rows = JSON.parse(storage.getItem(MATCHES_KEY) || "[]");
-    return Array.isArray(rows) ? rows.filter((row) => row && typeof row === "object" && !Array.isArray(row)) : [];
+    return Array.isArray(rows) ? rows.map((row, index) => normalizeStoredMatch(row, index)).filter(Boolean) : [];
   } catch {
     return [];
   }
 }
 
-export function migrateLocalStorage(storage = globalThis.localStorage) {
+export function migrateLocalStorage(storage = getSafeStorage()) {
   if (!storage) return;
   try {
     const version = Number.parseInt(storage.getItem(STORAGE_VERSION_KEY) || "0", 10);
@@ -34,18 +39,25 @@ export function migrateLocalStorage(storage = globalThis.localStorage) {
 }
 
 function saveLocalMatch(payload) {
-  const rows = readLocalMatches();
-  const row = {
+  const storage = getSafeStorage();
+  const rows = readLocalMatches(storage);
+  const row = normalizeStoredMatch({
     ...payload,
     id: payload.match_id || `local-${Date.now()}-${Math.random().toString(36).slice(2)}`,
     created_at: new Date().toISOString(),
-    rating_points: payload.won ? RATING_POINTS[payload.difficulty] : 2,
+    rating_points: payload.won ? (Object.hasOwn(RATING_POINTS, payload.difficulty) ? RATING_POINTS[payload.difficulty] : 0) : 2,
     storage: "local",
-  };
+  });
+  if (!row) throw new Error("The match result could not be saved because its player name is invalid.");
+  row.storage = storage ? "local" : "session";
   const index = rows.findIndex((match) => match.match_id && match.match_id === payload.match_id);
   if (index >= 0) rows[index] = { ...rows[index], ...row };
   else rows.unshift(row);
-  localStorage.setItem(MATCHES_KEY, JSON.stringify(rows));
+  if (!storage) {
+    memoryMatchesFallback = rows;
+    return row;
+  }
+  storage.setItem(MATCHES_KEY, JSON.stringify(rows));
   return row;
 }
 
@@ -87,70 +99,6 @@ export const saveMatch = (payload) => Promise.resolve().then(() => saveLocalMatc
 export const fetchMatches = (params = {}) => Promise.resolve(fetchLocalMatches(params));
 export const fetchLeaderboard = (mode = "competitive") => Promise.resolve(localLeaderboard(mode));
 
-function validateSetup(raw) {
-  const source = raw && typeof raw === "object" && !Array.isArray(raw) ? raw : {};
-  const s = { ...DEFAULT_SETUP, ...source };
-  if (typeof s.name !== "string" || !s.name.trim() || s.name.length > 24) s.name = DEFAULT_SETUP.name;
-  for (const attr of ["power", "stamina", "accuracy"]) {
-    if (!Number.isInteger(s[attr]) || s[attr] < 1 || s[attr] > 10) s[attr] = DEFAULT_SETUP[attr];
-  }
-  if (typeof s.legend !== "boolean") s.legend = false;
-  if (!s.legend && s.power + s.stamina + s.accuracy > 18) {
-    s.power = 6; s.stamina = 6; s.accuracy = 6;
-  }
-  if (!Object.hasOwn(SURFACES, s.surface)) s.surface = DEFAULT_SETUP.surface;
-  if (!Object.hasOwn(DIFFICULTY, s.difficulty)) s.difficulty = DEFAULT_SETUP.difficulty;
-  if (!Object.hasOwn(STYLES, s.style)) s.style = DEFAULT_SETUP.style;
-  if (!Object.hasOwn(FORMATS, s.format)) s.format = DEFAULT_SETUP.format;
-  return s;
-}
-
-function isPlainRecord(value) {
-  return Boolean(value) && typeof value === "object" && !Array.isArray(value);
-}
-
-function validateBackupMatch(match) {
-  if (!isPlainRecord(match) || typeof match.player_name !== "string" ||
-      !match.player_name.trim() || match.player_name.length > 48 || typeof match.won !== "boolean") return false;
-  if (match.difficulty != null && !Object.hasOwn(DIFFICULTY, match.difficulty)) return false;
-  if (match.surface != null && !Object.hasOwn(SURFACES, match.surface)) return false;
-  if (match.ai_style != null && !Object.hasOwn(STYLES, match.ai_style)) return false;
-  if (match.match_format != null && !Object.hasOwn(FORMATS, match.match_format)) return false;
-  const isValidStats = (stats) => stats == null || (isPlainRecord(stats) &&
-    ["aces", "longest_rally", "perfect_shots"].every((key) =>
-      !Object.hasOwn(stats, key) || (typeof stats[key] === "number" && Number.isFinite(stats[key]) && stats[key] >= 0)));
-  if (!isValidStats(match.stats) || !isValidStats(match.opponent_stats)) return false;
-  if (match.opponent_stats != null && (!isPlainRecord(match.opponent_stats) || !Object.hasOwn(DIFFICULTY, match.difficulty))) return false;
-  if (match.sets != null && (!Array.isArray(match.sets) || match.sets.some((set) =>
-    !Array.isArray(set) || set.length !== 2 || set.some((score) => !Number.isInteger(score) || score < 0 || score > 99)))) return false;
-  try { JSON.stringify(match); return true; } catch { return false; }
-}
-
-function validateBackupSetup(setup) {
-  return isPlainRecord(setup) && typeof setup.name === "string" && setup.name.trim().length > 0 && setup.name.length <= 24 &&
-    typeof setup.legend === "boolean" && [setup.power, setup.stamina, setup.accuracy].every((value) => Number.isInteger(value) && value >= 1 && value <= 10) &&
-    (setup.legend || setup.power + setup.stamina + setup.accuracy <= 18) &&
-    Object.hasOwn(SURFACES, setup.surface) && Object.hasOwn(DIFFICULTY, setup.difficulty) &&
-    Object.hasOwn(STYLES, setup.style) && Object.hasOwn(FORMATS, setup.format);
-}
-
-function normalizeDisplayPreferences(value) {
-  const source = isPlainRecord(value) ? value : {};
-  const requestedHoldMs = Number.isFinite(source.shotHoldMs) ? Math.round(source.shotHoldMs / 25) * 25 : 150;
-  return {
-    hudSize: source.hudSize === "large" ? "large" : "normal",
-    reducedEffects: source.reducedEffects === true,
-    reducedMotion: source.reducedMotion === true,
-    shotHoldMs: Math.max(100, Math.min(250, requestedHoldMs)),
-  };
-}
-
-function validateBackupDisplayPreferences(value) {
-  return isPlainRecord(value) && (value.hudSize === "normal" || value.hudSize === "large") &&
-    typeof value.reducedEffects === "boolean" && typeof value.reducedMotion === "boolean" &&
-    (value.shotHoldMs == null || (Number.isInteger(value.shotHoldMs) && value.shotHoldMs >= 100 && value.shotHoldMs <= 250 && value.shotHoldMs % 25 === 0));
-}
-
 export function parseLocalDataBackup(text) {
   if (typeof text !== "string" || new TextEncoder().encode(text).byteLength > MAX_BACKUP_BYTES) {
     throw new Error("Backup file is too large.");
@@ -163,16 +111,16 @@ export function parseLocalDataBackup(text) {
     throw new Error("This backup is incomplete or uses an unsupported format.");
   }
   return {
-    setup: validateSetup(data.setup),
-    matches: data.matches,
+    setup: normalizeSetup(data.setup),
+    matches: data.matches.map((match, index) => normalizeStoredMatch(match, index)).filter(Boolean),
     displayPreferences: normalizeDisplayPreferences(data.displayPreferences),
   };
 }
 
-export function exportLocalData(storage = globalThis.localStorage) {
+export function exportLocalData(storage = getSafeStorage()) {
   if (!storage) throw new Error("Local storage is unavailable.");
   let setup = { ...DEFAULT_SETUP };
-  try { setup = validateSetup(JSON.parse(storage.getItem(SETUP_KEY) || "{}")); } catch { /* Keep defaults. */ }
+  try { setup = normalizeSetup(JSON.parse(storage.getItem(SETUP_KEY) || "{}")); } catch { /* Keep defaults. */ }
   const matches = readLocalMatches(storage).filter(validateBackupMatch);
   let displayPreferences = {};
   try { displayPreferences = JSON.parse(storage.getItem(DISPLAY_PREFERENCES_KEY) || "{}"); } catch { /* Use defaults. */ }
@@ -186,7 +134,7 @@ export function exportLocalData(storage = globalThis.localStorage) {
   }, null, 2);
 }
 
-export function importLocalData(text, storage = globalThis.localStorage) {
+export function importLocalData(text, storage = getSafeStorage()) {
   if (!storage) throw new Error("Local storage is unavailable.");
   const backup = parseLocalDataBackup(text);
   const keys = [SETUP_KEY, MATCHES_KEY, DISPLAY_PREFERENCES_KEY, STORAGE_VERSION_KEY];
@@ -215,10 +163,12 @@ export function importLocalData(text, storage = globalThis.localStorage) {
     if (!restored) throw new Error("The backup could not be saved, and some existing data could not be restored.");
     throw new Error("The backup could not be saved. Your existing data was kept.");
   }
+  memorySetupFallback = null;
   return { matchCount: backup.matches.length, setup: backup.setup };
 }
 
-export function deleteLocalData(storage = globalThis.localStorage) {
+export function deleteLocalData(storage = getSafeStorage()) {
+  memoryMatchesFallback = [];
   if (!storage) return;
   const keys = [];
   for (let index = 0; index < storage.length; index++) {
@@ -231,8 +181,25 @@ export function deleteLocalData(storage = globalThis.localStorage) {
 }
 
 export const loadSetup = () => {
-  migrateLocalStorage();
-  try { return validateSetup(JSON.parse(localStorage.getItem(SETUP_KEY) || "{}")); }
+  if (memorySetupFallback) return { ...memorySetupFallback };
+  const storage = getSafeStorage();
+  migrateLocalStorage(storage);
+  try { return normalizeSetup(JSON.parse(storage?.getItem(SETUP_KEY) || "{}")); }
   catch { return { ...DEFAULT_SETUP }; }
 };
-export const storeSetup = (s) => localStorage.setItem(SETUP_KEY, JSON.stringify(s));
+export const storeSetup = (s) => {
+  const safeSetup = normalizeSetup(s);
+  try {
+    const storage = getSafeStorage();
+    if (!storage) {
+      memorySetupFallback = safeSetup;
+      return false;
+    }
+    storage.setItem(SETUP_KEY, JSON.stringify(safeSetup));
+    memorySetupFallback = null;
+    return true;
+  } catch {
+    memorySetupFallback = safeSetup;
+    return false;
+  }
+};

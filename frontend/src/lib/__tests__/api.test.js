@@ -1,6 +1,6 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { DEFAULT_SETUP, SETUP_KEY } from "@/game/constants";
-import { fetchLeaderboard, fetchMatches, loadSetup } from "../api";
+import { deleteLocalData, fetchLeaderboard, fetchMatches, loadSetup, saveMatch, storeSetup } from "../api";
 
 const MATCHES_KEY = "renffr-tennis-matches";
 const values = new Map();
@@ -19,6 +19,24 @@ beforeEach(() => {
 afterEach(() => vi.unstubAllGlobals());
 
 describe("local data validation", () => {
+  it("keeps matches in session memory when browser storage is unavailable", async () => {
+    vi.stubGlobal("localStorage", null);
+    deleteLocalData(null);
+
+    const saved = await saveMatch({
+      match_id: "session-match-1", player_name: "Session player", won: true,
+      difficulty: "medium", surface: "hard", stats: { aces: 2 },
+    });
+
+    expect(saved.storage).toBe("session");
+    await expect(fetchMatches({ player: "session player" })).resolves.toMatchObject([
+      { match_id: "session-match-1", player_name: "Session player", storage: "session" },
+    ]);
+    await expect(fetchLeaderboard()).resolves.toMatchObject([
+      { player_name: "Session player", matches: 1, wins: 1 },
+    ]);
+  });
+
   it.each(["null", "[]", "\"unexpected\"", "42", "true"])("uses defaults for non-object setup JSON (%s)", (raw) => {
     values.set(SETUP_KEY, raw);
     expect(loadSetup()).toEqual(DEFAULT_SETUP);
@@ -33,8 +51,8 @@ describe("local data validation", () => {
       { player_name: "  Renger ", surface: "hard" },
     ]));
 
-    await expect(fetchMatches({ player: "renger" })).resolves.toEqual([
-      { player_name: "  Renger ", surface: "hard" },
+    await expect(fetchMatches({ player: "renger" })).resolves.toMatchObject([
+      { player_name: "Renger", surface: "hard", won: false, created_at: "1970-01-01T00:00:00.000Z", stats: { aces: 0 } },
     ]);
   });
 
@@ -62,5 +80,19 @@ describe("local data validation", () => {
     }));
 
     expect(loadSetup()).toEqual(DEFAULT_SETUP);
+  });
+
+  it("keeps setup and lets the player continue when local storage is unavailable or full", () => {
+    const setup = { ...DEFAULT_SETUP, name: "Local player" };
+    vi.stubGlobal("localStorage", null);
+    expect(storeSetup(setup)).toBe(false);
+    expect(loadSetup()).toEqual(setup);
+
+    vi.stubGlobal("localStorage", {
+      getItem: () => null,
+      setItem: () => { throw new Error("quota exceeded"); },
+    });
+    expect(storeSetup({ ...setup, name: "Still playable" })).toBe(false);
+    expect(loadSetup().name).toBe("Still playable");
   });
 });

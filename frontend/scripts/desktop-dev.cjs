@@ -1,15 +1,17 @@
 const { spawn } = require("node:child_process");
 const http = require("node:http");
 const path = require("node:path");
+const { randomBytes } = require("node:crypto");
 
 const root = path.resolve(__dirname, "../..");
 const url = "http://127.0.0.1:3000";
 const isWindows = process.platform === "win32";
 const npm = isWindows ? "npm.cmd" : "npm";
+const cspNonce = randomBytes(18).toString("base64url");
 
 const server = spawn(npm, ["start"], {
   cwd: root,
-  env: { ...process.env, BROWSER: "none", CI: "true", HOST: "127.0.0.1", PORT: "3000" },
+  env: { ...process.env, BROWSER: "none", CI: "true", HOST: "127.0.0.1", PORT: "3000", DESKTOP_CSP_NONCE: cspNonce },
   stdio: "inherit",
   shell: isWindows,
 });
@@ -48,7 +50,7 @@ async function start() {
     const electronCli = require.resolve("electron/cli.js");
     desktop = spawn(process.execPath, [electronCli, "."], {
       cwd: root,
-      env: { ...process.env, DESKTOP_START_URL: url },
+      env: { ...process.env, DESKTOP_START_URL: url, DESKTOP_CSP_NONCE: cspNonce },
       stdio: "inherit",
     });
     desktop.on("exit", (code) => {

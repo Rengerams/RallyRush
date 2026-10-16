@@ -2,7 +2,8 @@ import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Pause, Play as PlayIcon, Camera, Film, MousePointer2 } from "lucide-react";
 import { TennisEngine } from "@/game/engine";
-import { attachPlayKeyboardControls } from "@/game/playKeyboardControls";
+import { useGameLoop } from "@/game/useGameLoop";
+import { useGameKeyboardControls } from "@/game/useGameKeyboardControls";
 import { audio } from "@/game/audio";
 import { DIFFICULTY } from "@/game/constants";
 import { loadSetup, saveMatch } from "@/lib/api";
@@ -64,7 +65,9 @@ export default function Play() {
       match_format: cfg.format, sets: r.sets, duration_sec: r.duration_sec, legend: !!cfg.legend,
       stats: r.stats, opponent_points: r.opponentStats.points_won, opponent_stats: r.opponentStats, rally_lengths: r.rally_lengths,
     }).then((saved) => {
-      if (matchIdRef.current === matchId) setSaveState(saved.storage === "local" ? "saved-local" : "saved");
+      if (matchIdRef.current === matchId) {
+        setSaveState(saved.storage === "session" ? "saved-session" : saved.storage === "local" ? "saved-local" : "saved");
+      }
     }).catch(() => {
       if (matchIdRef.current === matchId) setSaveState("error");
     });
@@ -80,7 +83,7 @@ export default function Play() {
     }
   }, [persistResult]);
 
-  const eng = useMemo(() => new TennisEngine(cfg, onEvent, { rng: randomFromSeed(seed) }), [cfg, onEvent, seed]);
+  const eng = useMemo(() => new TennisEngine(cfg, onEvent, { rng: randomFromSeed(seed), audio }), [cfg, onEvent, seed]);
 
   useEffect(() => { eng.cameraMode = cameraMode; }, [eng, cameraMode]);
   useEffect(() => { eng.mouseEnabled = mouseEnabled; if (!mouseEnabled) eng.clearPointer(); }, [eng, mouseEnabled]);
@@ -101,16 +104,10 @@ export default function Play() {
     setReplay(null);
     setResult(null); setSaveState(null); setPaused(false); pausedRef.current = false;
     introRef.current = true; setIntro(true);
-    let raf, last = performance.now();
-    const loop = (t) => {
-      const dt = (t - last) / 1000; last = t;
-      if (!pausedRef.current && !introRef.current && graphicsReady.current) eng.update(dt);
-      raf = requestAnimationFrame(loop);
-    };
-    raf = requestAnimationFrame(loop);
-    const iv = setInterval(() => setSnap(eng.snapshot()), 100);
-    return () => { cancelAnimationFrame(raf); clearInterval(iv); };
   }, [eng]);
+
+  const canUpdate = useCallback(() => !pausedRef.current && !introRef.current && graphicsReady.current, []);
+  useGameLoop(eng, canUpdate, setSnap);
 
   useEffect(() => { const t = call && setTimeout(() => setCall(null), 1600); return () => clearTimeout(t); }, [call]);
   useEffect(() => { const t = quality && setTimeout(() => setQuality(null), 650); return () => clearTimeout(t); }, [quality]);
@@ -136,16 +133,14 @@ export default function Play() {
     }
   }, []);
 
-  useEffect(() => {
-    return attachPlayKeyboardControls({
-      engineRef: engRef,
-      graphicsReady,
-      pausedRef,
-      introRef,
-      togglePause,
-      noteServeAttempt,
-    });
-  }, [togglePause, noteServeAttempt]);
+  useGameKeyboardControls({
+    engineRef: engRef,
+    graphicsReady,
+    pausedRef,
+    introRef,
+    togglePause,
+    noteServeAttempt,
+  });
 
 
   const endIntro = useCallback(() => { introRef.current = false; setIntro(false); }, []);
@@ -191,7 +186,7 @@ export default function Play() {
         </div>
 
         <Callouts call={call} quality={quality} reducedMotion={displayPrefs.reducedMotion} />
-        {intro && <MatchIntro key={seed} cfg={cfg} names={names} onDone={endIntro} />}
+        {intro && <MatchIntro key={seed} cfg={cfg} names={names} onDone={endIntro} reducedMotion={displayPrefs.reducedMotion} />}
         {replay && !paused && (
           <div data-testid="replay-banner" className="pointer-events-none absolute inset-x-3 bottom-24 z-20 flex flex-wrap items-center justify-between gap-2 border border-white/10 bg-[#0B0E14]/90 px-3 py-2 sm:bottom-20">
             <span className="font-display text-base font-black uppercase italic text-[#00F0FF]">Replay · {replay}</span>

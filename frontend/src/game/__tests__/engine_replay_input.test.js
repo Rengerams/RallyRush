@@ -1,4 +1,4 @@
-import { describe, expect, test } from "vitest";
+import { describe, expect, test, vi } from "vitest";
 import { TennisEngine } from "../engine";
 import { movementDirection, pointerInput } from "../input";
 import { recordFrame, startReplay, stepReplay, endReplay } from "../replay";
@@ -22,6 +22,19 @@ const seededRandom = (seed) => {
     return state / 0x1_0000_0000;
   };
 };
+
+test("engine uses an injected audio port and runs with its silent default", () => {
+  const events = [];
+  const say = vi.fn();
+  const e = new TennisEngine(cfg, (event) => events.push(event), {
+    audio: { say, hit() {}, bounce() {}, net() {}, cheer() {} },
+  });
+
+  e.call("Ready");
+  expect(events).toContainEqual({ type: "call", text: "Ready" });
+  expect(say).toHaveBeenCalledWith("Ready");
+  expect(() => new TennisEngine(cfg).call("Headless")).not.toThrow();
+});
 
 // Module: movement and pointer input rules
 describe("input movement and aiming", () => {

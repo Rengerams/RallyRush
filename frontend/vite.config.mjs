@@ -11,13 +11,16 @@ export default defineConfig({
   root: frontendRoot,
   base: "./",
   plugins: [react(), tailwindcss()],
+  html: {
+    cspNonce: process.env.DESKTOP_CSP_NONCE || undefined,
+  },
   resolve: {
     alias: {
       "@": path.resolve(frontendRoot, "src"),
     },
   },
   server: {
-    host: true,
+    host: process.env.HOST || true,
     port: 3000,
     strictPort: true,
     headers: {

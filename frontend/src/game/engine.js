@@ -1,7 +1,6 @@
 import { BALL, SURFACES, SHOTS, DIFFICULTY, STYLES, FORMATS } from "./constants";
 import { stepBall, solveShot, isIn, predictIntercept } from "./physics";
 import { createScore, awardPoint, currentServer, pointLabels, scoreCall } from "./scoring";
-import { audio } from "./audio";
 import { recordFrame, startReplay, stepReplay, endReplay } from "./replay";
 import { pointerInput, movementDirection } from "./input";
 import { ENGINE_TUNING } from "./tuning";
@@ -10,12 +9,14 @@ import { gradeTimingDistance } from "./timing";
 const lerp = (a, b, t) => a + (b - a) * t;
 const clamp = (v, a, b) => Math.max(a, Math.min(b, v));
 const blankStats = () => ({ aces: 0, double_faults: 0, winners: 0, errors: 0, perfect_shots: 0, total_shots: 0, longest_rally: 0, points_won: 0 });
+const SILENT_AUDIO = Object.freeze({ hit() {}, bounce() {}, net() {}, cheer() {}, say() {} });
 
 export class TennisEngine {
-  constructor(cfg, onEvent, { rng = Math.random } = {}) {
+  constructor(cfg, onEvent, { rng = Math.random, audio = SILENT_AUDIO } = {}) {
     this.cfg = cfg;
     this.onEvent = onEvent || (() => {});
     this.rng = typeof rng === "function" ? rng : Math.random;
+    this.audio = audio && typeof audio === "object" ? audio : SILENT_AUDIO;
     this.surf = SURFACES[cfg.surface];
     this.diff = DIFFICULTY[cfg.difficulty];
     this.style = STYLES[cfg.style];
@@ -53,7 +54,7 @@ export class TennisEngine {
   emit(e) { this.onEvent(e); }
   random() { return this.rng(); }
   rand(min, max) { return min + this.random() * (max - min); }
-  call(text, speak = true) { this.emit({ type: "call", text }); if (speak) audio.say(text); }
+  call(text, speak = true) { this.emit({ type: "call", text }); if (speak) this.audio.say(text); }
 
   setupPoint() {
     const s = this.score;
@@ -163,7 +164,7 @@ export class TennisEngine {
     const st = this.stats[who];
     st.total_shots++;
     if (quality === "perfect") st.perfect_shots++;
-    audio.hit(quality === "perfect" ? 1.2 : 0.9);
+    this.audio.hit(quality === "perfect" ? 1.2 : 0.9);
     if (who === 0) Object.assign(this.a, { plan: null, reactT: ENGINE_TUNING.aiReactionDelay * this.diff.reaction, rolled: false, whiff: false, wild: false, letGo: false });
     this.emit({ type: "shot", who, shot: shot.label, quality });
   }
@@ -275,7 +276,10 @@ export class TennisEngine {
   update(dtReal) {
     if (!Number.isFinite(dtReal) || dtReal <= 0 || this.state === "matchOver") return;
     if (this.state === "replay") return this.stepReplay(dtReal);
-    this.simCarry += Math.min(dtReal, 0.25) * ENGINE_TUNING.simulationScale;
+    const simulationDelta = Math.min(dtReal, 0.25);
+    // Count the full foreground interval; only physics catch-up is clamped.
+    this.activeSeconds += dtReal;
+    this.simCarry += simulationDelta * ENGINE_TUNING.simulationScale;
     let steps = 0;
     while (this.simCarry >= ENGINE_TUNING.physicsStep && steps < ENGINE_TUNING.maxCatchupSteps) {
       this.simCarry -= ENGINE_TUNING.physicsStep;
@@ -291,7 +295,6 @@ export class TennisEngine {
 
   advance(dt) {
     this.time += dt;
-    this.activeSeconds += dt;
     this.stateT += dt;
     this.cheer = Math.max(0, this.cheer - dt * 0.6);
     this.marks = this.marks.filter((m) => (m.life -= dt * 0.25) > 0);
@@ -425,14 +428,14 @@ export class TennisEngine {
   handleBallEvent(ev) {
     const b = this.ball;
     if (ev === "net") {
-      audio.net();
+      this.audio.net();
       if (this.state !== "rally") return;
       if (this.isServe) return this.fault("Net · Fault");
       return this.endPoint(1 - this.lastHitter, "Net", true);
     }
     this.emit({ type: "bounce", who: this.lastHitter, x: b.x, z: b.z, in: isIn(b, this.lastHitter === 0 ? -1 : 1, this.isServe ? this.boxSign : 0) });
     this.marks.push({ x: b.x, z: b.z, life: 1 });
-    audio.bounce();
+    this.audio.bounce();
     if (this.state !== "rally") return;
     const hitter = this.lastHitter;
     if (this.bounces === 0) {
@@ -467,10 +470,10 @@ export class TennisEngine {
     for (const st of this.stats) st.longest_rally = Math.max(st.longest_rally, this.rally);
     const events = awardPoint(this.score, winner);
     this.cheer = events.includes("game") ? 1 : 0.6;
-    audio.cheer(events.includes("set") ? 1.4 : 0.8);
+    this.audio.cheer(events.includes("set") ? 1.4 : 0.8);
     const call = scoreCall(this.score, events, this.names, winner);
     this.emit({ type: "call", text: reason, sub: call, winner });
-    audio.say(`${reason}. ${call}`);
+    this.audio.say(`${reason}. ${call}`);
     this.bigPoint = reason === "Ace" ? "Ace" : this.rally >= 6 ? `${this.rally}-shot rally` : null;
     this.state = events.includes("match") ? "matchPending" : "pointOver";
     if (events.includes("match")) this.matchDuration = Math.round(this.activeSeconds);

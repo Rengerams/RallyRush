@@ -1,3 +1,5 @@
+import { getSafeStorage } from "@/lib/safeStorage";
+
 export const TUTORIAL_STORAGE_KEY = "rally-rush:first-session-guide:v1";
 
 export const TUTORIAL_STEPS = [
@@ -28,7 +30,7 @@ export const TUTORIAL_STEPS = [
   },
 ];
 
-export function hasCompletedTutorial(storage = globalThis.localStorage) {
+export function hasCompletedTutorial(storage = getSafeStorage()) {
   try {
     return storage?.getItem(TUTORIAL_STORAGE_KEY) === "complete";
   } catch {
@@ -36,7 +38,7 @@ export function hasCompletedTutorial(storage = globalThis.localStorage) {
   }
 }
 
-export function markTutorialComplete(storage = globalThis.localStorage) {
+export function markTutorialComplete(storage = getSafeStorage()) {
   try {
     storage?.setItem(TUTORIAL_STORAGE_KEY, "complete");
   } catch {
