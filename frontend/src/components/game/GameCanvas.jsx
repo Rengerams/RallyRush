@@ -80,7 +80,7 @@ export default function GameCanvas({ eng, wrapRef, renderActive = true, reducedE
   useEffect(() => {
     if (reducedEffects) viewRef.current?.reduceEffects();
     else viewRef.current?.restoreEffects();
-  }, [reducedEffects]);
+  }, [reducedEffects, viewGeneration]);
 
   useEffect(() => {
     if (!renderActive || !pageVisible || error || !viewRef.current) return undefined;
