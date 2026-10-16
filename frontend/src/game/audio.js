@@ -1,12 +1,13 @@
 let ctx = null;
 let noiseBuf = null;
 let musicBus = null;
+let musicDelay = null;
 let musicTimer = null;
 let musicActive = false;
 let nextMusicBar = 0;
 let musicBarIndex = 0;
 
-const MUSIC_BEAT = 60 / 104;
+const MUSIC_BEAT = 60 / 100;
 const MUSIC_BAR = MUSIC_BEAT * 4;
 const MUSIC_BARS = [
   { bass: 73.42, pad: [146.83, 174.61, 220], lead: [440, 587.33, 698.46, 587.33, 440, 523.25, 587.33, 523.25] },
@@ -29,28 +30,38 @@ function musicNote(freq, start, duration, volume, type = "triangle") {
   filter.type = "lowpass";
   filter.frequency.setValueAtTime(type === "sine" ? 900 : 2800, start);
   gain.gain.setValueAtTime(0.0001, start);
-  gain.gain.exponentialRampToValueAtTime(volume, start + 0.025);
+  const attack = type === "sine" ? 0.16 : 0.018;
+  gain.gain.exponentialRampToValueAtTime(volume, start + attack);
   gain.gain.exponentialRampToValueAtTime(0.0001, start + duration);
-  osc.connect(filter).connect(gain).connect(musicBus);
+  const output = osc.connect(filter).connect(gain);
+  output.connect(musicBus);
+  if (musicDelay && type !== "sine") output.connect(musicDelay);
   osc.start(start);
   osc.stop(start + duration + 0.03);
 }
 
 function scheduleMusicBar(start, index) {
   const bar = MUSIC_BARS[index % MUSIC_BARS.length];
-  bar.pad.forEach((freq) => musicNote(freq, start, MUSIC_BAR * 0.92, 0.005, "sine"));
+  bar.pad.forEach((freq) => musicNote(freq, start, MUSIC_BAR * 0.96, 0.008, "sine"));
   [0, 2].forEach((beat) => {
-    musicNote(bar.bass, start + beat * MUSIC_BEAT, MUSIC_BEAT * 0.72, 0.024, "triangle");
-    musicKick(start + beat * MUSIC_BEAT, beat === 0 ? 0.11 : 0.075);
+    const bassTime = start + beat * MUSIC_BEAT;
+    musicNote(bar.bass, bassTime, MUSIC_BEAT * 0.8, 0.032, "triangle");
+    musicKick(bassTime, beat === 0 ? 0.12 : 0.085);
   });
-  [1, 3].forEach((beat) => musicSnare(start + beat * MUSIC_BEAT, beat === 3 ? 0.035 : 0.026));
+  [1, 3].forEach((beat) => musicSnare(start + beat * MUSIC_BEAT, beat === 3 ? 0.032 : 0.024));
   for (let step = 0; step < 8; step++) {
-    musicHat(start + step * MUSIC_BEAT / 2, step % 2 === 0 ? 0.007 : 0.004);
+    if (step % 2 === 0 || (index + step) % 3 !== 0) {
+      musicHat(start + step * MUSIC_BEAT / 2, step % 2 === 0 ? 0.006 : 0.0035);
+    }
   }
   bar.lead.forEach((freq, step) => {
     if (step === 3 || (step === 7 && index % 2 === 0)) return;
     const startAt = start + step * MUSIC_BEAT / 2;
-    musicNote(freq, startAt, MUSIC_BEAT * (step % 2 ? 0.28 : 0.36), step > 4 ? 0.022 : 0.026, "triangle");
+    musicNote(freq, startAt, MUSIC_BEAT * (step % 2 ? 0.24 : 0.32), step > 4 ? 0.021 : 0.025, "triangle");
+    if (step === 2 || step === 6) {
+      const chordTone = bar.pad[(index + step / 2) % bar.pad.length];
+      musicNote(chordTone * 2, startAt + MUSIC_BEAT * 0.18, MUSIC_BEAT * 0.22, 0.009, "sine");
+    }
     if (step === 4 && index % 2 === 1) musicNote(freq / 2, startAt, MUSIC_BEAT * 0.5, 0.012, "sine");
   });
 }
@@ -71,6 +82,14 @@ function startMusic() {
     musicBus = ctx.createGain();
     musicBus.gain.value = 0.0001;
     musicBus.connect(ctx.destination);
+    musicDelay = ctx.createDelay(0.5);
+    musicDelay.delayTime.value = MUSIC_BEAT * 0.375;
+    const feedback = ctx.createGain();
+    const wet = ctx.createGain();
+    feedback.gain.value = 0.16;
+    wet.gain.value = 0.18;
+    musicDelay.connect(wet).connect(musicBus);
+    musicDelay.connect(feedback).connect(musicDelay);
   }
   const now = ctx.currentTime;
   musicBus.gain.cancelScheduledValues(now);
@@ -234,7 +253,7 @@ const N = { G3: 196, C4: 261.6, E4: 329.6, G4: 392, A4: 440, B4: 493.9, C5: 523.
 
 export function selectUmpireVoice(voices = []) {
   const english = voices.filter((voice) => /^en([_-]|$)/i.test(voice.lang || ""));
-  return english.find((voice) => /^en[-_]gb/i.test(voice.lang || "") && /male|daniel|george|arthur|ryan/i.test(voice.name || ""))
+  return english.find((voice) => /^en[-_]gb/i.test(voice.lang || "") && /male|daniel|george|arthur|ryan|oliver|thomas/i.test(voice.name || ""))
     || english.find((voice) => /^en[-_]gb/i.test(voice.lang || ""))
     || english.find((voice) => voice.default)
     || english[0]
@@ -288,8 +307,8 @@ export const audio = {
     synth.cancel();
     const u = new SpeechSynthesisUtterance(text);
     u.lang = "en-GB";
-    u.rate = 0.94;
-    u.pitch = 0.82;
+    u.rate = 0.9;
+    u.pitch = 0.96;
     u.voice = selectUmpireVoice(synth.getVoices?.() || []) || null;
     synth.speak(u);
   },
