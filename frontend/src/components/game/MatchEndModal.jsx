@@ -51,6 +51,7 @@ export default function MatchEndModal({ result, names, saveState, onRematch, onL
               {saveState === "saving" && <><Loader2 size={14} className="animate-spin" /> Saving match…</>}
               {saveState === "saved" && <><Check size={14} className="text-[#22C55E]" /> Match saved</>}
               {saveState === "saved-local" && <><Check size={14} className="text-[#22C55E]" /> Match saved on this device</>}
+              {saveState === "saved-session" && <><Check size={14} className="text-[#22C55E]" /> Match kept for this session only</>}
               {saveState === "error" && <><AlertTriangle size={14} className="text-[#E05A47]" /> Could not save match</>}
             </output>
             {saveState === "error" && <button data-testid="match-end-retry-save-btn" onClick={onRetry} className="btn-ghost flex items-center gap-1 rounded-full px-3 py-1 text-xs"><RotateCcw size={12} />Retry</button>}

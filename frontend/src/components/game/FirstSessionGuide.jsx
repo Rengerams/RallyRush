@@ -3,7 +3,7 @@ import * as Dialog from "@radix-ui/react-dialog";
 import { ArrowLeft, ArrowRight, BookOpen, X } from "lucide-react";
 import { getTutorialTransition, markTutorialComplete, TUTORIAL_STEPS } from "@/lib/tutorial";
 
-export default function FirstSessionGuide({ open, onOpenChange }) {
+export default function FirstSessionGuide({ open, onOpenChange, returnFocusRef }) {
   const [step, setStep] = useState(0);
 
   useEffect(() => {
@@ -25,6 +25,12 @@ export default function FirstSessionGuide({ open, onOpenChange }) {
       <Dialog.Portal>
         <Dialog.Overlay className="fixed inset-0 z-[70] bg-[#05080d]/85 backdrop-blur-md" />
         <Dialog.Content data-testid="first-session-guide" aria-describedby="first-session-guide-description"
+          onCloseAutoFocus={(event) => {
+            if (returnFocusRef?.current) {
+              event.preventDefault();
+              returnFocusRef.current.focus();
+            }
+          }}
           className="fixed inset-x-4 top-1/2 z-[70] mx-auto max-h-[calc(100dvh-2rem)] w-auto max-w-lg -translate-y-1/2 overflow-y-auto rounded-2xl border border-white/10 bg-[#121824] p-5 shadow-2xl outline-none fade-up sm:left-1/2 sm:right-auto sm:w-full sm:-translate-x-1/2 sm:p-7">
           <div className="flex items-start justify-between gap-4">
             <div>

@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useRef, useState } from "react";
 import * as AlertDialog from "@radix-ui/react-alert-dialog";
 import * as Dialog from "@radix-ui/react-dialog";
 import { Volume2, VolumeX, Mic, MicOff, Film, BookOpen } from "lucide-react";
@@ -7,6 +7,7 @@ import FirstSessionGuide from "@/components/game/FirstSessionGuide";
 export default function PauseModal({ onResume, onRestart, onQuit, sound, voice, onSound, onVoice, replays, onReplays, displayPrefs = { hudSize: "normal", reducedEffects: false, reducedMotion: false, shotHoldMs: 150 }, onDisplayPrefChange = () => {} }) {
   const [confirmRestart, setConfirmRestart] = useState(false);
   const [guideOpen, setGuideOpen] = useState(false);
+  const guideTriggerRef = useRef(null);
 
   return (
     <>
@@ -72,13 +73,13 @@ export default function PauseModal({ onResume, onRestart, onQuit, sound, voice, 
             <p className="mt-1 text-[11px] leading-snug text-slate-400">Lower values prepare sooner; raise it if scrolling triggers a shot.</p>
             <p className="col-span-2 mt-1 text-[11px] leading-snug text-slate-400">System reduced-motion settings are always respected.</p>
           </section>
-          <button data-testid="pause-controls-guide-btn" onClick={() => setGuideOpen(true)} className="btn-ghost mt-2 flex w-full items-center justify-center gap-2 rounded-lg py-2 text-sm">
+          <button data-testid="pause-controls-guide-btn" onClick={(event) => { guideTriggerRef.current = event.currentTarget; setGuideOpen(true); }} className="btn-ghost mt-2 flex w-full items-center justify-center gap-2 rounded-lg py-2 text-sm">
             <BookOpen size={16} /> Controls guide
           </button>
         </Dialog.Content>
       </Dialog.Portal>
     </Dialog.Root>
-    <FirstSessionGuide open={guideOpen} onOpenChange={setGuideOpen} />
+    <FirstSessionGuide open={guideOpen} onOpenChange={setGuideOpen} returnFocusRef={guideTriggerRef} />
     </>
   );
 }

@@ -1,6 +1,6 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { DEFAULT_SETUP, SETUP_KEY } from "@/game/constants";
-import { fetchLeaderboard, fetchMatches, loadSetup, storeSetup } from "../api";
+import { deleteLocalData, fetchLeaderboard, fetchMatches, loadSetup, saveMatch, storeSetup } from "../api";
 
 const MATCHES_KEY = "renffr-tennis-matches";
 const values = new Map();
@@ -19,6 +19,24 @@ beforeEach(() => {
 afterEach(() => vi.unstubAllGlobals());
 
 describe("local data validation", () => {
+  it("keeps matches in session memory when browser storage is unavailable", async () => {
+    vi.stubGlobal("localStorage", null);
+    deleteLocalData(null);
+
+    const saved = await saveMatch({
+      match_id: "session-match-1", player_name: "Session player", won: true,
+      difficulty: "medium", surface: "hard", stats: { aces: 2 },
+    });
+
+    expect(saved.storage).toBe("session");
+    await expect(fetchMatches({ player: "session player" })).resolves.toMatchObject([
+      { match_id: "session-match-1", player_name: "Session player", storage: "session" },
+    ]);
+    await expect(fetchLeaderboard()).resolves.toMatchObject([
+      { player_name: "Session player", matches: 1, wins: 1 },
+    ]);
+  });
+
   it.each(["null", "[]", "\"unexpected\"", "42", "true"])("uses defaults for non-object setup JSON (%s)", (raw) => {
     values.set(SETUP_KEY, raw);
     expect(loadSetup()).toEqual(DEFAULT_SETUP);

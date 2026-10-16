@@ -77,7 +77,7 @@ export function normalizeStoredMatch(value, index = 0) {
     rating_points: Number.isFinite(value.rating_points) && value.rating_points >= 0 && value.rating_points <= 1_000_000
       ? value.rating_points : value.won === true
         ? (Object.hasOwn(RATING_POINTS, value.difficulty) ? RATING_POINTS[value.difficulty] : 0) : 2,
-    storage: "local",
+    storage: value.storage === "session" ? "session" : "local",
   };
 }
 

@@ -12,8 +12,10 @@ const STORAGE_VERSION = 1;
 const LEGACY_HISTORY_PREFIX = "renffr-breakdown-";
 const RATING_POINTS = Object.freeze({ easy: 10, medium: 20, hard: 35, pro: 60 });
 let memorySetupFallback = null;
+let memoryMatchesFallback = [];
 
 function readLocalMatches(storage = getSafeStorage()) {
+  if (!storage) return memoryMatchesFallback.map((row, index) => normalizeStoredMatch(row, index)).filter(Boolean);
   migrateLocalStorage(storage);
   try {
     const rows = JSON.parse(storage.getItem(MATCHES_KEY) || "[]");
@@ -47,10 +49,14 @@ function saveLocalMatch(payload) {
     storage: "local",
   });
   if (!row) throw new Error("The match result could not be saved because its player name is invalid.");
+  row.storage = storage ? "local" : "session";
   const index = rows.findIndex((match) => match.match_id && match.match_id === payload.match_id);
   if (index >= 0) rows[index] = { ...rows[index], ...row };
   else rows.unshift(row);
-  if (!storage) return row;
+  if (!storage) {
+    memoryMatchesFallback = rows;
+    return row;
+  }
   storage.setItem(MATCHES_KEY, JSON.stringify(rows));
   return row;
 }
@@ -162,6 +168,7 @@ export function importLocalData(text, storage = getSafeStorage()) {
 }
 
 export function deleteLocalData(storage = getSafeStorage()) {
+  memoryMatchesFallback = [];
   if (!storage) return;
   const keys = [];
   for (let index = 0; index < storage.length; index++) {

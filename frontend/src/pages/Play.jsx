@@ -65,7 +65,9 @@ export default function Play() {
       match_format: cfg.format, sets: r.sets, duration_sec: r.duration_sec, legend: !!cfg.legend,
       stats: r.stats, opponent_points: r.opponentStats.points_won, opponent_stats: r.opponentStats, rally_lengths: r.rally_lengths,
     }).then((saved) => {
-      if (matchIdRef.current === matchId) setSaveState(saved.storage === "local" ? "saved-local" : "saved");
+      if (matchIdRef.current === matchId) {
+        setSaveState(saved.storage === "session" ? "saved-session" : saved.storage === "local" ? "saved-local" : "saved");
+      }
     }).catch(() => {
       if (matchIdRef.current === matchId) setSaveState("error");
     });
