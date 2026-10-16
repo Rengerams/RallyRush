@@ -505,7 +505,6 @@ export class TennisEngine {
       canReplay: this.lastPointFrames.length > 1 && (this.state === "pointOver" || this.state === "matchOver" || (this.state === "serve" && this.serveStage === "hold")),
       replayProgress: this.state === "replay" ? this.replayI / Math.max(1, this.replayFrames.length - 1) : 0,
       replaySpeed: this.replaySpeed,
-      replayPaused: this.replayPaused,
     };
   }
 }

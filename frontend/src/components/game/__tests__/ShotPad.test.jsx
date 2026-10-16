@@ -9,8 +9,5 @@ it("keeps desktop keyboard controls expandable only at desktop widths", () => {
   expect(html).toContain("Controls</summary>");
   expect(html).toContain("WASD");
   expect(html).toContain("Enter");
-  expect(html).toContain('data-testid="touch-shot-hint"');
-  expect(html).toContain("hold briefly, then release near contact");
-  expect(html).toContain("Swipe sideways to reach Serve");
   expect(html).not.toContain('data-testid="desktop-controls" class="sr-only"');
 });

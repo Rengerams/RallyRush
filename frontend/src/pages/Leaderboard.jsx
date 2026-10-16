@@ -13,8 +13,8 @@ function HallOfFame({ row }) {
           <p className="font-display gold-shimmer text-6xl font-black uppercase italic lg:text-7xl">{row.player_name}</p>
         </div>
         <div className="ml-auto flex gap-8 font-mono text-sm">
-          <div><p className="text-[10px] uppercase tracking-[0.2em] text-slate-400">Wins</p><p className="font-display text-4xl font-black">{row.wins}</p></div>
-          <div><p className="text-[10px] uppercase tracking-[0.2em] text-slate-400">Rating</p><p className="font-display text-4xl font-black text-[#FFC828]">{row.rating}</p></div>
+          <div><p className="text-[10px] uppercase tracking-[0.2em] text-slate-500">Wins</p><p className="font-display text-4xl font-black">{row.wins}</p></div>
+          <div><p className="text-[10px] uppercase tracking-[0.2em] text-slate-500">Rating</p><p className="font-display text-4xl font-black text-[#FFC828]">{row.rating}</p></div>
         </div>
       </div>
     </div>
@@ -40,15 +40,15 @@ export default function Leaderboard() {
       {mode === "competitive" && rows?.length > 0 && <HallOfFame row={rows[0]} />}
       <div className="mt-8 overflow-x-auto rounded-2xl border border-white/10">
         <table data-testid="leaderboard-table" className="w-full min-w-[720px] text-left">
-          <thead className="bg-[#121824] font-mono text-[10px] uppercase tracking-[0.2em] text-slate-400">
+          <thead className="bg-[#121824] font-mono text-[10px] uppercase tracking-[0.2em] text-slate-500">
             <tr>{["#", "Player", "Rating", "W-L", "Win %", "Best rally", "Aces", "Perfect"].map((h) => <th key={h} className="px-4 py-3 font-medium">{h}</th>)}</tr>
           </thead>
           <tbody>
-            {rows === null && <tr><td colSpan={8} className="px-4 py-10 text-center text-slate-400">Loading…</td></tr>}
-            {rows?.length === 0 && <tr><td colSpan={8} data-testid="leaderboard-empty" className="px-4 py-10 text-center text-slate-400">No matches yet. Be the first champion.</td></tr>}
+            {rows === null && <tr><td colSpan={8} className="px-4 py-10 text-center text-slate-500">Loading…</td></tr>}
+            {rows?.length === 0 && <tr><td colSpan={8} data-testid="leaderboard-empty" className="px-4 py-10 text-center text-slate-500">No matches yet. Be the first champion.</td></tr>}
             {rows?.map((r, i) => (
               <tr key={r.player_name} data-testid={`leaderboard-row-${i}`} className="border-t border-white/[0.06] transition-colors hover:bg-white/[0.03]">
-                <td className="px-4 py-3 font-display text-2xl font-black text-slate-400">{i < 3 ? <Medal size={20} className={["text-[#FFC828]", "text-slate-300", "text-[#E05A47]"][i]} /> : i + 1}</td>
+                <td className="px-4 py-3 font-display text-2xl font-black text-slate-500">{i < 3 ? <Medal size={20} className={["text-[#FFC828]", "text-slate-300", "text-[#E05A47]"][i]} /> : i + 1}</td>
                 <td className="px-4 py-3 font-display text-xl font-extrabold uppercase">{r.player_name}{r.legend && <Crown size={14} className="ml-2 inline text-[#FFC828]" />}</td>
                 <td className="px-4 py-3 font-mono font-bold text-[#DFFF00]">{r.rating}</td>
                 <td className="px-4 py-3 font-mono">{r.wins}-{r.losses}</td>

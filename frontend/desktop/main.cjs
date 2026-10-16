@@ -1,27 +1,5 @@
 const path = require("node:path");
-const { app, BrowserWindow, session, shell } = require("electron");
-
-const CONTENT_SECURITY_POLICY = [
-  "default-src 'self'",
-  "script-src 'self'",
-  "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com",
-  "font-src 'self' data: https://fonts.gstatic.com",
-  "img-src 'self' data: blob:",
-  "connect-src 'self' http://localhost:* ws://localhost:* https://fonts.googleapis.com https://fonts.gstatic.com",
-  "object-src 'none'",
-  "base-uri 'self'",
-  "form-action 'self'",
-  "frame-ancestors 'none'",
-].join("; ");
-
-session.defaultSession.webRequest.onHeadersReceived((details, callback) => {
-  callback({
-    responseHeaders: {
-      ...details.responseHeaders,
-      "Content-Security-Policy": [CONTENT_SECURITY_POLICY],
-    },
-  });
-});
+const { app, BrowserWindow, shell } = require("electron");
 
 function createWindow() {
   const window = new BrowserWindow({
