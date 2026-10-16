@@ -227,13 +227,17 @@ body {
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .play-page *,
-  .play-page *::before,
-  .play-page *::after {
+  *,
+  *::before,
+  *::after {
     scroll-behavior: auto !important;
     animation-duration: 0.01ms !important;
     animation-iteration-count: 1 !important;
     transition-duration: 0.01ms !important;
+  }
+
+  .grain::before {
+    display: none;
   }
 }
 
@@ -242,6 +246,10 @@ body {
 :where(button, a, summary, input, select, textarea, [tabindex]):focus-visible {
   outline: 3px solid #00F0FF !important;
   outline-offset: 2px;
+}
+
+html[data-reduced-motion="true"] .grain::before {
+  display: none;
 }
 
 html[data-reduced-motion="true"] *,
