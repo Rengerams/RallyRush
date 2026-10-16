@@ -4,7 +4,7 @@ import * as Dialog from "@radix-ui/react-dialog";
 import { Volume2, VolumeX, Mic, MicOff, Film, BookOpen } from "lucide-react";
 import FirstSessionGuide from "@/components/game/FirstSessionGuide";
 
-export default function PauseModal({ onResume, onRestart, onQuit, sound, voice, onSound, onVoice, replays, onReplays, displayPrefs, onDisplayPrefChange }) {
+export default function PauseModal({ onResume, onRestart, onQuit, sound, voice, onSound, onVoice, replays, onReplays, displayPrefs = { hudSize: "normal", reducedEffects: false, reducedMotion: false }, onDisplayPrefChange = () => {} }) {
   const [confirmRestart, setConfirmRestart] = useState(false);
   const [guideOpen, setGuideOpen] = useState(false);
 
@@ -65,6 +65,7 @@ export default function PauseModal({ onResume, onRestart, onQuit, sound, voice, 
                 Reduced motion · {displayPrefs.reducedMotion ? "On" : "Off"}
               </button>
             </div>
+            <p className="col-span-2 mt-1 text-[11px] leading-snug text-slate-400">System reduced-motion settings are always respected.</p>
           </section>
           <button data-testid="pause-controls-guide-btn" onClick={() => setGuideOpen(true)} className="btn-ghost mt-2 flex w-full items-center justify-center gap-2 rounded-lg py-2 text-sm">
             <BookOpen size={16} /> Controls guide
