@@ -14,7 +14,7 @@ function Row({ name, labels, games, history, serving, idx, legend, compact }) {
 export default function Scoreboard({ snap, names, legend, compact = false }) {
   if (!snap) return null;
   return (
-    <div data-testid="scoreboard" data-compact={compact} role="group" aria-live="polite" aria-atomic="true" aria-label={`Match score. Sets ${snap.sets[0]} to ${snap.sets[1]}. ${names[snap.server]} serving.`} className={`scoreboard-card overflow-hidden rounded-xl border border-white/15 bg-[#0B0E14]/85 shadow-lg backdrop-blur-md ${compact ? "scoreboard-card--compact" : ""}`}>
+    <div data-testid="scoreboard" data-compact={compact} role="group" aria-live="polite" aria-atomic="true" aria-label={`Match score. Sets ${snap.sets[0]} to ${snap.sets[1]}. Games ${snap.games[0]} to ${snap.games[1]}. Points ${snap.labels[0] || "0"} to ${snap.labels[1] || "0"}. ${names[snap.server]} serving.`} className={`scoreboard-card overflow-hidden rounded-xl border border-white/15 bg-[#0B0E14]/85 shadow-lg backdrop-blur-md ${compact ? "scoreboard-card--compact" : ""}`}>
       <div className={`flex flex-wrap items-center justify-between gap-x-2 gap-y-1 border-b border-white/10 font-mono uppercase tracking-wider text-slate-300 ${compact ? "px-2 py-1 text-[9px]" : "px-3 py-1.5 text-[10px]"}`}>
         <span>Sets {snap.sets[0]}–{snap.sets[1]}</span>
         {snap.tiebreak && <span className="text-[#DFFF00]">Tie-break</span>}
