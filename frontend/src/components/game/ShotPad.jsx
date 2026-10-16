@@ -80,16 +80,8 @@ export default function ShotPad({ onShot, onHold, onRelease, selectedShot = "fla
         ))}
       </div>
       <p className="sr-only">Select a shot, then release the button near contact. Keyboard: hold 1 through 7 and release to swing.</p>
-      <details data-testid="desktop-controls" className="mt-2 hidden border-t border-white/10 pt-2 lg:block">
-        <summary className="cursor-pointer font-mono text-xs font-semibold text-[#00F0FF] outline-none focus-visible:ring-2 focus-visible:ring-[#00F0FF]">Controls</summary>
-        <div aria-label="Desktop controls" className="mt-2 space-y-2 font-mono text-[11px] leading-relaxed text-slate-300">
-          <p><span className="key-cap">WASD</span> / arrows · move</p>
-          <p><span className="key-cap">1–7</span> hold to prepare · release near contact to swing</p>
-          <p>Mouse: move to run when enabled · hold right button to aim · release left button near contact</p>
-          <p><span className="key-cap">Shift</span> sprint · <span className="key-cap">Space</span> slide</p>
-          <p><span className="key-cap">Esc</span> / <span className="key-cap">P</span> pause · <span className="key-cap">Enter</span> skip replay</p>
-        </div>
-      </details>
+      <p data-testid="touch-shot-hint" className="mt-1 px-1 font-mono text-[9px] leading-snug text-slate-300 lg:hidden">Touch: hold briefly, then release near contact. Swipe sideways to reach Serve.</p>
+
     </div>
   );
 }
