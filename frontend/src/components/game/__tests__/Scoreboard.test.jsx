@@ -12,6 +12,12 @@ const snap = {
 };
 
 describe("match scoreboard", () => {
+  it("announces score changes to assistive technology", () => {
+    const html = renderToStaticMarkup(<Scoreboard snap={snap} names={["Player", "AI"]} />);
+    expect(html).toContain('aria-live="polite"');
+    expect(html).toContain('aria-atomic="true"');
+  });
+
   it("labels score columns and makes the serving player obvious", () => {
     const html = renderToStaticMarkup(<Scoreboard snap={snap} names={["Renger", "AI"]} />);
     expect(html).toContain("Sets 1–0");

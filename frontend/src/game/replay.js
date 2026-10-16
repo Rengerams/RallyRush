@@ -16,6 +16,8 @@ export function startReplay(e, manual = false) {
   e.replayFrames = e.lastPointFrames;
   e.replayTime = e.replayFrames[0].t;
   e.replayI = 0;
+  e.replayPaused = false;
+  e.replaySpeed = 0.65;
   e.clearPointer();
   e.state = "replay";
   e.emit({ type: "replay", on: true, label: e.lastPointLabel || "Last point" });
@@ -23,9 +25,9 @@ export function startReplay(e, manual = false) {
 }
 
 export function stepReplay(e, delta) {
+  if (e.replayPaused) return;
   const frames = e.replayFrames, end = frames[frames.length - 1].t;
-  e.replaySpeed = end - e.replayTime < 1.5 ? 0.3 : 0.65;
-  e.replayTime += Math.min(delta, 0.1) * e.replaySpeed;
+  e.replayTime += Math.min(delta, 0.1) * (e.replaySpeed || 0.65);
   if (e.replayTime >= end) return endReplay(e);
   while (e.replayI < frames.length - 2 && frames[e.replayI + 1].t <= e.replayTime) e.replayI++;
   const a = frames[e.replayI], b = frames[e.replayI + 1];
@@ -42,6 +44,7 @@ export function stepReplay(e, delta) {
 export function endReplay(e) {
   if (e.state !== "replay") return;
   e.emit({ type: "replay", on: false });
+  e.replayPaused = false;
   const live = e.liveFrame;
   Object.assign(e.ball, live.ball); Object.assign(e.p, live.p); Object.assign(e.a, live.a);
   e.trail = live.trail;

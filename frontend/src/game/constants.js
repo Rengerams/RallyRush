@@ -26,10 +26,10 @@ export const SHOT_BY_KEY = Object.fromEntries(SHOT_LIST.map((s) => [s.key, s.id]
 
 // AIDifficulty.cs multipliers + derived accuracy
 export const DIFFICULTY = {
-  easy: { id: "easy", label: "Easy", reaction: 1.5, error: 0.4, power: 0.8, move: 0.7, acc: 0.86, perfect: 0.05, smart: false },
-  medium: { id: "medium", label: "Medium", reaction: 1.0, error: 0.2, power: 1.0, move: 1.0, acc: 0.9, perfect: 0.15, smart: false },
-  hard: { id: "hard", label: "Hard", reaction: 0.7, error: 0.1, power: 1.1, move: 1.1, acc: 0.93, perfect: 0.3, smart: true },
-  pro: { id: "pro", label: "Pro", reaction: 0.4, error: 0.05, power: 1.2, move: 1.2, acc: 0.96, perfect: 0.5, smart: true },
+  easy: { id: "easy", label: "Easy", reaction: 1.25, error: 0.28, power: 0.9, move: 0.82, acc: 0.89, perfect: 0.1, smart: false },
+  medium: { id: "medium", label: "Medium", reaction: 1.2, error: 0.3, power: 0.92, move: 0.9, acc: 0.88, perfect: 0.12, smart: false },
+  hard: { id: "hard", label: "Hard", reaction: 0.95, error: 0.22, power: 1.0, move: 1.0, acc: 0.9, perfect: 0.2, smart: true },
+  pro: { id: "pro", label: "Pro", reaction: 0.75, error: 0.16, power: 1.05, move: 1.08, acc: 0.92, perfect: 0.28, smart: true },
 };
 
 export const STYLES = {

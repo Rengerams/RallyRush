@@ -4,6 +4,7 @@ import { SURFACES, FORMATS, SHOTS } from "../constants";
 import { audio } from "../audio";
 import { stepBall } from "../physics";
 import { createScore, awardPoint, pointLabels } from "../scoring";
+import { ENGINE_TUNING } from "../tuning";
 
 const cfg = { name: "Tester", power: 6, stamina: 6, accuracy: 6,
   difficulty: "medium", style: "baseline", surface: "hard", format: "quick" };
@@ -47,6 +48,56 @@ test("grass bounce stays lower than hard court and preserves more horizontal spe
   stepBall(grass, 0.01, SURFACES.grass);
   expect(grass.vy).toBeLessThan(hard.vy);
   expect(grass.vz).toBeGreaterThan(hard.vz);
+});
+
+test("topspin and slice produce distinct deterministic bounces on every surface", () => {
+  for (const surface of Object.values(SURFACES)) {
+    const ball = (spin) => ({ x: 0, y: 0.01, z: 4, vx: 1, vy: -5, vz: 12, spin, netHit: false });
+    const topspin = ball(1), flat = ball(0), slice = ball(-1);
+    stepBall(topspin, 0.01, surface);
+    stepBall(flat, 0.01, surface);
+    stepBall(slice, 0.01, surface);
+
+    expect(topspin.vy).toBeGreaterThan(flat.vy);
+    expect(flat.vy).toBeGreaterThan(slice.vy);
+    expect(topspin.vz).toBeGreaterThan(flat.vz);
+    expect(flat.vz).toBeGreaterThan(slice.vz);
+    expect(topspin.spin).toBe(0.5);
+    expect(slice.spin).toBe(-0.5);
+  }
+});
+
+test("player movement scales consistently across all five court surfaces", () => {
+  const speeds = Object.values(SURFACES).map((surface) => {
+    const e = new TennisEngine({ ...cfg, surface: surface.id });
+    e.state = "rally";
+    e.setKey("right", true);
+    for (let i = 0; i < 90; i++) e.updatePlayer(1 / 120);
+    expect(e.p.vx).toBeCloseTo(5.5 * surface.speed, 1);
+    return e.p.vx;
+  });
+  expect(new Set(speeds).size).toBeGreaterThan(1);
+});
+
+test("sliding decelerates and stamina recovers more slowly while moving", () => {
+  const e = new TennisEngine(cfg);
+  e.state = "rally";
+  e.p.stamina = 40;
+  e.setKey("right", true);
+  for (let i = 0; i < 60; i++) e.updatePlayer(1 / 120);
+  expect(e.p.stamina).toBeCloseTo(42, 0);
+
+  const runningSpeed = e.p.vx;
+  e.slide();
+  expect(e.p.stamina).toBeCloseTo(36, 0);
+  for (let i = 0; i < 33; i++) e.updatePlayer(1 / 120);
+  expect(e.p.vx).toBeLessThan(ENGINE_TUNING.slideSpeed);
+  expect(e.p.vx).toBeGreaterThan(0);
+  expect(runningSpeed).toBeGreaterThan(0);
+
+  e.setKey("right", false);
+  for (let i = 0; i < 120; i++) e.updatePlayer(1 / 120);
+  expect(e.p.stamina).toBeGreaterThan(36);
 });
 
 test("quick set completes after a 2-game margin", () => {

@@ -14,6 +14,7 @@ afterAll(() => {
 describe("automated AI playtests", () => {
   it("finishes repeatable matches across difficulty, style, and player skill", () => {
     const report = [];
+    const baselineWinRates = {};
 
     for (const difficulty of Object.keys(DIFFICULTY)) {
       for (const style of Object.keys(STYLES)) {
@@ -35,8 +36,21 @@ describe("automated AI playtests", () => {
             aiErrors: matches.reduce((sum, match) => sum + match.aiErrors, 0),
             aiAces: matches.reduce((sum, match) => sum + match.aiAces, 0),
           });
+          if (style === "baseline") {
+            baselineWinRates[`${player}/${difficulty}`] = matches.filter((match) => match.won).length;
+          }
         }
       }
+    }
+
+    for (const player of Object.keys(PLAYTEST_PROFILES)) {
+      const easy = baselineWinRates[`${player}/easy`];
+      const medium = baselineWinRates[`${player}/medium`];
+      const hard = baselineWinRates[`${player}/hard`];
+      const pro = baselineWinRates[`${player}/pro`];
+      expect(easy).toBeGreaterThanOrEqual(medium);
+      expect(medium).toBeGreaterThanOrEqual(hard);
+      expect(hard).toBeGreaterThanOrEqual(pro);
     }
 
     const repeated = simulatePlaytestMatch({ seed: SEEDS[0], difficulty: "medium", style: "baseline", player: "club" });
