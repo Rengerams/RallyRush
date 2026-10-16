@@ -3,7 +3,8 @@ import { Trophy, Loader2, Check, AlertTriangle, RotateCcw, Film } from "lucide-r
 import { MatchStats } from "./MatchStats";
 
 export default function MatchEndModal({ result, names, saveState, onRematch, onLeaderboard, onSetup, onReplay, canReplay, onRetry }) {
-  const accuracy = result.stats.total_shots ? Math.round((result.stats.perfect_shots / result.stats.total_shots) * 100) : 0;
+  const stats = result.stats && typeof result.stats === "object" && !Array.isArray(result.stats) ? result.stats : {};
+  const accuracy = Number(stats.total_shots) ? Math.round((Number(stats.perfect_shots || 0) / Number(stats.total_shots)) * 100) : 0;
   return (
     <Dialog.Root open>
       <Dialog.Portal>
@@ -20,7 +21,7 @@ export default function MatchEndModal({ result, names, saveState, onRematch, onL
             <span data-testid="match-end-perfect-percentage" className="font-mono text-xs text-slate-300">{accuracy}% perfect timing</span>
             <button data-testid="match-end-replay-btn" disabled={!canReplay} onClick={onReplay} className="btn-ghost flex items-center gap-2 rounded-full px-3 py-2 text-xs disabled:opacity-40"><Film size={14} />Final point</button>
           </div>
-          <MatchStats stats={result.stats} opponentStats={result.opponentStats} names={names} rallyLengths={result.rally_lengths} />
+          <MatchStats stats={stats} opponentStats={result.opponentStats} names={names} rallyLengths={result.rally_lengths} />
           <div className="mt-5 flex flex-wrap items-center gap-2">
             <p data-testid="match-end-save-status" role="status" className="flex items-center gap-2 font-mono text-xs text-slate-400">
               {saveState === "saving" && <><Loader2 size={14} className="animate-spin" /> Saving match…</>}
