@@ -60,7 +60,7 @@
   "scripts": {
     "start": "vite --config frontend/vite.config.mjs",
     "build": "vite build --config frontend/vite.config.mjs",
-    "test": "vitest run --config frontend/vite.config.mjs",
+    "test": "vitest run --config frontend/vite.config.mjs --browser.enabled=false",
     "test:e2e": "playwright test --config frontend/playwright.config.mjs",
     "test:browser": "playwright test",
     "playtest:ai": "vitest run --config frontend/vite.config.mjs src/game/__tests__/aiPlaytest.test.js --reporter=verbose --silent=false",
