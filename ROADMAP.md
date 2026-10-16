@@ -10,7 +10,7 @@ This plan builds on the existing single-player game: 3D tennis simulation, four 
 ## Progress overview — 16 October 2026
 
 **Current release:** 0.2.0  
-**0.3.0 status:** Initial P0 implementation is in progress in [PR #77](https://github.com/Rengerams/RallyRush/pull/77) for the first-session guide and desktop match view. The project-board counts below still reflect the board snapshot.  
+**0.3.0 status:** The first-session guide and desktop match view were merged in [PR #77](https://github.com/Rengerams/RallyRush/pull/77). The next P0 accessibility and touch-control work is in [PR #78](https://github.com/Rengerams/RallyRush/pull/78). The project-board counts below still reflect the board snapshot.  
 **Project board:** [Rally Rush 0.3.0](https://github.com/users/Rengerams/projects/3/views/2)
 
 | Project status | Items |

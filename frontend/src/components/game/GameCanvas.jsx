@@ -43,6 +43,7 @@ export default function GameCanvas({ eng, wrapRef, renderActive = true, reducedE
 
   useEffect(() => {
     if (reducedEffects) viewRef.current?.reduceEffects();
+    else viewRef.current?.restoreEffects();
   }, [reducedEffects]);
 
   useEffect(() => {

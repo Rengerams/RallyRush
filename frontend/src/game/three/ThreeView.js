@@ -11,7 +11,8 @@ export class ThreeView {
     this.eng = eng;
     const dpr = window.devicePixelRatio || 1;
     this.renderer = new THREE.WebGLRenderer({ canvas, antialias: dpr < 2, powerPreference: "high-performance" });
-    this.renderer.setPixelRatio(Math.min(dpr, 1.5));
+    this.defaultPixelRatio = Math.min(dpr, 1.5);
+    this.renderer.setPixelRatio(this.defaultPixelRatio);
     this.renderer.shadowMap.enabled = true;
     this.renderer.shadowMap.type = THREE.PCFSoftShadowMap;
     this.renderer.toneMapping = THREE.ACESFilmicToneMapping;
@@ -129,6 +130,12 @@ export class ThreeView {
     this.renderer.setPixelRatio(1);
     this.renderer.shadowMap.enabled = false;
     this.reducedEffects = true;
+  }
+
+  restoreEffects() {
+    this.renderer.setPixelRatio(this.defaultPixelRatio);
+    this.renderer.shadowMap.enabled = true;
+    this.reducedEffects = false;
   }
 
   setSize(w, h) {
