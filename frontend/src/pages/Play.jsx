@@ -215,7 +215,7 @@ export default function Play() {
   return (
     <main className="play-page fixed inset-0 z-30 h-[100dvh] w-screen overflow-hidden bg-[#0B0E14]" data-testid="play-page" data-hud-size={displayPrefs.hudSize}>
       <section ref={wrapRef} className="absolute inset-0" data-testid="game-canvas-wrapper">
-        <GameCanvas eng={eng} reducedEffects={displayPrefs.reducedEffects} wrapRef={wrapRef} renderActive={!intro && !paused && (!result || Boolean(replay))} onSwing={mouseSwing} onRelease={() => eng.releaseShot(eng.p.heldShot)} onPointer={pointerMove} onPointerLeave={() => eng.clearPointer()} onQuality={onQuality} onAvailability={onAvailability} />
+        <GameCanvas eng={eng} reducedEffects={displayPrefs.reducedEffects} reducedMotion={displayPrefs.reducedMotion} wrapRef={wrapRef} renderActive={!intro && !paused && (!result || Boolean(replay))} onSwing={mouseSwing} onRelease={() => eng.releaseShot(eng.p.heldShot)} onPointer={pointerMove} onPointerLeave={() => eng.clearPointer()} onQuality={onQuality} onAvailability={onAvailability} />
         <div className="play-hud-corner absolute left-2 top-2 z-20 flex w-[min(22rem,calc(100vw-1rem))] flex-col gap-2 sm:left-4 sm:top-4 sm:w-[min(22rem,calc(100vw-2rem))]">
           <Scoreboard snap={snap} names={names} legend={cfg.legend} compact={snap?.state === "rally"} />
           <StaminaBar value={snap?.stamina ?? 1} sprint={snap?.sprint} />
