@@ -7,7 +7,7 @@ const HERO = `${import.meta.env.BASE_URL}tennis-hero.svg`;
 const features = [
   { icon: Gauge, title: "Timing is everything", text: "Every swing graded Miss · Late · Good · Perfect, straight from the original shot engine." },
   { icon: Zap, title: "4 AI minds", text: "Easy to Pro, playing Baseline, Net Rusher, Defensive or Aggressive tennis." },
-  { icon: Wind, title: "5 surfaces", text: "Hard, Clay, Grass, Kunstgras and Smashcourt each change bounce, skid and footspeed." },
+  { icon: Wind, title: "5 surfaces", text: "Hard, Clay, Grass, Artificial Grass and Smashcourt each change bounce, skid and footspeed." },
 ];
 
 export default function Home() {

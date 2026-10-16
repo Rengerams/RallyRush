@@ -65,6 +65,8 @@ export default function GameCanvas({ eng, wrapRef, renderActive = true, reducedE
       if (viewRef.current === view) viewRef.current = null;
       onAvailability?.(false);
     };
+  // Reduced-motion and reduced-effects changes are synced by dedicated effects below.
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [eng, wrapRef, onQuality, onAvailability, retry]);
 
   useEffect(() => {

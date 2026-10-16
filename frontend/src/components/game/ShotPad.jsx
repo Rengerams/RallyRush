@@ -21,7 +21,7 @@ export default function ShotPad({ onShot, onHold, onRelease, selectedShot = "fla
                 gesture.timer = setTimeout(() => {
                   if (touchGesture.current !== gesture || gesture.panning) return;
                   gesture.holding = true;
-                  try { target.setPointerCapture(gesture.id); } catch {}
+                  try { target.setPointerCapture(gesture.id); } catch { /* The pointer may already have been released. */ }
                   onHold?.(s.id);
                 }, 140);
                 return;

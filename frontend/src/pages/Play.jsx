@@ -1,3 +1,6 @@
+Warning: truncated output (original token count: 3264)
+Total output lines: 218
+
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Pause, Camera, Film, MousePointer2 } from "lucide-react";
@@ -17,6 +20,14 @@ import MatchEndModal from "@/components/game/MatchEndModal";
 import MatchIntro from "@/components/game/MatchIntro";
 import GameCanvas from "@/components/game/GameCanvas";
 
+const randomFromSeed = (initialSeed) => {
+  let state = initialSeed >>> 0;
+  return () => {
+    state = (Math.imul(state, 1664525) + 1013904223) >>> 0;
+    return state / 0x1_0000_0000;
+  };
+};
+
 export default function Play() {
   const nav = useNavigate();
   const [cfg] = useState(loadSetup);
@@ -34,7 +45,7 @@ export default function Play() {
   const [saveState, setSaveState] = useState(null);
   const [sound, setSound] = useState(audio.sound);
   const [voice, setVoice] = useState(audio.voice);
-  const [seed, setSeed] = useState(0);
+  const [seed, setSeed] = useState(() => Math.floor(Math.random() * 0x1_0000_0000));
   const [replay, setReplay] = useState(null);
   const [replays, setReplays] = useState(true);
   const [cameraMode, setCameraMode] = useState("court");
@@ -69,11 +80,9 @@ export default function Play() {
       setResult(e.result);
       persistResult(e.result);
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps -- state setters (setReplay, setCall, etc.) and module-level saveMatch are stable references
   }, [persistResult]);
 
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  const eng = useMemo(() => new TennisEngine(cfg, onEvent), [cfg, onEvent, seed]);
+  const eng = useMemo(() => new TennisEngine(cfg, onEvent, { rng: randomFromSeed(seed) }), [cfg, onEvent, seed]);
 
   useEffect(() => { eng.cameraMode = cameraMode; }, [eng, cameraMode]);
   useEffect(() => { eng.mouseEnabled = mouseEnabled; if (!mouseEnabled) eng.clearPointer(); }, [eng, mouseEnabled]);
@@ -87,7 +96,6 @@ export default function Play() {
     return () => coarse.removeEventListener?.("change", update);
   }, []);
 
-  // eslint-disable-next-line react-hooks/exhaustive-deps -- refs (engRef, pausedRef, introRef) and globals (cancelAnimationFrame) are stable
   useEffect(() => {
     eng.replays = replaysRef.current;
     engRef.current = eng;
@@ -99,78 +107,7 @@ export default function Play() {
     let raf, last = performance.now();
     const loop = (t) => {
       const dt = (t - last) / 1000; last = t;
-      if (!pausedRef.current && !introRef.current && graphicsReady.current) eng.update(dt);
-      raf = requestAnimationFrame(loop);
-    };
-    raf = requestAnimationFrame(loop);
-    const iv = setInterval(() => setSnap(eng.snapshot()), 100);
-    return () => { cancelAnimationFrame(raf); clearInterval(iv); };
-  }, [eng]);
-
-  useEffect(() => { const t = call && setTimeout(() => setCall(null), 1600); return () => clearTimeout(t); }, [call]);
-  useEffect(() => { const t = quality && setTimeout(() => setQuality(null), 650); return () => clearTimeout(t); }, [quality]);
-  useEffect(() => {
-    audio.setMusicActive(!intro && !paused && !replay && !result);
-  }, [intro, paused, replay, result]);
-  useEffect(() => () => audio.setMusicActive(false), []);
-  useEffect(() => {
-    document.documentElement.dataset.reducedMotion = displayPrefs.reducedMotion ? "true" : "false";
-    return () => { delete document.documentElement.dataset.reducedMotion; };
-  }, [displayPrefs.reducedMotion]);
-
-  // eslint-disable-next-line react-hooks/exhaustive-deps -- pausedRef is a ref, setPaused is a stable setter
-  const togglePause = useCallback(() => {
-    pausedRef.current = !pausedRef.current;
-    engRef.current?.clearInput();
-    setPaused(pausedRef.current);
-  }, []);
-  const noteServeAttempt = useCallback(() => {
-    const active = engRef.current;
-    if (active?.state === "serve" && active.server === 0 && active.serveStage === "toss") {
-      setFirstServeAttempted(true);
-    }
-  }, []);
-
-  useEffect(() => {
-    return attachPlayKeyboardControls({
-      engineRef: engRef,
-      graphicsReady,
-      pausedRef,
-      introRef,
-      togglePause,
-      noteServeAttempt,
-    });
-  }, [togglePause, noteServeAttempt]);
-
-
-  // eslint-disable-next-line react-hooks/exhaustive-deps -- introRef is a ref, setIntro is a stable setter
-  const endIntro = useCallback(() => { introRef.current = false; setIntro(false); }, []);
-  const shot = (id) => {
-    if (introRef.current || pausedRef.current || !graphicsReady.current) return;
-    noteServeAttempt();
-    audio.unlock();
-    engRef.current?.pressShot(id);
-  };
-  const hold = (id) => {
-    if (introRef.current || pausedRef.current || !graphicsReady.current) return;
-    noteServeAttempt();
-    audio.unlock();
-    engRef.current?.holdShot(id);
-  };
-  const release = (id) => engRef.current?.releaseShot(id);
-  const names = [cfg.name, `${DIFFICULTY[cfg.difficulty].label} AI`];
-  const toggleSound = () => { audio.setSound(!audio.sound); setSound(audio.sound); };
-  const toggleReplays = () => { replaysRef.current = !replaysRef.current; if (engRef.current) engRef.current.replays = replaysRef.current; setReplays(replaysRef.current); };
-  const onQuality = useCallback(() => toast("3D effects reduced for smoother play", { id: "3d-quality" }), []);
-  const onAvailability = useCallback(ready => { graphicsReady.current = ready; }, []);
-  const pointerMove = (point, aiming) => { if (!pausedRef.current && !introRef.current && graphicsReady.current) engRef.current?.setPointer(point, aiming); };
-  const mouseSwing = () => {
-    if (pausedRef.current || introRef.current || !graphicsReady.current) return;
-    noteServeAttempt();
-    audio.unlock(); eng.holdShot(eng.selectedShot);
-  };
-  const toggleVoice = () => { audio.voice = !audio.voice; setVoice(audio.voice); };
-  const updateDisplayPref = (key, value) => setDisplayPrefs(current => saveMatchDisplayPreferences({ ...current, [key]: value }));
+      if (!pausedRef.current && !introRef.current && graphicsReady.…764 tokens truncated…yPref = (key, value) => setDisplayPrefs(current => saveMatchDisplayPreferences({ ...current, [key]: value }));
 
   return (
     <main className="play-page fixed inset-0 z-30 h-[100dvh] w-screen overflow-hidden bg-[#0B0E14]" data-testid="play-page" data-hud-size={displayPrefs.hudSize}>
