@@ -1,10 +1,12 @@
 import { useState } from "react";
 import * as AlertDialog from "@radix-ui/react-alert-dialog";
 import * as Dialog from "@radix-ui/react-dialog";
-import { Volume2, VolumeX, Mic, MicOff, Film } from "lucide-react";
+import { Volume2, VolumeX, Mic, MicOff, Film, BookOpen } from "lucide-react";
+import FirstSessionGuide from "@/components/game/FirstSessionGuide";
 
 export default function PauseModal({ onResume, onRestart, onQuit, sound, voice, onSound, onVoice, replays, onReplays }) {
   const [confirmRestart, setConfirmRestart] = useState(false);
+  const [guideOpen, setGuideOpen] = useState(false);
 
   return (
     <Dialog.Root open onOpenChange={(open) => !open && onResume()}>
@@ -49,8 +51,12 @@ export default function PauseModal({ onResume, onRestart, onQuit, sound, voice, 
           <button data-testid="pause-replays-toggle" aria-pressed={replays} onClick={onReplays} className={`btn-ghost mt-2 flex w-full items-center justify-center gap-2 rounded-lg py-2 text-sm ${replays ? "text-[#00F0FF]" : "text-slate-500"}`}>
             <Film size={16} /> Replays {replays ? "on" : "off"}
           </button>
+          <button data-testid="pause-controls-guide-btn" onClick={() => setGuideOpen(true)} className="btn-ghost mt-2 flex w-full items-center justify-center gap-2 rounded-lg py-2 text-sm">
+            <BookOpen size={16} /> Controls guide
+          </button>
         </Dialog.Content>
       </Dialog.Portal>
     </Dialog.Root>
+    <FirstSessionGuide open={guideOpen} onOpenChange={setGuideOpen} />
   );
 }
