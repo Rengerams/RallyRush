@@ -31,7 +31,7 @@ This plan builds on the existing single-player game: 3D tennis simulation, four 
 - Show keyboard, pointer, and touch instructions in the appropriate control context.
 - Keep controls collapsible so the court remains the visual focus.
 - During every active match and match mode, hide the branded header/logo and other non-gameplay chrome so the court and stadium remain the focus.
-- Scale the game view to use more of the available window on large desktop screens, while keeping the full court and stadium framed. Do not force a web-style fullscreen mode or crop the scene.
+- Use televised tennis coverage as a framing reference: make the court and stadium occupy much more of the available game window on large desktop screens, without cropping the court or losing the arena context.
 - Keep points, games, and sets visible between points. During rallies, show the score in a small overlay in a top corner; keep essential controls accessible without taking over the view.
 - Use Esc to open the in-game pause menu and return to the match when resumed. Keep branding on Setup and Pause screens.
 
@@ -144,7 +144,7 @@ Make rallies feel more convincing and readable while keeping Rally Rush's respon
 | Tutorial interrupts experienced players | Make it skippable and replayable; remember completion locally. |
 | Import overwrites valued match history | Preview, validate, and require explicit confirmation; offer export first. |
 | Extra HUD options increase layout complexity | Test actual desktop and narrow-screen sizes and retain sensible defaults. |
-| Scaling the game view hides stadium or crowds the HUD | Preserve court-and-stadium framing, keep points, games, and sets readable between points and compact during rallies, with controls accessible, and test large desktop windows plus 1280×720 and 390×844. |
+| Broadcast-style scaling hides stadium or crowds the HUD | Preserve court-and-stadium framing, keep points, games, and sets readable between points and compact during rallies, with controls accessible, and test large desktop windows plus 1280×720 and 390×844. |
 | Practice accidentally affects rankings | Keep practice data separate from match records and test this invariant. |
 | Gameplay tuning feels sluggish or unfair | Preserve responsive controls and use playtests across surfaces, shots, and difficulty levels. |
 | Performance drops from extra effects | Keep visual options optional and test on modest integrated graphics. |
