@@ -77,7 +77,8 @@
     "appId": "com.renffr.open",
     "productName": "Rally Rush",
     "directories": {
-      "output": "frontend/release"
+      "output": "frontend/release",
+      "buildResources": "frontend/build"
     },
     "files": [
       "frontend/dist/**/*",
