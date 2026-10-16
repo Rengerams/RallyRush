@@ -1,14 +1,35 @@
 import { SETUP_KEY, DEFAULT_SETUP, SURFACES, DIFFICULTY, STYLES, FORMATS } from "@/game/constants";
 
-const MATCHES_KEY = "renffr-tennis-matches";
+export const MATCHES_KEY = "renffr-tennis-matches";
+export const DISPLAY_PREFERENCES_KEY = "rally-rush.match-display-preferences";
+export const BACKUP_FORMAT = "rally-rush-local-data";
+export const BACKUP_VERSION = 1;
+export const MAX_BACKUP_BYTES = 1_000_000;
+export const STORAGE_VERSION_KEY = "rally-rush.storage-version";
+const STORAGE_VERSION = 1;
+const LEGACY_HISTORY_PREFIX = "renffr-breakdown-";
 const RATING_POINTS = Object.freeze({ easy: 10, medium: 20, hard: 35, pro: 60 });
 
-function readLocalMatches() {
+function readLocalMatches(storage = globalThis.localStorage) {
+  migrateLocalStorage(storage);
   try {
-    const rows = JSON.parse(localStorage.getItem(MATCHES_KEY) || "[]");
+    const rows = JSON.parse(storage.getItem(MATCHES_KEY) || "[]");
     return Array.isArray(rows) ? rows.filter((row) => row && typeof row === "object" && !Array.isArray(row)) : [];
   } catch {
     return [];
+  }
+}
+
+export function migrateLocalStorage(storage = globalThis.localStorage) {
+  if (!storage) return;
+  try {
+    const version = Number.parseInt(storage.getItem(STORAGE_VERSION_KEY) || "0", 10);
+    if (Number.isInteger(version) && version >= STORAGE_VERSION) return;
+    // Version 1 records the existing setup/match format. Preserve the original
+    // bytes so legacy or partially recoverable saves are never rewritten here.
+    storage.setItem(STORAGE_VERSION_KEY, String(STORAGE_VERSION));
+  } catch {
+    // Storage may be disabled or full; callers still use the safe read paths.
   }
 }
 
@@ -84,7 +105,112 @@ function validateSetup(raw) {
   return s;
 }
 
+function isPlainRecord(value) {
+  return Boolean(value) && typeof value === "object" && !Array.isArray(value);
+}
+
+function validateBackupMatch(match) {
+  if (!isPlainRecord(match) || typeof match.player_name !== "string" ||
+      !match.player_name.trim() || match.player_name.length > 48 || typeof match.won !== "boolean") return false;
+  if (match.difficulty != null && !Object.hasOwn(DIFFICULTY, match.difficulty)) return false;
+  if (match.surface != null && !Object.hasOwn(SURFACES, match.surface)) return false;
+  if (match.ai_style != null && !Object.hasOwn(STYLES, match.ai_style)) return false;
+  if (match.match_format != null && !Object.hasOwn(FORMATS, match.match_format)) return false;
+  if (match.stats != null && !isPlainRecord(match.stats)) return false;
+  if (match.sets != null && (!Array.isArray(match.sets) || match.sets.some((set) =>
+    !Array.isArray(set) || set.length !== 2 || set.some((score) => !Number.isInteger(score) || score < 0 || score > 99)))) return false;
+  try { JSON.stringify(match); return true; } catch { return false; }
+}
+
+function validateBackupSetup(setup) {
+  return isPlainRecord(setup) && typeof setup.name === "string" && setup.name.trim().length > 0 && setup.name.length <= 24 &&
+    typeof setup.legend === "boolean" && [setup.power, setup.stamina, setup.accuracy].every((value) => Number.isInteger(value) && value >= 1 && value <= 10) &&
+    (setup.legend || setup.power + setup.stamina + setup.accuracy <= 18) &&
+    Object.hasOwn(SURFACES, setup.surface) && Object.hasOwn(DIFFICULTY, setup.difficulty) &&
+    Object.hasOwn(STYLES, setup.style) && Object.hasOwn(FORMATS, setup.format);
+}
+
+function normalizeDisplayPreferences(value) {
+  const source = isPlainRecord(value) ? value : {};
+  return {
+    hudSize: source.hudSize === "large" ? "large" : "normal",
+    reducedEffects: source.reducedEffects === true,
+    reducedMotion: source.reducedMotion === true,
+  };
+}
+
+function validateBackupDisplayPreferences(value) {
+  return isPlainRecord(value) && (value.hudSize === "normal" || value.hudSize === "large") &&
+    typeof value.reducedEffects === "boolean" && typeof value.reducedMotion === "boolean";
+}
+
+export function parseLocalDataBackup(text) {
+  if (typeof text !== "string" || new TextEncoder().encode(text).byteLength > MAX_BACKUP_BYTES) {
+    throw new Error("Backup file is too large.");
+  }
+  let data;
+  try { data = JSON.parse(text); } catch { throw new Error("This is not valid JSON."); }
+  if (!isPlainRecord(data) || data.format !== BACKUP_FORMAT || data.version !== BACKUP_VERSION ||
+      !validateBackupSetup(data.setup) || !Array.isArray(data.matches) || data.matches.length > 5000 ||
+      !data.matches.every(validateBackupMatch) || !validateBackupDisplayPreferences(data.displayPreferences)) {
+    throw new Error("This backup is incomplete or uses an unsupported format.");
+  }
+  return {
+    setup: validateSetup(data.setup),
+    matches: data.matches,
+    displayPreferences: normalizeDisplayPreferences(data.displayPreferences),
+  };
+}
+
+export function exportLocalData(storage = globalThis.localStorage) {
+  if (!storage) throw new Error("Local storage is unavailable.");
+  let setup = { ...DEFAULT_SETUP };
+  try { setup = validateSetup(JSON.parse(storage.getItem(SETUP_KEY) || "{}")); } catch { /* Keep defaults. */ }
+  const matches = readLocalMatches(storage).filter(validateBackupMatch);
+  let displayPreferences = {};
+  try { displayPreferences = JSON.parse(storage.getItem(DISPLAY_PREFERENCES_KEY) || "{}"); } catch { /* Use defaults. */ }
+  return JSON.stringify({
+    format: BACKUP_FORMAT,
+    version: BACKUP_VERSION,
+    exportedAt: new Date().toISOString(),
+    setup,
+    matches,
+    displayPreferences: normalizeDisplayPreferences(displayPreferences),
+  }, null, 2);
+}
+
+export function importLocalData(text, storage = globalThis.localStorage) {
+  if (!storage) throw new Error("Local storage is unavailable.");
+  const backup = parseLocalDataBackup(text);
+  const keys = [SETUP_KEY, MATCHES_KEY, DISPLAY_PREFERENCES_KEY, STORAGE_VERSION_KEY];
+  const before = new Map(keys.map((key) => [key, storage.getItem(key)]));
+  try {
+    storage.setItem(SETUP_KEY, JSON.stringify(backup.setup));
+    storage.setItem(MATCHES_KEY, JSON.stringify(backup.matches));
+    storage.setItem(DISPLAY_PREFERENCES_KEY, JSON.stringify(backup.displayPreferences));
+    storage.setItem(STORAGE_VERSION_KEY, String(STORAGE_VERSION));
+  } catch {
+    for (const [key, value] of before) {
+      try { value == null ? storage.removeItem(key) : storage.setItem(key, value); } catch { /* Best effort rollback. */ }
+    }
+    throw new Error("The backup could not be saved. Your existing data was kept.");
+  }
+  return { matchCount: backup.matches.length, setup: backup.setup };
+}
+
+export function deleteLocalData(storage = globalThis.localStorage) {
+  if (!storage) return;
+  const keys = [];
+  for (let index = 0; index < storage.length; index++) {
+    const key = storage.key(index);
+    if (key && (key === SETUP_KEY || key === MATCHES_KEY || key === DISPLAY_PREFERENCES_KEY || key === STORAGE_VERSION_KEY ||
+        key === "rally-rush:first-session-guide:v1" || key.startsWith(LEGACY_HISTORY_PREFIX))) keys.push(key);
+  }
+  keys.forEach((key) => storage.removeItem(key));
+}
+
 export const loadSetup = () => {
+  migrateLocalStorage();
   try { return validateSetup(JSON.parse(localStorage.getItem(SETUP_KEY) || "{}")); }
   catch { return { ...DEFAULT_SETUP }; }
 };

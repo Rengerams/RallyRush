@@ -7,6 +7,7 @@ import { SurfacePreview } from "@/components/game/SurfacePreview";
 import { DIFFICULTY, STYLES, SURFACES, FORMATS, ATTR_BUDGET, LEGEND, DEFAULT_SETUP } from "@/game/constants";
 import { loadSetup, storeSetup } from "@/lib/api";
 import FirstSessionGuide from "@/components/game/FirstSessionGuide";
+import LocalDataControls from "@/components/game/LocalDataControls";
 import { hasCompletedTutorial } from "@/lib/tutorial";
 
 const ATTRS = ["power", "stamina", "accuracy"];
@@ -70,6 +71,9 @@ export default function Setup() {
           <SurfacePreview surface={cfg.surface} />
           <OptionGroup label="Match format" cols={2} options={Object.values(FORMATS)} value={cfg.format} onChange={(v) => set("format", v)} testPrefix="setup-format" />
         </section>
+      </div>
+      <div className="mt-10">
+        <LocalDataControls />
       </div>
       <div className="fixed inset-x-0 bottom-0 z-40 border-t border-white/10 bg-[#0B0E14]/95 px-5 pt-3 pb-[calc(0.75rem+env(safe-area-inset-bottom))] shadow-[0_-12px_32px_rgba(0,0,0,0.4)] backdrop-blur-xl">
         <div className="mx-auto flex max-w-[1440px] items-center justify-between gap-3">
