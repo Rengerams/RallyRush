@@ -1,7 +1,7 @@
 # Rally Rush
 
-[![Release](https://img.shields.io/github/v/release/Rengerams/tennnisNL?label=release&style=flat-square)](https://github.com/Rengerams/tennnisNL/releases)
-[![Downloads](https://img.shields.io/github/downloads/Rengerams/tennnisNL/total?style=flat-square)](https://github.com/Rengerams/tennnisNL/releases)
+[![Release](https://img.shields.io/github/v/release/Rengerams/RallyRush?label=release&style=flat-square)](https://github.com/Rengerams/RallyRush/releases)
+[![Downloads](https://img.shields.io/github/downloads/Rengerams/RallyRush/total?style=flat-square)](https://github.com/Rengerams/RallyRush/releases)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg?style=flat-square)](https://opensource.org/licenses/MIT)
 [![Windows 10/11](https://img.shields.io/badge/Windows-10%20%2F%2011-0078D6?style=flat-square&logo=windows&logoColor=white)](#windows-desktop)
 [![Browser playable](https://img.shields.io/badge/Browser-playable-4285F4?style=flat-square)](#run-from-source)
@@ -11,8 +11,8 @@ Rally Rush (v0.2.0) is a single-player, arcade-style 3D tennis game for Windows 
 
 > Local play only: matches, match history, and leaderboard entries are saved on this device. There is no online multiplayer, account system, or shared online ranking.
 
-- Homepage: https://github.com/Rengerams/tennnisNL
-- Changelog & releases: https://github.com/Rengerams/tennnisNL/releases
+- Homepage: https://github.com/Rengerams/RallyRush
+- Changelog & releases: https://github.com/Rengerams/RallyRush/releases
 
 ## Screenshots
 
@@ -51,9 +51,9 @@ Rally Rush (v0.2.0) is a single-player, arcade-style 3D tennis game for Windows 
 
 ## Windows desktop
 
-Download the [Rally Rush 0.2.0 Windows installer](https://github.com/Rengerams/tennnisNL/releases/download/0.2.0/Rally-Rush-0.2.0-Windows-Setup.exe).
+Download the [Rally Rush 0.2.0 Windows installer](https://github.com/Rengerams/RallyRush/releases/download/0.2.0/Rally-Rush-0.2.0-Windows-Setup.exe).
 
-For other versions, visit the [Releases page](https://github.com/Rengerams/tennnisNL/releases).
+For other versions, visit the [Releases page](https://github.com/Rengerams/RallyRush/releases).
 
 Notes:
 - Supported: Windows 10 or 11, 64-bit.
@@ -130,7 +130,7 @@ If you want me to add a CONTRIBUTING.md or templates for issues/PRs, I can creat
 ## Reporting bugs & feedback
 
 Please use the GitHub Issues page to report problems or request enhancements:
-https://github.com/Rengerams/tennnisNL/issues
+https://github.com/Rengerams/RallyRush/issues
 
 Include:
 - What you did (steps to reproduce)
