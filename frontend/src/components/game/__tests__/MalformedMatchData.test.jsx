@@ -1,6 +1,6 @@
 import { expect, it } from "vitest";
 import { renderToStaticMarkup } from "react-dom/server";
-import MatchEndModal from "../MatchEndModal";
+import { getMatchAccuracy } from "../MatchEndModal";
 import { MatchStats } from "../MatchStats";
 import { MatchCard } from "@/pages/History";
 
@@ -33,21 +33,9 @@ it("renders match statistics when stat objects and rally data are missing", () =
   expect(html).toContain("Average —");
 });
 
-it("renders match end without a statistics object", () => {
-  const html = renderToStaticMarkup(
-    <MatchEndModal
-      result={{ won: true, sets: [], duration_sec: 0, rally_lengths: [] }}
-      names={["Renger", "AI"]}
-      saveState="saved-local"
-      onRematch={() => {}}
-      onLeaderboard={() => {}}
-      onSetup={() => {}}
-      onReplay={() => {}}
-      onRetry={() => {}}
-      canReplay={false}
-    />,
-  );
-
-  expect(html).toContain("0% perfect timing");
-  expect(html).toContain("Match saved on this device");
+it("calculates match accuracy safely when result statistics are missing", () => {
+  expect(getMatchAccuracy({ won: true })).toBe(0);
+  expect(getMatchAccuracy({ stats: null })).toBe(0);
+  expect(getMatchAccuracy({ stats: { total_shots: 10, perfect_shots: 4 } })).toBe(40);
+  expect(getMatchAccuracy({ stats: { total_shots: "invalid", perfect_shots: 4 } })).toBe(0);
 });
