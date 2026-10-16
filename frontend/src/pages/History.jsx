@@ -35,7 +35,7 @@ export function MatchCard({ m, i = 0 }) {
       <span className="font-mono text-[11px] text-slate-500">{new Date(m.created_at).toLocaleString()}</span>
       {m.opponent_stats && <details data-testid={`history-stats-${i}`} open={expanded} onToggle={rememberExpanded} className="w-full border-t border-white/10 pt-3">
         <summary data-testid={`history-stats-toggle-${i}`} className="cursor-pointer font-mono text-xs text-[#00F0FF]">Match breakdown</summary>
-        <div className="mt-5 max-w-xl"><MatchStats stats={stats} opponentStats={m.opponent_stats} names={[m.player_name, `${DIFFICULTY[m.difficulty].label} AI`]} rallyLengths={m.rally_lengths} prefix={`history-${m.id}`} /></div>
+        <div className="mt-5 max-w-xl"><MatchStats stats={stats} opponentStats={m.opponent_stats} names={[m.player_name, `${difficulty} AI`]} rallyLengths={m.rally_lengths} prefix={`history-${m.id}`} /></div>
       </details>}
     </div>
   );

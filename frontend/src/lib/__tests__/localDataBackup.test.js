@@ -54,6 +54,35 @@ describe("local data backup", () => {
     expect(values).toEqual(before);
   });
 
+  it.each([
+    { aces: "invalid" },
+    { longest_rally: "invalid" },
+    { perfect_shots: null },
+    { aces: -1 },
+  ])("rejects malformed aggregate stat values: %o", (stats) => {
+    const before = new Map([[SETUP_KEY, JSON.stringify({ ...DEFAULT_SETUP, name: "Keep me" })]]);
+    before.forEach((value, key) => values.set(key, value));
+    const backupText = JSON.stringify({
+      format: BACKUP_FORMAT, version: BACKUP_VERSION, setup: DEFAULT_SETUP,
+      matches: [{ ...match, stats }],
+      displayPreferences: { hudSize: "normal", reducedEffects: false, reducedMotion: false },
+    });
+
+    expect(() => importLocalData(backupText, storage)).toThrow(/unsupported format/i);
+    expect(values).toEqual(before);
+  });
+
+  it("requires a valid difficulty when importing a detailed match", () => {
+    const backupText = JSON.stringify({
+      format: BACKUP_FORMAT, version: BACKUP_VERSION, setup: DEFAULT_SETUP,
+      matches: [{ ...match, difficulty: undefined, opponent_stats: { aces: 1 } }],
+      displayPreferences: { hudSize: "normal", reducedEffects: false, reducedMotion: false },
+    });
+
+    expect(() => importLocalData(backupText, storage)).toThrow(/unsupported format/i);
+    expect(values.size).toBe(0);
+  });
+
   it("rejects an oversized backup before parsing", () => {
     expect(() => importLocalData(" ".repeat(1_000_001), storage)).toThrow(/too large/i);
     expect(values.size).toBe(0);
@@ -105,5 +134,56 @@ describe("local data backup", () => {
 
     expect(() => importLocalData(backupText, blockedStorage)).toThrow(/existing data was kept/i);
     expect(values).toEqual(before);
+  });
+
+  it("releases imported match storage before restoring setup after a quota failure", () => {
+    const oldSetup = JSON.stringify({ ...DEFAULT_SETUP, name: "Renger" });
+    const oldMatches = JSON.stringify([match]);
+    const oldPreferences = JSON.stringify({ hudSize: "normal", reducedEffects: false, reducedMotion: false });
+    values.set(SETUP_KEY, oldSetup);
+    values.set(MATCHES_KEY, oldMatches);
+    values.set(DISPLAY_PREFERENCES_KEY, oldPreferences);
+    const before = new Map(values);
+    const importedSetup = { ...DEFAULT_SETUP, name: "R" };
+    const importedMatches = Array.from({ length: 40 }, (_, index) => ({
+      ...match, match_id: `large-${index}`, player_name: `Player ${String(index).padStart(2, "0")}`,
+      stats: { aces: index, longest_rally: index + 1, perfect_shots: index },
+    }));
+    const importedPreferences = { hudSize: "normal", reducedEffects: false, reducedMotion: false };
+    const backupText = JSON.stringify({
+      format: BACKUP_FORMAT, version: BACKUP_VERSION, setup: importedSetup,
+      matches: importedMatches, displayPreferences: importedPreferences,
+    });
+    const importedValues = [
+      [SETUP_KEY, JSON.stringify(importedSetup)],
+      [MATCHES_KEY, JSON.stringify(importedMatches)],
+      [DISPLAY_PREFERENCES_KEY, JSON.stringify(importedPreferences)],
+    ];
+    const totalBytes = (entries) => [...entries].reduce((sum, [key, value]) => sum + key.length + value.length, 0);
+    const quota = totalBytes(before) + importedValues.reduce((size, [key, value]) => {
+      const previous = before.get(key);
+      return size + key.length + value.length - (previous == null ? 0 : key.length + previous.length);
+    }, 0);
+    const operations = [];
+    const quotaStorage = {
+      get length() { return storage.length; },
+      key: storage.key,
+      getItem: storage.getItem,
+      removeItem: (key) => { operations.push(`remove:${key}`); storage.removeItem(key); },
+      setItem: (key, value) => {
+        const next = new Map(values);
+        next.set(key, String(value));
+        if (totalBytes(next) > quota) throw new Error("quota");
+        operations.push(`set:${key}`);
+        storage.setItem(key, value);
+      },
+    };
+
+    expect(() => importLocalData(backupText, quotaStorage)).toThrow(/existing data was kept/i);
+    expect(values).toEqual(before);
+    const rollbackMatchIndex = operations.lastIndexOf(`set:${MATCHES_KEY}`);
+    const rollbackSetupIndex = operations.lastIndexOf(`set:${SETUP_KEY}`);
+    expect(rollbackMatchIndex).toBeGreaterThan(-1);
+    expect(rollbackSetupIndex).toBeGreaterThan(rollbackMatchIndex);
   });
 });

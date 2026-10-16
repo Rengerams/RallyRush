@@ -116,7 +116,11 @@ function validateBackupMatch(match) {
   if (match.surface != null && !Object.hasOwn(SURFACES, match.surface)) return false;
   if (match.ai_style != null && !Object.hasOwn(STYLES, match.ai_style)) return false;
   if (match.match_format != null && !Object.hasOwn(FORMATS, match.match_format)) return false;
-  if (match.stats != null && !isPlainRecord(match.stats)) return false;
+  const isValidStats = (stats) => stats == null || (isPlainRecord(stats) &&
+    ["aces", "longest_rally", "perfect_shots"].every((key) =>
+      !Object.hasOwn(stats, key) || (typeof stats[key] === "number" && Number.isFinite(stats[key]) && stats[key] >= 0)));
+  if (!isValidStats(match.stats) || !isValidStats(match.opponent_stats)) return false;
+  if (match.opponent_stats != null && (!isPlainRecord(match.opponent_stats) || !Object.hasOwn(DIFFICULTY, match.difficulty))) return false;
   if (match.sets != null && (!Array.isArray(match.sets) || match.sets.some((set) =>
     !Array.isArray(set) || set.length !== 2 || set.some((score) => !Number.isInteger(score) || score < 0 || score > 99)))) return false;
   try { JSON.stringify(match); return true; } catch { return false; }
@@ -190,9 +194,21 @@ export function importLocalData(text, storage = globalThis.localStorage) {
     storage.setItem(DISPLAY_PREFERENCES_KEY, JSON.stringify(backup.displayPreferences));
     storage.setItem(STORAGE_VERSION_KEY, String(STORAGE_VERSION));
   } catch {
-    for (const [key, value] of before) {
-      try { value == null ? storage.removeItem(key) : storage.setItem(key, value); } catch { /* Best effort rollback. */ }
+    // Restore the largest value first so it releases quota before setup and
+    // preferences are written back. Track and verify every key: a partial
+    // rollback must never be reported as a successful restoration.
+    let restored = true;
+    const restoreOrder = [MATCHES_KEY, SETUP_KEY, DISPLAY_PREFERENCES_KEY, STORAGE_VERSION_KEY];
+    for (const key of restoreOrder) {
+      const value = before.get(key);
+      try {
+        if (storage.getItem(key) !== value) {
+          value == null ? storage.removeItem(key) : storage.setItem(key, value);
+        }
+        if (storage.getItem(key) !== value) restored = false;
+      } catch { restored = false; }
     }
+    if (!restored) throw new Error("The backup could not be saved, and some existing data could not be restored.");
     throw new Error("The backup could not be saved. Your existing data was kept.");
   }
   return { matchCount: backup.matches.length, setup: backup.setup };
