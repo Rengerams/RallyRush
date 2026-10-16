@@ -1,7 +1,7 @@
 import { SETUP_KEY, DEFAULT_SETUP, SURFACES, DIFFICULTY, STYLES, FORMATS } from "@/game/constants";
 
 const MATCHES_KEY = "renffr-tennis-matches";
-const RATING_POINTS = { easy: 10, medium: 20, hard: 35, pro: 60 };
+const RATING_POINTS = Object.freeze({ easy: 10, medium: 20, hard: 35, pro: 60 });
 
 function readLocalMatches() {
   try {
@@ -50,7 +50,8 @@ function localLeaderboard(mode) {
     row.matches += 1;
     row.wins += Number(!!match.won);
     row.losses = row.matches - row.wins;
-    const ratingPoints = Number.isFinite(match.rating_points) ? match.rating_points : (match.won ? RATING_POINTS[match.difficulty] ?? 0 : 2);
+    const difficultyPoints = Object.hasOwn(RATING_POINTS, match.difficulty) ? RATING_POINTS[match.difficulty] : 0;
+    const ratingPoints = Number.isFinite(match.rating_points) ? match.rating_points : (match.won ? difficultyPoints : 2);
     row.rating += ratingPoints;
     row.best_rally = Math.max(row.best_rally, match.stats?.longest_rally || 0);
     row.aces += match.stats?.aces || 0;
@@ -76,10 +77,10 @@ function validateSetup(raw) {
   if (!s.legend && s.power + s.stamina + s.accuracy > 18) {
     s.power = 6; s.stamina = 6; s.accuracy = 6;
   }
-  if (!SURFACES[s.surface]) s.surface = DEFAULT_SETUP.surface;
-  if (!DIFFICULTY[s.difficulty]) s.difficulty = DEFAULT_SETUP.difficulty;
-  if (!STYLES[s.style]) s.style = DEFAULT_SETUP.style;
-  if (!FORMATS[s.format]) s.format = DEFAULT_SETUP.format;
+  if (!Object.hasOwn(SURFACES, s.surface)) s.surface = DEFAULT_SETUP.surface;
+  if (!Object.hasOwn(DIFFICULTY, s.difficulty)) s.difficulty = DEFAULT_SETUP.difficulty;
+  if (!Object.hasOwn(STYLES, s.style)) s.style = DEFAULT_SETUP.style;
+  if (!Object.hasOwn(FORMATS, s.format)) s.format = DEFAULT_SETUP.format;
   return s;
 }
 
