@@ -4,9 +4,10 @@ export const MatchStats = ({ stats = {}, opponentStats = {}, names = ["Player", 
   const playerStats = stats && typeof stats === "object" && !Array.isArray(stats) ? stats : {};
   const rivalStats = opponentStats && typeof opponentStats === "object" && !Array.isArray(opponentStats) ? opponentStats : {};
   const safeNames = Array.isArray(names) ? names : ["Player", "Opponent"];
-  const average = rallyLengths.length ? (rallyLengths.reduce((a, b) => a + b, 0) / rallyLengths.length).toFixed(1) : "—";
+  const rallies = Array.isArray(rallyLengths) ? rallyLengths.filter(Number.isFinite) : [];
+  const average = rallies.length ? (rallies.reduce((a, b) => a + b, 0) / rallies.length).toFixed(1) : "—";
   const buckets = [0, 0, 0, 0];
-  rallyLengths.forEach(n => buckets[n <= 3 ? 0 : n <= 6 ? 1 : n <= 9 ? 2 : 3]++);
+  rallies.forEach(n => buckets[n <= 3 ? 0 : n <= 6 ? 1 : n <= 9 ? 2 : 3]++);
   const max = Math.max(1, ...buckets);
   return <div data-testid={`${prefix}-stats-breakdown`}>
     <div className="mb-4 flex justify-between gap-5 text-xs font-bold">
