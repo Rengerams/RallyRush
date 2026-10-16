@@ -17,6 +17,8 @@ This starts Vite and opens the game in an Electron window. For browser-based dev
 
 ## Test and build
 
+Run these from the repository root:
+
 ```bash
 npm test
 npm run build
