@@ -9,6 +9,7 @@ const BALL_R = 0.125;
 export class ThreeView {
   constructor(canvas, eng) {
     this.eng = eng;
+    this.reducedMotion = false;
     const dpr = window.devicePixelRatio || 1;
     this.renderer = new THREE.WebGLRenderer({ canvas, antialias: dpr < 2, powerPreference: "high-performance" });
     this.defaultPixelRatio = Math.min(dpr, 1.5);
@@ -132,6 +133,10 @@ export class ThreeView {
     this.reducedEffects = true;
   }
 
+  setReducedMotion(enabled) {
+    this.reducedMotion = Boolean(enabled);
+  }
+
   restoreEffects() {
     this.renderer.setPixelRatio(this.defaultPixelRatio);
     this.renderer.shadowMap.enabled = true;
@@ -213,10 +218,13 @@ export class ThreeView {
     });
 
     const { crowd, crowdHeads, base } = this.stadium;
-    if (!this.reducedEffects && (e.cheer > 0 || this.wasCheer)) {
+    const animateCrowd = !this.reducedMotion && (e.cheer > 0 || this.wasCheer);
+    const settleCrowd = this.reducedMotion && this.wasCheer;
+    if (!this.reducedEffects && (animateCrowd || settleCrowd)) {
       const m4 = new THREE.Matrix4();
+      const cheer = this.reducedMotion ? 0 : e.cheer;
       base.forEach((c, i) => {
-        const lift = Math.abs(Math.sin(t * 9 + c.ph)) * 0.35 * e.cheer;
+        const lift = Math.abs(Math.sin(t * 9 + c.ph)) * 0.35 * cheer;
         m4.makeTranslation(c.pos.x, c.pos.y + lift, c.pos.z);
         crowd.setMatrixAt(i, m4);
         m4.makeScale(c.headScale, c.headScale * 1.08, c.headScale);
@@ -225,7 +233,7 @@ export class ThreeView {
       });
       crowd.instanceMatrix.needsUpdate = true;
       crowdHeads.instanceMatrix.needsUpdate = true;
-      this.wasCheer = e.cheer > 0;
+      this.wasCheer = !this.reducedMotion && e.cheer > 0;
     }
 
     this.updateCamera(e);
