@@ -57,11 +57,11 @@ export default function Setup() {
   };
   const start = () => {
     persistSetup();
-    nav("/play");
+    void nav("/play");
   };
   const practice = () => {
     persistSetup();
-    nav("/practice");
+    void nav("/practice");
   };
 
   return (
