@@ -32,7 +32,7 @@ This plan builds on the existing single-player game: 3D tennis simulation, four 
 - Keep controls collapsible so the court remains the visual focus.
 - During every active match and match mode, hide the branded header/logo and other non-gameplay chrome so the court and stadium remain the focus.
 - Scale the game view to use more of the available window on large desktop screens, while keeping the full court and stadium framed. Do not force a web-style fullscreen mode or crop the scene.
-- Keep the score as a compact overlay and essential controls accessible without taking over the view.
+- Keep points, games, and sets visible between points. During rallies, show the score in a small overlay in a top corner; keep essential controls accessible without taking over the view.
 - Use Esc to open the in-game pause menu and return to the match when resumed. Keep branding on Setup and Pause screens.
 
 **Accessibility and preferences**
@@ -45,7 +45,7 @@ This plan builds on the existing single-player game: 3D tennis simulation, four 
 - A new player can reach and start a match without guessing which keys perform the basic actions.
 - Tutorial can be skipped and replayed without changing saved player settings.
 - Play, Pause, and Match End remain usable at 1280×720 and 390×844.
-- During every active match, the game view scales up on large desktop windows, the court and stadium remain framed, and no logo/header takes space from gameplay. The score stays compact, essential controls remain usable, and Esc opens the pause menu.
+- During every active match, the game view scales up on large desktop windows, the court and stadium remain framed, and no logo/header takes space from gameplay. Points, games, and sets are visible between points and in a small top-corner overlay during rallies; essential controls remain usable, and Esc opens the pause menu.
 - All gameplay actions remain available through keyboard and on-screen controls.
 
 ### P1 — Practice mode
@@ -144,7 +144,7 @@ Make rallies feel more convincing and readable while keeping Rally Rush's respon
 | Tutorial interrupts experienced players | Make it skippable and replayable; remember completion locally. |
 | Import overwrites valued match history | Preview, validate, and require explicit confirmation; offer export first. |
 | Extra HUD options increase layout complexity | Test actual desktop and narrow-screen sizes and retain sensible defaults. |
-| Scaling the game view hides stadium or crowds the HUD | Preserve court-and-stadium framing, keep score compact and controls accessible, and test large desktop windows plus 1280×720 and 390×844. |
+| Scaling the game view hides stadium or crowds the HUD | Preserve court-and-stadium framing, keep points, games, and sets readable between points and compact during rallies, with controls accessible, and test large desktop windows plus 1280×720 and 390×844. |
 | Practice accidentally affects rankings | Keep practice data separate from match records and test this invariant. |
 | Gameplay tuning feels sluggish or unfair | Preserve responsive controls and use playtests across surfaces, shots, and difficulty levels. |
 | Performance drops from extra effects | Keep visual options optional and test on modest integrated graphics. |
@@ -152,7 +152,7 @@ Make rallies feel more convincing and readable while keeping Rally Rush's respon
 ## Success measures
 
 - First-time testers can start a match and complete a return without help.
-- During every match, testers see a larger court-and-stadium view on large desktop screens without the logo/header; the score remains compact and Esc opens the pause menu.
+- During every match, testers see a larger court-and-stadium view on large desktop screens without the logo/header; points, games, and sets remain visible between points and in a small top-corner overlay during rallies, and Esc opens the pause menu.
 - Fewer missed actions caused by unclear controls or hidden feedback.
 - Gameplay testers can describe how timing, shot choice, and court surface change rallies, while controls remain responsive.
 - Practice gives repeatable and understandable timing feedback.
