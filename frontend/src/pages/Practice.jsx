@@ -7,7 +7,7 @@ import { audio } from "@/game/audio";
 import { FORMATS } from "@/game/constants";
 import { createScore } from "@/game/scoring";
 import { loadSetup } from "@/lib/api";
-import { createTimingDrillState, gradeServeOutcome, PRACTICE_ATTEMPT_COUNT, summarizeTimingAttempts, TIMING_GRADE_ORDER, transitionTimingDrill } from "@/lib/practiceTiming";
+import { createTimingDrillState, gradeServeOutcome, isServeLaunchEvent, isTargetHit, PRACTICE_ATTEMPT_COUNT, summarizeTimingAttempts, TIMING_GRADE_ORDER, transitionTimingDrill } from "@/lib/practiceTiming";
 import GameCanvas from "@/components/game/GameCanvas";
 import DPad from "@/components/game/DPad";
 import ShotPad from "@/components/game/ShotPad";
@@ -21,6 +21,8 @@ const randomFromSeed = (initialSeed) => {
 };
 
 const GRADE_LABELS = { perfect: "Perfect", good: "Good", early: "Early", late: "Late", miss: "Miss" };
+const TARGET_LANES = ["left", "center", "right"];
+const TARGET_X = { left: -3.1, center: 0, right: 3.1 };
 
 export default function Practice() {
   const savedSetup = useMemo(loadSetup, []);
@@ -35,7 +37,9 @@ export default function Practice() {
   const drillRef = useRef(createTimingDrillState());
   const [drill, setDrill] = useState(drillRef.current);
   const [mode, setMode] = useState("return");
+  const [targetLane, setTargetLane] = useState("center");
   const [lastGrade, setLastGrade] = useState(null);
+  const [lastTargetHit, setLastTargetHit] = useState(null);
   const [snap, setSnap] = useState(null);
   const [quality, setQuality] = useState(false);
 
@@ -69,20 +73,25 @@ export default function Practice() {
     engine.replayFrames = [];
     engine.faults = 0;
     engine.p.stamina = engine.p.cap;
+    if (mode === "target") engine.pointerAim = { x: TARGET_X[targetLane], z: -8 };
     engine.setupPoint();
     serveGradeRef.current = null;
     setLastGrade(null);
-  }, [mode, sendDrillEvent]);
+    setLastTargetHit(null);
+  }, [mode, sendDrillEvent, targetLane]);
 
-  const finishAttempt = useCallback((grade) => {
+  const finishAttempt = useCallback((grade, targetHit) => {
     const previousLength = drillRef.current.attempts.length;
-    const next = sendDrillEvent({ type: "grade", grade });
-    if (next.attempts.length > previousLength) setLastGrade(next.attempts.at(-1));
+    const next = sendDrillEvent({ type: "grade", grade, targetHit });
+    if (next.attempts.length > previousLength) {
+      setLastGrade(next.attempts.at(-1));
+      if (typeof targetHit === "boolean") setLastTargetHit(targetHit);
+    }
   }, [sendDrillEvent]);
 
   const onEngineEvent = useCallback((event) => {
     if (mode === "serve") {
-      if (event.type === "shot" && event.who === 0) serveGradeRef.current = event.quality;
+      if (isServeLaunchEvent(event)) serveGradeRef.current = event.quality;
       if (event.type === "shot" && event.who === 1 && serveGradeRef.current) {
         const grade = serveGradeRef.current;
         serveGradeRef.current = null;
@@ -99,6 +108,21 @@ export default function Practice() {
       }
       return;
     }
+    if (mode === "target") {
+      if (event.type === "shot" && event.who === 0) serveGradeRef.current = event.quality;
+      if (event.type === "bounce" && event.who === 0 && serveGradeRef.current) {
+        const grade = serveGradeRef.current;
+        serveGradeRef.current = null;
+        finishAttempt(grade, event.in && isTargetHit(event.x, targetLane));
+      }
+      if (event.type === "call" && event.winner !== undefined) {
+        const grade = serveGradeRef.current;
+        serveGradeRef.current = null;
+        if (event.winner === 0 && !grade) resetPoint();
+        else finishAttempt(grade || "miss", false);
+      }
+      return;
+    }
     if (event.type === "shot" && event.who === 0) finishAttempt(event.quality);
     if (event.type === "call" && event.winner !== undefined) {
       window.setTimeout(() => {
@@ -107,7 +131,7 @@ export default function Practice() {
         else resetPoint();
       }, 0);
     }
-  }, [finishAttempt, mode, resetPoint]);
+  }, [finishAttempt, mode, resetPoint, targetLane]);
 
   const engine = useMemo(() => {
     const next = new TennisEngine(cfg, onEngineEvent, { rng: randomFromSeed(0x51a7e) });
@@ -179,12 +203,21 @@ export default function Practice() {
       : summary.counts.perfect + summary.counts.good >= 5
         ? "Your serve timing is consistent. Keep the toss smooth and strike near its peak."
         : "Try pressing a little closer to the top of the toss to improve your serve timing."
-    : summary?.tip;
+    : mode === "target" && summary
+      ? drill.targetAttempts > 0 && drill.targetHits >= Math.ceil(drill.targetAttempts / 2)
+        ? "You hit your chosen lane consistently. Try another shot type and target."
+        : "Aim for the selected lane and keep the shot inside the court."
+      : summary?.tip;
   const serveHint = !snap || snap.state !== "serve"
     ? "Serve complete. Review your timing, then continue."
     : snap.serveStage === "hold"
       ? "Press any shot once to toss; press again near the peak to serve."
       : `Toss in the air${snap.faults ? " · second serve" : ""} — press near the peak.`;
+
+  const changeTargetLane = (lane) => {
+    setTargetLane(lane);
+    if (mode === "target" && engineRef.current) engineRef.current.pointerAim = { x: TARGET_X[lane], z: -8 };
+  };
 
   return (
     <main className="play-page fixed inset-0 z-30 h-[100dvh] w-screen overflow-hidden bg-[#0B0E14]" data-testid="practice-page">
@@ -197,7 +230,7 @@ export default function Practice() {
         <section aria-label="Timing drill status" className="absolute left-2 top-2 z-20 max-w-[min(22rem,calc(100vw-4.5rem))] rounded-xl border border-white/10 bg-[#0B0E14]/90 p-3 font-mono backdrop-blur sm:left-4 sm:top-4">
           <p className="text-[10px] uppercase tracking-[0.2em] text-[#00F0FF]">Practice · {mode === "serve" ? "Serve timing" : "Return timing"}</p>
           <p className="mt-1 text-sm font-bold text-white">{summary ? "Session complete" : `${mode === "serve" ? "Serve" : "Attempt"} ${Math.min(count + 1, PRACTICE_ATTEMPT_COUNT)} of ${PRACTICE_ATTEMPT_COUNT}`}</p>
-          <p className="mt-1 text-[11px] leading-snug text-slate-300">{mode === "serve" ? serveHint : "An easy AI serves. Move to the ball, hold a shot, then release close to contact."}</p>
+          <p className="mt-1 text-[11px] leading-snug text-slate-300">{mode === "serve" ? serveHint : mode === "target" ? `An easy AI serves. Aim for the ${targetLane} lane using the target buttons, then return with any shot type.` : "An easy AI serves. Move to the ball, hold a shot, then release close to contact."}</p>
           <p data-testid="practice-progress" className="mt-2 text-xs text-slate-200">Perfect {attempts.filter((grade) => grade === "perfect").length} · Good {attempts.filter((grade) => grade === "good").length} · Early {attempts.filter((grade) => grade === "early").length} · Late {attempts.filter((grade) => grade === "late").length} · Miss {attempts.filter((grade) => grade === "miss").length}</p>
         </section>
 
@@ -208,17 +241,22 @@ export default function Practice() {
 
         {quality && <p className="pointer-events-none absolute left-1/2 top-1/3 z-20 -translate-x-1/2 rounded-lg bg-[#0B0E14]/85 px-3 py-2 font-mono text-xs text-white">3D effects reduced for smoother play</p>}
 
+        {started && mode === "target" && !summary && !pendingRef.current && <div role="group" aria-label="Target lane" className="absolute bottom-[8.5rem] left-1/2 z-20 flex -translate-x-1/2 gap-1 rounded-full border border-white/10 bg-[#0B0E14]/90 p-1 backdrop-blur">
+          {TARGET_LANES.map((lane) => <button key={lane} type="button" data-testid={`practice-target-${lane}`} aria-pressed={targetLane === lane} onClick={() => changeTargetLane(lane)} className={`rounded-full px-3 py-2 font-mono text-[10px] font-bold uppercase ${targetLane === lane ? "bg-[#DFFF00]/15 text-[#DFFF00]" : "text-slate-300"}`}>{lane}</button>)}
+        </div>}
+
         {!started && <div className="absolute inset-0 z-30 grid place-items-center bg-[#05080d]/55 p-4">
           <section className="w-full max-w-md rounded-2xl border border-white/10 bg-[#121824] p-6 shadow-2xl">
-            <p className="font-mono text-[10px] uppercase tracking-[0.25em] text-[#00F0FF]">Practice · 10 {mode === "serve" ? "serves" : "returns"}</p>
-            <h1 className="font-display mt-2 text-4xl font-black uppercase italic text-white">{mode === "serve" ? "Find your serve" : "Find your timing"}</h1>
-            <div className="mt-4 grid grid-cols-2 gap-2" role="group" aria-label="Practice drill">
-              <button type="button" data-testid="practice-mode-return" aria-pressed={mode === "return"} onClick={() => setMode("return")} className={`rounded-full border px-3 py-2 font-mono text-xs font-bold uppercase ${mode === "return" ? "border-[#DFFF00] bg-[#DFFF00]/10 text-[#DFFF00]" : "border-white/15 text-slate-300"}`}>Return timing</button>
-              <button type="button" data-testid="practice-mode-serve" aria-pressed={mode === "serve"} onClick={() => setMode("serve")} className={`rounded-full border px-3 py-2 font-mono text-xs font-bold uppercase ${mode === "serve" ? "border-[#DFFF00] bg-[#DFFF00]/10 text-[#DFFF00]" : "border-white/15 text-slate-300"}`}>Serve timing</button>
+            <p className="font-mono text-[10px] uppercase tracking-[0.25em] text-[#00F0FF]">Practice · 10 {mode === "serve" ? "serves" : mode === "target" ? "target shots" : "returns"}</p>
+            <h1 className="font-display mt-2 text-4xl font-black uppercase italic text-white">{mode === "serve" ? "Find your serve" : mode === "target" ? "Hit your target" : "Find your timing"}</h1>
+            <div className="mt-4 grid grid-cols-3 gap-1" role="group" aria-label="Practice drill">
+              <button type="button" data-testid="practice-mode-return" aria-pressed={mode === "return"} onClick={() => setMode("return")} className={`rounded-full border px-2 py-2 font-mono text-[9px] font-bold uppercase ${mode === "return" ? "border-[#DFFF00] bg-[#DFFF00]/10 text-[#DFFF00]" : "border-white/15 text-slate-300"}`}>Return</button>
+              <button type="button" data-testid="practice-mode-serve" aria-pressed={mode === "serve"} onClick={() => setMode("serve")} className={`rounded-full border px-2 py-2 font-mono text-[9px] font-bold uppercase ${mode === "serve" ? "border-[#DFFF00] bg-[#DFFF00]/10 text-[#DFFF00]" : "border-white/15 text-slate-300"}`}>Serve</button>
+              <button type="button" data-testid="practice-mode-target" aria-pressed={mode === "target"} onClick={() => setMode("target")} className={`rounded-full border px-2 py-2 font-mono text-[9px] font-bold uppercase ${mode === "target" ? "border-[#DFFF00] bg-[#DFFF00]/10 text-[#DFFF00]" : "border-white/15 text-slate-300"}`}>Targets</button>
             </div>
-            <p className="mt-3 text-sm leading-relaxed text-slate-200">{mode === "serve" ? "Press any shot once to toss the ball, then press again near its peak. A fault counts as a miss and gives clear feedback before the next serve." : "The AI sends one ball at a time. Use movement controls to reach it, hold any shot to prepare, then release near contact. Your timing grade appears after each return."}</p>
+            <p className="mt-3 text-sm leading-relaxed text-slate-200">{mode === "serve" ? "Press any shot once to toss the ball, then press again near its peak. A fault counts as a miss and gives clear feedback before the next serve." : mode === "target" ? "Choose a left, center, or right target lane. Move to the incoming ball, select any existing shot, and try to land inside your chosen lane." : "The AI sends one ball at a time. Use movement controls to reach it, hold any shot to prepare, then release near contact. Your timing grade appears after each return."}</p>
             <p className="mt-2 font-mono text-[10px] text-slate-400">Practice scores never affect match records.</p>
-            <button type="button" data-testid="practice-start" onClick={start} className="btn-volt mt-5 w-full rounded-full py-3 font-display text-lg font-bold uppercase">Start {mode === "serve" ? "serve" : "return"} drill</button>
+            <button type="button" data-testid="practice-start" onClick={start} className="btn-volt mt-5 w-full rounded-full py-3 font-display text-lg font-bold uppercase">Start {mode === "serve" ? "serve" : mode === "target" ? "target" : "return"} drill</button>
           </section>
         </div>}
 
@@ -226,21 +264,22 @@ export default function Practice() {
           <section className="w-full max-w-sm rounded-2xl border border-white/10 bg-[#121824] p-6 text-center shadow-2xl">
             <p className="font-mono text-[10px] uppercase tracking-[0.25em] text-[#00F0FF]">Attempt {count} of {PRACTICE_ATTEMPT_COUNT}</p>
             <h2 data-testid="practice-last-grade" className={`font-display mt-2 text-5xl font-black uppercase italic ${gradeTone}`}>{GRADE_LABELS[lastGrade]}</h2>
-            <p className="mt-2 text-sm text-slate-300">{mode === "serve" && lastGrade === "miss" ? "Fault. Wait for the toss, then strike closer to its peak on the next serve." : "Release the shot closer to the ball to improve your timing grade."}</p>
-            <button type="button" data-testid="practice-next" onClick={() => resetPoint()} className="btn-volt mt-5 w-full rounded-full py-3 font-display text-lg font-bold uppercase">Next {mode === "serve" ? "serve" : "return"}</button>
+          <p className="mt-2 text-sm text-slate-300">{mode === "serve" && lastGrade === "miss" ? "Fault. Wait for the toss, then strike closer to its peak on the next serve." : mode === "target" ? lastTargetHit ? "Target hit. Choose another lane or shot type and keep practicing." : "Missed the target. Aim for your chosen lane and keep the shot inside the court." : "Release the shot closer to the ball to improve your timing grade."}</p>
+            <button type="button" data-testid="practice-next" onClick={() => resetPoint()} className="btn-volt mt-5 w-full rounded-full py-3 font-display text-lg font-bold uppercase">Next {mode === "serve" ? "serve" : mode === "target" ? "shot" : "return"}</button>
           </section>
         </div>}
 
         {summary && <div className="absolute inset-0 z-40 grid place-items-center overflow-y-auto bg-[#05080d]/80 p-4">
           <section data-testid="practice-summary" className="w-full max-w-md rounded-2xl border border-white/10 bg-[#121824] p-6 shadow-2xl">
-            <p className="font-mono text-[10px] uppercase tracking-[0.25em] text-[#00F0FF]">{mode === "serve" ? "Serve" : "Return"} timing summary</p>
-            <h2 className="font-display mt-2 text-4xl font-black uppercase italic text-white">10 {mode === "serve" ? "serves" : "returns"}</h2>
+            <p className="font-mono text-[10px] uppercase tracking-[0.25em] text-[#00F0FF]">{mode === "serve" ? "Serve" : mode === "target" ? "Target" : "Return"} timing summary</p>
+            <h2 className="font-display mt-2 text-4xl font-black uppercase italic text-white">10 {mode === "serve" ? "serves" : mode === "target" ? "shots" : "returns"}</h2>
             <dl className="mt-5 grid grid-cols-2 gap-2 sm:grid-cols-5">
               {TIMING_GRADE_ORDER.map((grade) => <div key={grade} className="rounded-lg border border-white/10 bg-black/20 p-2 text-center">
                 <dt className="font-mono text-[9px] uppercase text-slate-300">{GRADE_LABELS[grade]}</dt>
                 <dd data-testid={`practice-count-${grade}`} className="mt-1 text-xl font-bold text-white">{summary.counts[grade]}</dd>
               </div>)}
             </dl>
+            {mode === "target" && <p data-testid="practice-target-hits" className="mt-3 rounded-lg border border-white/10 bg-black/20 p-3 text-center font-mono text-sm text-slate-100">Target hits: {drill.targetHits} / {drill.targetAttempts}</p>}
             <p data-testid="practice-tip" className="mt-4 rounded-xl border border-[#DFFF00]/20 bg-[#DFFF00]/5 p-3 text-sm leading-relaxed text-slate-100">{summaryTip}</p>
             <div className="mt-5 flex gap-2">
               <button type="button" data-testid="practice-retry" onClick={start} className="btn-volt flex flex-1 items-center justify-center gap-2 rounded-full py-3 font-bold uppercase"><RotateCcw size={15} /> Try again</button>
