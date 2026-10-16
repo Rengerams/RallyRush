@@ -68,7 +68,7 @@ export default function ShotPad({ onShot, onHold, onRelease, selectedShot = "fla
                 touchGesture.current = null;
                 if (gesture.holding) onRelease?.(s.id);
               } else onRelease?.(s.id);
-            }
+            }}
             onClick={(e) => {
               // Pointer input already fired on press; keep keyboard/screen-reader clicks usable.
               if (e.detail === 0) { onSelect?.(s.id); onShot?.(s.id); }
