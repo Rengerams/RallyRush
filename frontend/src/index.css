@@ -239,3 +239,38 @@ body {
     transition-duration: 0.01ms !important;
   }
 }
+
+
+/* Visible focus and optional match display preferences. */
+:where(button, a, summary, input, select, textarea, [tabindex]):focus-visible {
+  outline: 3px solid #00F0FF !important;
+  outline-offset: 2px;
+}
+
+html[data-reduced-motion="true"] *,
+html[data-reduced-motion="true"] *::before,
+html[data-reduced-motion="true"] *::after {
+  scroll-behavior: auto !important;
+  animation-duration: 0.01ms !important;
+  animation-iteration-count: 1 !important;
+  transition-duration: 0.01ms !important;
+}
+
+.play-page[data-hud-size="large"] .scoreboard-card {
+  transform: scale(1.12);
+  transform-origin: top left;
+  width: calc(100% / 1.12);
+}
+
+.play-page[data-hud-size="large"] .play-controls .play-shot-button {
+  min-height: 3.25rem;
+  font-size: 1rem;
+}
+
+.play-page[data-hud-size="large"] .play-hud-corner details {
+  font-size: 0.9rem;
+}
+
+.play-shot-buttons {
+  touch-action: pan-x;
+}
