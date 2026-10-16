@@ -13,7 +13,7 @@ export default function PauseModal({ onResume, onRestart, onQuit, sound, voice, 
     <Dialog.Root open onOpenChange={(open) => !open && onResume()}>
       <Dialog.Portal>
         <Dialog.Overlay className="fixed inset-0 z-50 bg-[#0B0E14]/70 backdrop-blur-md" />
-        <Dialog.Content data-testid="pause-modal" className="fixed inset-x-4 top-1/2 z-50 max-h-[calc(100dvh-2rem)] w-auto max-w-[320px] -translate-y-1/2 overflow-y-auto rounded-2xl border border-white/10 bg-[#121824] p-6 outline-none fade-up sm:left-1/2 sm:right-auto sm:w-full sm:-translate-x-1/2">
+        <Dialog.Content data-testid="pause-modal" className="fixed inset-x-4 top-1/2 z-50 max-h-[calc(100dvh-2rem)] w-auto max-w-[320px] -translate-y-1/2 overflow-y-auto overscroll-contain rounded-2xl border border-white/10 bg-[#121824] p-6 outline-none fade-up sm:left-1/2 sm:right-auto sm:w-full sm:-translate-x-1/2">
           <p className="font-mono text-[10px] uppercase tracking-[0.3em] text-[#00F0FF]">Rally Rush · Time-out</p>
           <Dialog.Title className="font-display mt-1 text-5xl font-black uppercase italic">Paused</Dialog.Title>
           <Dialog.Description className="sr-only">The match is paused. Resume, restart the match, or return to setup.</Dialog.Description>

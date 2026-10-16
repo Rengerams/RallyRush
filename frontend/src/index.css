@@ -274,3 +274,22 @@ html[data-reduced-motion="true"] *::after {
 .play-shot-buttons {
   touch-action: pan-x;
 }
+
+
+.play-hud-corner details[open] {
+  max-height: min(52dvh, 26rem);
+  overflow-y: auto;
+  overscroll-behavior: contain;
+}
+
+@media (max-width: 640px) {
+  .play-hud-corner details[open] {
+    max-height: min(44dvh, 22rem);
+  }
+}
+
+@media (max-height: 560px) {
+  .play-hud-corner details[open] {
+    max-height: 38dvh;
+  }
+}
