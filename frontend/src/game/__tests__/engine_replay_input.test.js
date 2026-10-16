@@ -1,7 +1,7 @@
 import { describe, expect, test } from "vitest";
 import { TennisEngine } from "../engine";
 import { movementDirection, pointerInput } from "../input";
-import { recordFrame, startReplay, endReplay } from "../replay";
+import { recordFrame, startReplay, stepReplay, endReplay } from "../replay";
 
 const cfg = {
   name: "Tester",
@@ -165,5 +165,23 @@ describe("replay controls", () => {
     endReplay(e);
     expect(e.state).toBe("pointOver");
     expect(e.stateT).toBeCloseTo(0.8);
+  });
+
+  test("replay frames retain the serve-specific swing pose", () => {
+    const e = new TennisEngine(cfg);
+    e.state = "pointOver";
+    e.p.overhead = true;
+    e.p.serveSwing = true;
+    recordFrame(e);
+    e.time += 2;
+    e.p.serveSwing = false;
+    recordFrame(e);
+    e.lastPointFrames = [...e.frames];
+
+    e.p.serveSwing = false;
+    expect(startReplay(e, true)).toBe(true);
+    stepReplay(e, 0.1);
+
+    expect(e.p.serveSwing).toBe(true);
   });
 });
