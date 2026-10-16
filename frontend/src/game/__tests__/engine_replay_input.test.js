@@ -166,4 +166,23 @@ describe("replay controls", () => {
     expect(e.state).toBe("pointOver");
     expect(e.stateT).toBeCloseTo(0.8);
   });
+
+  test("replay pause freezes frames and selected speed is retained", () => {
+    const e = new TennisEngine(cfg);
+    e.state = "pointOver";
+    e.lastPointFrames = [
+      { t: 0, b: { x: 0, y: 1, z: 0 }, p: { x: 0, z: 10 }, a: { x: 0, z: -10 } },
+      { t: 2, b: { x: 0, y: 1, z: 1 }, p: { x: 0, z: 10 }, a: { x: 0, z: -10 } },
+    ];
+    expect(e.startReplay(true)).toBe(true);
+    e.replaySpeed = 1.5;
+    e.replayPaused = true;
+    e.update(0.1);
+    expect(e.replayTime).toBe(0);
+    expect(e.snapshot().replayPaused).toBe(true);
+    e.replayPaused = false;
+    e.update(0.1);
+    expect(e.replayTime).toBeCloseTo(0.15);
+    expect(e.snapshot().replaySpeed).toBe(1.5);
+  });
 });

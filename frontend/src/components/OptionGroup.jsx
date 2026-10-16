@@ -3,7 +3,7 @@ import * as RadioGroup from "@radix-ui/react-radio-group";
 export default function OptionGroup({ label, options, value, onChange, testPrefix, cols = 4 }) {
   return (
     <div>
-      <p className="font-mono text-[11px] uppercase tracking-[0.25em] text-slate-500">{label}</p>
+      <p className="font-mono text-[11px] uppercase tracking-[0.25em] text-slate-400">{label}</p>
       <RadioGroup.Root
         aria-label={label}
         value={value}

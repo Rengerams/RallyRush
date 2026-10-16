@@ -16,6 +16,8 @@ export function startReplay(e, manual = false) {
   e.replayFrames = e.lastPointFrames;
   e.replayTime = e.replayFrames[0].t;
   e.replayI = 0;
+  e.replaySpeed = 1;
+  e.replayPaused = false;
   e.clearPointer();
   e.state = "replay";
   e.emit({ type: "replay", on: true, label: e.lastPointLabel || "Last point" });
@@ -23,8 +25,8 @@ export function startReplay(e, manual = false) {
 }
 
 export function stepReplay(e, delta) {
+  if (e.replayPaused) return;
   const frames = e.replayFrames, end = frames[frames.length - 1].t;
-  e.replaySpeed = end - e.replayTime < 1.5 ? 0.3 : 0.65;
   e.replayTime += Math.min(delta, 0.1) * e.replaySpeed;
   if (e.replayTime >= end) return endReplay(e);
   while (e.replayI < frames.length - 2 && frames[e.replayI + 1].t <= e.replayTime) e.replayI++;
