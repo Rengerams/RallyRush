@@ -2,9 +2,17 @@ import * as Dialog from "@radix-ui/react-dialog";
 import { Trophy, Loader2, Check, AlertTriangle, RotateCcw, Film } from "lucide-react";
 import { MatchStats } from "./MatchStats";
 
+export function getMatchAccuracy(result) {
+  const stats = result?.stats && typeof result.stats === "object" && !Array.isArray(result.stats) ? result.stats : {};
+  const totalShots = Number(stats.total_shots);
+  if (!Number.isFinite(totalShots) || totalShots <= 0) return 0;
+  const perfectShots = Number(stats.perfect_shots) || 0;
+  return Math.round((perfectShots / totalShots) * 100);
+}
+
 export default function MatchEndModal({ result, names, saveState, onRematch, onLeaderboard, onSetup, onReplay, canReplay, onRetry }) {
   const stats = result.stats && typeof result.stats === "object" && !Array.isArray(result.stats) ? result.stats : {};
-  const accuracy = Number(stats.total_shots) ? Math.round((Number(stats.perfect_shots || 0) / Number(stats.total_shots)) * 100) : 0;
+  const accuracy = getMatchAccuracy(result);
   return (
     <Dialog.Root open>
       <Dialog.Portal>
