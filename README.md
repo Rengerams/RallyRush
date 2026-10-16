@@ -2,7 +2,7 @@
 
 [![Release](https://img.shields.io/github/v/release/Rengerams/tennnisNL?label=release&style=flat-square)](https://github.com/Rengerams/tennnisNL/releases)
 [![Downloads](https://img.shields.io/github/downloads/Rengerams/tennnisNL/total?style=flat-square)](https://github.com/Rengerams/tennnisNL/releases)
-[![License](https://img.shields.io/github/license/Rengerams/tennnisNL?style=flat-square)](./LICENSE)
+[![License](https://img.shields.io/github/license/Rengerams/tennnisNL?style=flat-square)](https://github.com/Rengerams/tennnisNL/blob/main/LICENSE)
 
 Rally Rush (v0.2.0) is a single-player, arcade-style 3D tennis game for Windows and the browser. Play fast matches against AI opponents, build a player, and master seven shot types across five court surfaces.
 
@@ -48,9 +48,9 @@ Rally Rush (v0.2.0) is a single-player, arcade-style 3D tennis game for Windows 
 
 ## Windows desktop
 
-Download the latest installer from the Releases page:
+Download the [Rally Rush 0.2.0 Windows installer](https://github.com/Rengerams/tennnisNL/releases/download/0.2.0/Rally-Rush-0.2.0-Windows-Setup.exe).
 
-https://github.com/Rengerams/tennnisNL/releases
+For other versions, visit the [Releases page](https://github.com/Rengerams/tennnisNL/releases).
 
 Notes:
 - Supported: Windows 10 or 11, 64-bit.
@@ -141,4 +141,4 @@ See the [Rally Rush 0.3.0 roadmap](ROADMAP.md) for proposed UI, onboarding, prac
 
 ## License
 
-This project is licensed under the MIT License. See `LICENSE` for details (desktop frontend package.json also references the MIT license).
+This project is licensed under the [MIT License](LICENSE).
