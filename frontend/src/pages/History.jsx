@@ -3,7 +3,7 @@ import { fetchMatches } from "@/lib/api";
 import { SURFACES, DIFFICULTY, STYLES, FORMATS } from "@/game/constants";
 import { MatchStats } from "@/components/game/MatchStats";
 
-function MatchCard({ m, i }) {
+export function MatchCard({ m, i = 0 }) {
   const surf = SURFACES[m.surface] || { label: "Unknown surface", color: "transparent" };
   const stats = m.stats && typeof m.stats === "object" && !Array.isArray(m.stats) ? m.stats : {};
   const difficulty = DIFFICULTY[m.difficulty]?.label || "Unknown";
