@@ -1,4 +1,4 @@
-import { describe, expect, test, vi } from "vitest";
+import { expect, test } from "vitest";
 import { TennisEngine } from "../engine";
 import { SURFACES, FORMATS, SHOTS } from "../constants";
 import { stepBall } from "../physics";

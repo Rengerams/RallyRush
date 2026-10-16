@@ -17,6 +17,14 @@ import MatchEndModal from "@/components/game/MatchEndModal";
 import MatchIntro from "@/components/game/MatchIntro";
 import GameCanvas from "@/components/game/GameCanvas";
 
+const randomFromSeed = (initialSeed) => {
+  let state = initialSeed >>> 0;
+  return () => {
+    state = (Math.imul(state, 1664525) + 1013904223) >>> 0;
+    return state / 0x1_0000_0000;
+  };
+};
+
 export default function Play() {
   const nav = useNavigate();
   const [cfg] = useState(loadSetup);
@@ -34,7 +42,7 @@ export default function Play() {
   const [saveState, setSaveState] = useState(null);
   const [sound, setSound] = useState(audio.sound);
   const [voice, setVoice] = useState(audio.voice);
-  const [seed, setSeed] = useState(0);
+  const [seed, setSeed] = useState(() => Math.floor(Math.random() * 0x1_0000_0000));
   const [replay, setReplay] = useState(null);
   const [replays, setReplays] = useState(true);
   const [cameraMode, setCameraMode] = useState("court");
@@ -69,11 +77,9 @@ export default function Play() {
       setResult(e.result);
       persistResult(e.result);
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps -- state setters (setReplay, setCall, etc.) and module-level saveMatch are stable references
   }, [persistResult]);
 
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  const eng = useMemo(() => new TennisEngine(cfg, onEvent), [cfg, onEvent, seed]);
+  const eng = useMemo(() => new TennisEngine(cfg, onEvent, { rng: randomFromSeed(seed) }), [cfg, onEvent, seed]);
 
   useEffect(() => { eng.cameraMode = cameraMode; }, [eng, cameraMode]);
   useEffect(() => { eng.mouseEnabled = mouseEnabled; if (!mouseEnabled) eng.clearPointer(); }, [eng, mouseEnabled]);
@@ -87,7 +93,6 @@ export default function Play() {
     return () => coarse.removeEventListener?.("change", update);
   }, []);
 
-  // eslint-disable-next-line react-hooks/exhaustive-deps -- refs (engRef, pausedRef, introRef) and globals (cancelAnimationFrame) are stable
   useEffect(() => {
     eng.replays = replaysRef.current;
     engRef.current = eng;
@@ -118,7 +123,6 @@ export default function Play() {
     return () => { delete document.documentElement.dataset.reducedMotion; };
   }, [displayPrefs.reducedMotion]);
 
-  // eslint-disable-next-line react-hooks/exhaustive-deps -- pausedRef is a ref, setPaused is a stable setter
   const togglePause = useCallback(() => {
     pausedRef.current = !pausedRef.current;
     engRef.current?.clearInput();
@@ -143,7 +147,6 @@ export default function Play() {
   }, [togglePause, noteServeAttempt]);
 
 
-  // eslint-disable-next-line react-hooks/exhaustive-deps -- introRef is a ref, setIntro is a stable setter
   const endIntro = useCallback(() => { introRef.current = false; setIntro(false); }, []);
   const shot = (id) => {
     if (introRef.current || pausedRef.current || !graphicsReady.current) return;

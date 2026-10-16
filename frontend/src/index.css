@@ -179,15 +179,25 @@ body {
   .play-controls {
     padding-left: 1.25rem;
     padding-right: 1.25rem;
+    padding-top: 0.5rem;
   }
 
   .play-shotpad {
-    max-width: min(72vw, 1020px);
+    flex: 0 1 auto;
+    width: fit-content;
+    max-width: min(54vw, 700px);
+    padding: 0.35rem;
+  }
+
+  .play-shot-buttons {
+    gap: 0.3rem;
   }
 
   .play-shot-button {
-    min-width: 6rem;
-    flex-basis: 6rem;
+    flex: 0 0 4.75rem;
+    min-width: 4.75rem;
+    min-height: 2.35rem;
+    padding: 0.2rem;
   }
 }
 

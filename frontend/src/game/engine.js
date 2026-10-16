@@ -365,7 +365,7 @@ export class TennisEngine {
   }
 
   updateAIServe(dt) {
-    const a = this.a, b = this.ball;
+    const b = this.ball;
     if (this.server !== 1) return;
     this.aiServeT -= dt;
     if (this.serveStage === "hold" && this.aiServeT <= 0) { this.serveStage = "toss"; b.vy = 5.2; }
