@@ -1,0 +1,2099 @@
+[
+  {
+    "file": "frontend\\index.html",
+    "pattern": "addEventListener",
+    "hint": "Use delegation; debounce/throttle handlers for scroll/resize.",
+    "match": "addEventListener(",
+    "line": 21,
+    "col": 24,
+    "snippet": "<script>window.addEventListener(\"error\",function(e){if(e.error instanceof DOMException&&e.error.name===\"DataCloneError\"&&e.message&&e.message.includes(\"PerformanceServerTiming\")){e.stopImmediatePropagation();e.preventDefault()}},true);</script>"
+  },
+  {
+    "file": "frontend\\release\\win-unpacked\\LICENSES.chromium.html",
+    "pattern": "loops",
+    "hint": "Heavy synchronous loops can freeze UI; consider chunking or Web Worker.",
+    "match": "for (",
+    "line": 28687,
+    "col": 47,
+    "snippet": "4.5 You agree that you are solely responsible for (and that Google has no responsibility to you or"
+  },
+  {
+    "file": "frontend\\release\\win-unpacked\\LICENSES.chromium.html",
+    "pattern": "loops",
+    "hint": "Heavy synchronous loops can freeze UI; consider chunking or Web Worker.",
+    "match": "for (",
+    "line": 28692,
+    "col": 47,
+    "snippet": "4.6 You agree that you are solely responsible for (and that Google has no responsibility to you or"
+  },
+  {
+    "file": "frontend\\release\\win-unpacked\\LICENSES.chromium.html",
+    "pattern": "loops",
+    "hint": "Heavy synchronous loops can freeze UI; consider chunking or Web Worker.",
+    "match": "for (",
+    "line": 48521,
+    "col": 47,
+    "snippet": "4.5 You agree that you are solely responsible for (and that Google has no responsibility to you or to any third party for) any data, content, or resources that you create, transmit or display through Android and/or applications for Android, and for the consequences of your actions (including any loss or damage which Google may suffer) by doing so."
+  },
+  {
+    "file": "frontend\\release\\win-unpacked\\LICENSES.chromium.html",
+    "pattern": "loops",
+    "hint": "Heavy synchronous loops can freeze UI; consider chunking or Web Worker.",
+    "match": "for (",
+    "line": 48523,
+    "col": 47,
+    "snippet": "4.6 You agree that you are solely responsible for (and that Google has no responsibility to you or to any third party for) any breach of your obligations under the License Agreement, any applicable third party contract or Terms of Service, or any applicable law or regulation, and for the consequences (including any loss or damage which Google or any third party may suffer) of any such breach."
+  },
+  {
+    "file": "frontend\\release\\win-unpacked\\LICENSES.chromium.html",
+    "pattern": "loops",
+    "hint": "Heavy synchronous loops can freeze UI; consider chunking or Web Worker.",
+    "match": "for (",
+    "line": 72905,
+    "col": 47,
+    "snippet": "4.5 You agree that you are solely responsible for (and that Google has no responsibility to you or to any third party for) any data, content, or resources that you create, transmit or display through Android and/or applications for Android, and for the consequences of your actions (including any loss or damage which Google may suffer) by doing so."
+  },
+  {
+    "file": "frontend\\release\\win-unpacked\\LICENSES.chromium.html",
+    "pattern": "loops",
+    "hint": "Heavy synchronous loops can freeze UI; consider chunking or Web Worker.",
+    "match": "for (",
+    "line": 72907,
+    "col": 47,
+    "snippet": "4.6 You agree that you are solely responsible for (and that Google has no responsibility to you or to any third party for) any breach of your obligations under the License Agreement, any applicable third party contract or Terms of Service, or any applicable law or regulation, and for the consequences (including any loss or damage which Google or any third party may suffer) of any such breach."
+  },
+  {
+    "file": "frontend\\release\\win-unpacked\\LICENSES.chromium.html",
+    "pattern": "loops",
+    "hint": "Heavy synchronous loops can freeze UI; consider chunking or Web Worker.",
+    "match": "for (",
+    "line": 73128,
+    "col": 47,
+    "snippet": "4.5 You agree that you are solely responsible for (and that Google has no responsibility to you or"
+  },
+  {
+    "file": "frontend\\release\\win-unpacked\\LICENSES.chromium.html",
+    "pattern": "loops",
+    "hint": "Heavy synchronous loops can freeze UI; consider chunking or Web Worker.",
+    "match": "for (",
+    "line": 73133,
+    "col": 47,
+    "snippet": "4.6 You agree that you are solely responsible for (and that Google has no responsibility to you or"
+  },
+  {
+    "file": "frontend\\release\\win-unpacked\\LICENSES.chromium.html",
+    "pattern": "loops",
+    "hint": "Heavy synchronous loops can freeze UI; consider chunking or Web Worker.",
+    "match": "for (",
+    "line": 89730,
+    "col": 47,
+    "snippet": "4.5 You agree that you are solely responsible for (and that Google has no responsibility to you or to any third party for) any data, content, or resources that you create, transmit or display through Android and/or applications for Android, and for the consequences of your actions (including any loss or damage which Google may suffer) by doing so."
+  },
+  {
+    "file": "frontend\\release\\win-unpacked\\LICENSES.chromium.html",
+    "pattern": "loops",
+    "hint": "Heavy synchronous loops can freeze UI; consider chunking or Web Worker.",
+    "match": "for (",
+    "line": 89732,
+    "col": 47,
+    "snippet": "4.6 You agree that you are solely responsible for (and that Google has no responsibility to you or to any third party for) any breach of your obligations under the License Agreement, any applicable third party contract or Terms of Service, or any applicable law or regulation, and for the consequences (including any loss or damage which Google or any third party may suffer) of any such breach."
+  },
+  {
+    "file": "frontend\\release\\win-unpacked\\LICENSES.chromium.html",
+    "pattern": "loops",
+    "hint": "Heavy synchronous loops can freeze UI; consider chunking or Web Worker.",
+    "match": "for (",
+    "line": 91619,
+    "col": 47,
+    "snippet": "4.5 You agree that you are solely responsible for (and that Google has no responsibility to you or to any third party for) any data, content, or resources that you create, transmit or display through Android and/or applications for Android, and for the consequences of your actions (including any loss or damage which Google may suffer) by doing so."
+  },
+  {
+    "file": "frontend\\release\\win-unpacked\\LICENSES.chromium.html",
+    "pattern": "loops",
+    "hint": "Heavy synchronous loops can freeze UI; consider chunking or Web Worker.",
+    "match": "for (",
+    "line": 91621,
+    "col": 47,
+    "snippet": "4.6 You agree that you are solely responsible for (and that Google has no responsibility to you or to any third party for) any breach of your obligations under the License Agreement, any applicable third party contract or Terms of Service, or any applicable law or regulation, and for the consequences (including any loss or damage which Google or any third party may suffer) of any such breach."
+  },
+  {
+    "file": "frontend\\release\\win-unpacked\\LICENSES.chromium.html",
+    "pattern": "loops",
+    "hint": "Heavy synchronous loops can freeze UI; consider chunking or Web Worker.",
+    "match": "for (",
+    "line": 96947,
+    "col": 47,
+    "snippet": "4.5 You agree that you are solely responsible for (and that Google has no responsibility to you or"
+  },
+  {
+    "file": "frontend\\release\\win-unpacked\\LICENSES.chromium.html",
+    "pattern": "loops",
+    "hint": "Heavy synchronous loops can freeze UI; consider chunking or Web Worker.",
+    "match": "for (",
+    "line": 96952,
+    "col": 47,
+    "snippet": "4.6 You agree that you are solely responsible for (and that Google has no responsibility to you or"
+  },
+  {
+    "file": "frontend\\release\\win-unpacked\\LICENSES.chromium.html",
+    "pattern": "loops",
+    "hint": "Heavy synchronous loops can freeze UI; consider chunking or Web Worker.",
+    "match": "for (",
+    "line": 110114,
+    "col": 47,
+    "snippet": "4.5 You agree that you are solely responsible for (and that Google has no responsibility to you or"
+  },
+  {
+    "file": "frontend\\release\\win-unpacked\\LICENSES.chromium.html",
+    "pattern": "loops",
+    "hint": "Heavy synchronous loops can freeze UI; consider chunking or Web Worker.",
+    "match": "for (",
+    "line": 110119,
+    "col": 47,
+    "snippet": "4.6 You agree that you are solely responsible for (and that Google has no responsibility to you or"
+  },
+  {
+    "file": "frontend\\release\\win-unpacked\\LICENSES.chromium.html",
+    "pattern": "loops",
+    "hint": "Heavy synchronous loops can freeze UI; consider chunking or Web Worker.",
+    "match": "for (",
+    "line": 123977,
+    "col": 47,
+    "snippet": "4.5 You agree that you are solely responsible for (and that Google has no responsibility to you or to any third party for) any data, content, or resources that you create, transmit or display through Android and/or applications for Android, and for the consequences of your actions (including any loss or damage which Google may suffer) by doing so."
+  },
+  {
+    "file": "frontend\\release\\win-unpacked\\LICENSES.chromium.html",
+    "pattern": "loops",
+    "hint": "Heavy synchronous loops can freeze UI; consider chunking or Web Worker.",
+    "match": "for (",
+    "line": 123979,
+    "col": 47,
+    "snippet": "4.6 You agree that you are solely responsible for (and that Google has no responsibility to you or to any third party for) any breach of your obligations under the License Agreement, any applicable third party contract or Terms of Service, or any applicable law or regulation, and for the consequences (including any loss or damage which Google or any third party may suffer) of any such breach."
+  },
+  {
+    "file": "frontend\\release\\win-unpacked\\LICENSES.chromium.html",
+    "pattern": "loops",
+    "hint": "Heavy synchronous loops can freeze UI; consider chunking or Web Worker.",
+    "match": "for (",
+    "line": 126256,
+    "col": 47,
+    "snippet": "4.5 You agree that you are solely responsible for (and that Google has no responsibility to you or to any third party for) any data, content, or resources that you create, transmit or display through Android and/or applications for Android, and for the consequences of your actions (including any loss or damage which Google may suffer) by doing so."
+  },
+  {
+    "file": "frontend\\release\\win-unpacked\\LICENSES.chromium.html",
+    "pattern": "loops",
+    "hint": "Heavy synchronous loops can freeze UI; consider chunking or Web Worker.",
+    "match": "for (",
+    "line": 126258,
+    "col": 47,
+    "snippet": "4.6 You agree that you are solely responsible for (and that Google has no responsibility to you or to any third party for) any breach of your obligations under the License Agreement, any applicable third party contract or Terms of Service, or any applicable law or regulation, and for the consequences (including any loss or damage which Google or any third party may suffer) of any such breach."
+  },
+  {
+    "file": "frontend\\release\\win-unpacked\\LICENSES.chromium.html",
+    "pattern": "loops",
+    "hint": "Heavy synchronous loops can freeze UI; consider chunking or Web Worker.",
+    "match": "for (",
+    "line": 126449,
+    "col": 47,
+    "snippet": "4.5 You agree that you are solely responsible for (and that Google has no responsibility to you or"
+  },
+  {
+    "file": "frontend\\release\\win-unpacked\\LICENSES.chromium.html",
+    "pattern": "loops",
+    "hint": "Heavy synchronous loops can freeze UI; consider chunking or Web Worker.",
+    "match": "for (",
+    "line": 126454,
+    "col": 47,
+    "snippet": "4.6 You agree that you are solely responsible for (and that Google has no responsibility to you or"
+  },
+  {
+    "file": "frontend\\release\\win-unpacked\\LICENSES.chromium.html",
+    "pattern": "loops",
+    "hint": "Heavy synchronous loops can freeze UI; consider chunking or Web Worker.",
+    "match": "for (",
+    "line": 173501,
+    "col": 47,
+    "snippet": "4.5 You agree that you are solely responsible for (and that Google has no responsibility to you or to any third party for) any data, content, or resources that you create, transmit or display through Android and/or applications for Android, and for the consequences of your actions (including any loss or damage which Google may suffer) by doing so."
+  },
+  {
+    "file": "frontend\\release\\win-unpacked\\LICENSES.chromium.html",
+    "pattern": "loops",
+    "hint": "Heavy synchronous loops can freeze UI; consider chunking or Web Worker.",
+    "match": "for (",
+    "line": 173503,
+    "col": 47,
+    "snippet": "4.6 You agree that you are solely responsible for (and that Google has no responsibility to you or to any third party for) any breach of your obligations under the License Agreement, any applicable third party contract or Terms of Service, or any applicable law or regulation, and for the consequences (including any loss or damage which Google or any third party may suffer) of any such breach."
+  },
+  {
+    "file": "frontend\\release\\win-unpacked\\LICENSES.chromium.html",
+    "pattern": "loops",
+    "hint": "Heavy synchronous loops can freeze UI; consider chunking or Web Worker.",
+    "match": "for (",
+    "line": 189672,
+    "col": 47,
+    "snippet": "4.5 You agree that you are solely responsible for (and that Google has no responsibility to you or to any third party for) any data, content, or resources that you create, transmit or display through Android and/or applications for Android, and for the consequences of your actions (including any loss or damage which Google may suffer) by doing so."
+  },
+  {
+    "file": "frontend\\release\\win-unpacked\\LICENSES.chromium.html",
+    "pattern": "loops",
+    "hint": "Heavy synchronous loops can freeze UI; consider chunking or Web Worker.",
+    "match": "for (",
+    "line": 189674,
+    "col": 47,
+    "snippet": "4.6 You agree that you are solely responsible for (and that Google has no responsibility to you or to any third party for) any breach of your obligations under the License Agreement, any applicable third party contract or Terms of Service, or any applicable law or regulation, and for the consequences (including any loss or damage which Google or any third party may suffer) of any such breach."
+  },
+  {
+    "file": "frontend\\release\\win-unpacked\\LICENSES.chromium.html",
+    "pattern": "loops",
+    "hint": "Heavy synchronous loops can freeze UI; consider chunking or Web Worker.",
+    "match": "for (",
+    "line": 197602,
+    "col": 47,
+    "snippet": "4.5 You agree that you are solely responsible for (and that Google has no responsibility to you or to any third party for) any data, content, or resources that you create, transmit or display through Android and/or applications for Android, and for the consequences of your actions (including any loss or damage which Google may suffer) by doing so."
+  },
+  {
+    "file": "frontend\\release\\win-unpacked\\LICENSES.chromium.html",
+    "pattern": "loops",
+    "hint": "Heavy synchronous loops can freeze UI; consider chunking or Web Worker.",
+    "match": "for (",
+    "line": 197604,
+    "col": 47,
+    "snippet": "4.6 You agree that you are solely responsible for (and that Google has no responsibility to you or to any third party for) any breach of your obligations under the License Agreement, any applicable third party contract or Terms of Service, or any applicable law or regulation, and for the consequences (including any loss or damage which Google or any third party may suffer) of any such breach."
+  },
+  {
+    "file": "frontend\\release\\win-unpacked\\LICENSES.chromium.html",
+    "pattern": "loops",
+    "hint": "Heavy synchronous loops can freeze UI; consider chunking or Web Worker.",
+    "match": "for (",
+    "line": 203172,
+    "col": 47,
+    "snippet": "4.5 You agree that you are solely responsible for (and that Google has no responsibility to you or to any third party for) any data, content, or resources that you create, transmit or display through Android and/or applications for Android, and for the consequences of your actions (including any loss or damage which Google may suffer) by doing so."
+  },
+  {
+    "file": "frontend\\release\\win-unpacked\\LICENSES.chromium.html",
+    "pattern": "loops",
+    "hint": "Heavy synchronous loops can freeze UI; consider chunking or Web Worker.",
+    "match": "for (",
+    "line": 203174,
+    "col": 47,
+    "snippet": "4.6 You agree that you are solely responsible for (and that Google has no responsibility to you or to any third party for) any breach of your obligations under the License Agreement, any applicable third party contract or Terms of Service, or any applicable law or regulation, and for the consequences (including any loss or damage which Google or any third party may suffer) of any such breach."
+  },
+  {
+    "file": "frontend\\release\\win-unpacked\\LICENSES.chromium.html",
+    "pattern": "loops",
+    "hint": "Heavy synchronous loops can freeze UI; consider chunking or Web Worker.",
+    "match": "for (",
+    "line": 210983,
+    "col": 47,
+    "snippet": "4.5 You agree that you are solely responsible for (and that Google has no responsibility to you or to any third party for) any data, content, or resources that you create, transmit or display through Android and/or applications for Android, and for the consequences of your actions (including any loss or damage which Google may suffer) by doing so."
+  },
+  {
+    "file": "frontend\\release\\win-unpacked\\LICENSES.chromium.html",
+    "pattern": "loops",
+    "hint": "Heavy synchronous loops can freeze UI; consider chunking or Web Worker.",
+    "match": "for (",
+    "line": 210985,
+    "col": 47,
+    "snippet": "4.6 You agree that you are solely responsible for (and that Google has no responsibility to you or to any third party for) any breach of your obligations under the License Agreement, any applicable third party contract or Terms of Service, or any applicable law or regulation, and for the consequences (including any loss or damage which Google or any third party may suffer) of any such breach."
+  },
+  {
+    "file": "frontend\\release\\win-unpacked\\LICENSES.chromium.html",
+    "pattern": "loops",
+    "hint": "Heavy synchronous loops can freeze UI; consider chunking or Web Worker.",
+    "match": "for (",
+    "line": 217046,
+    "col": 47,
+    "snippet": "4.5 You agree that you are solely responsible for (and that Google has no responsibility to you or to any third party for) any data, content, or resources that you create, transmit or display through Android and/or applications for Android, and for the consequences of your actions (including any loss or damage which Google may suffer) by doing so."
+  },
+  {
+    "file": "frontend\\release\\win-unpacked\\LICENSES.chromium.html",
+    "pattern": "loops",
+    "hint": "Heavy synchronous loops can freeze UI; consider chunking or Web Worker.",
+    "match": "for (",
+    "line": 217048,
+    "col": 47,
+    "snippet": "4.6 You agree that you are solely responsible for (and that Google has no responsibility to you or to any third party for) any breach of your obligations under the License Agreement, any applicable third party contract or Terms of Service, or any applicable law or regulation, and for the consequences (including any loss or damage which Google or any third party may suffer) of any such breach."
+  },
+  {
+    "file": "frontend\\release\\win-unpacked\\LICENSES.chromium.html",
+    "pattern": "loops",
+    "hint": "Heavy synchronous loops can freeze UI; consider chunking or Web Worker.",
+    "match": "for (",
+    "line": 221719,
+    "col": 47,
+    "snippet": "4.5 You agree that you are solely responsible for (and that Google has no responsibility to you or to any third party for) any data, content, or resources that you create, transmit or display through Android and/or applications for Android, and for the consequences of your actions (including any loss or damage which Google may suffer) by doing so."
+  },
+  {
+    "file": "frontend\\release\\win-unpacked\\LICENSES.chromium.html",
+    "pattern": "loops",
+    "hint": "Heavy synchronous loops can freeze UI; consider chunking or Web Worker.",
+    "match": "for (",
+    "line": 221721,
+    "col": 47,
+    "snippet": "4.6 You agree that you are solely responsible for (and that Google has no responsibility to you or to any third party for) any breach of your obligations under the License Agreement, any applicable third party contract or Terms of Service, or any applicable law or regulation, and for the consequences (including any loss or damage which Google or any third party may suffer) of any such breach."
+  },
+  {
+    "file": "frontend\\release\\win-unpacked\\LICENSES.chromium.html",
+    "pattern": "loops",
+    "hint": "Heavy synchronous loops can freeze UI; consider chunking or Web Worker.",
+    "match": "for (",
+    "line": 226392,
+    "col": 47,
+    "snippet": "4.5 You agree that you are solely responsible for (and that Google has no responsibility to you or to any third party for) any data, content, or resources that you create, transmit or display through Android and/or applications for Android, and for the consequences of your actions (including any loss or damage which Google may suffer) by doing so."
+  },
+  {
+    "file": "frontend\\release\\win-unpacked\\LICENSES.chromium.html",
+    "pattern": "loops",
+    "hint": "Heavy synchronous loops can freeze UI; consider chunking or Web Worker.",
+    "match": "for (",
+    "line": 226394,
+    "col": 47,
+    "snippet": "4.6 You agree that you are solely responsible for (and that Google has no responsibility to you or to any third party for) any breach of your obligations under the License Agreement, any applicable third party contract or Terms of Service, or any applicable law or regulation, and for the consequences (including any loss or damage which Google or any third party may suffer) of any such breach."
+  },
+  {
+    "file": "frontend\\release\\win-unpacked\\LICENSES.chromium.html",
+    "pattern": "loops",
+    "hint": "Heavy synchronous loops can freeze UI; consider chunking or Web Worker.",
+    "match": "for (",
+    "line": 233307,
+    "col": 47,
+    "snippet": "4.5 You agree that you are solely responsible for (and that Google has no responsibility to you or to any third party for) any data, content, or resources that you create, transmit or display through Android and/or applications for Android, and for the consequences of your actions (including any loss or damage which Google may suffer) by doing so."
+  },
+  {
+    "file": "frontend\\release\\win-unpacked\\LICENSES.chromium.html",
+    "pattern": "loops",
+    "hint": "Heavy synchronous loops can freeze UI; consider chunking or Web Worker.",
+    "match": "for (",
+    "line": 233309,
+    "col": 47,
+    "snippet": "4.6 You agree that you are solely responsible for (and that Google has no responsibility to you or to any third party for) any breach of your obligations under the License Agreement, any applicable third party contract or Terms of Service, or any applicable law or regulation, and for the consequences (including any loss or damage which Google or any third party may suffer) of any such breach."
+  },
+  {
+    "file": "frontend\\release\\win-unpacked\\LICENSES.chromium.html",
+    "pattern": "loops",
+    "hint": "Heavy synchronous loops can freeze UI; consider chunking or Web Worker.",
+    "match": "for (",
+    "line": 241421,
+    "col": 47,
+    "snippet": "4.5 You agree that you are solely responsible for (and that Google has no responsibility to you or to any third party for) any data, content, or resources that you create, transmit or display through Android and/or applications for Android, and for the consequences of your actions (including any loss or damage which Google may suffer) by doing so."
+  },
+  {
+    "file": "frontend\\release\\win-unpacked\\LICENSES.chromium.html",
+    "pattern": "loops",
+    "hint": "Heavy synchronous loops can freeze UI; consider chunking or Web Worker.",
+    "match": "for (",
+    "line": 241423,
+    "col": 47,
+    "snippet": "4.6 You agree that you are solely responsible for (and that Google has no responsibility to you or to any third party for) any breach of your obligations under the License Agreement, any applicable third party contract or Terms of Service, or any applicable law or regulation, and for the consequences (including any loss or damage which Google or any third party may suffer) of any such breach."
+  },
+  {
+    "file": "frontend\\release\\win-unpacked\\LICENSES.chromium.html",
+    "pattern": "loops",
+    "hint": "Heavy synchronous loops can freeze UI; consider chunking or Web Worker.",
+    "match": "for (",
+    "line": 242683,
+    "col": 47,
+    "snippet": "4.5 You agree that you are solely responsible for (and that Google has no responsibility to you or to any third party for) any data, content, or resources that you create, transmit or display through Android and/or applications for Android, and for the consequences of your actions (including any loss or damage which Google may suffer) by doing so."
+  },
+  {
+    "file": "frontend\\release\\win-unpacked\\LICENSES.chromium.html",
+    "pattern": "loops",
+    "hint": "Heavy synchronous loops can freeze UI; consider chunking or Web Worker.",
+    "match": "for (",
+    "line": 242685,
+    "col": 47,
+    "snippet": "4.6 You agree that you are solely responsible for (and that Google has no responsibility to you or to any third party for) any breach of your obligations under the License Agreement, any applicable third party contract or Terms of Service, or any applicable law or regulation, and for the consequences (including any loss or damage which Google or any third party may suffer) of any such breach."
+  },
+  {
+    "file": "frontend\\release\\win-unpacked\\LICENSES.chromium.html",
+    "pattern": "loops",
+    "hint": "Heavy synchronous loops can freeze UI; consider chunking or Web Worker.",
+    "match": "for (",
+    "line": 248215,
+    "col": 47,
+    "snippet": "4.5 You agree that you are solely responsible for (and that Google has no responsibility to you or to any third party for) any data, content, or resources that you create, transmit or display through Android and/or applications for Android, and for the consequences of your actions (including any loss or damage which Google may suffer) by doing so."
+  },
+  {
+    "file": "frontend\\release\\win-unpacked\\LICENSES.chromium.html",
+    "pattern": "loops",
+    "hint": "Heavy synchronous loops can freeze UI; consider chunking or Web Worker.",
+    "match": "for (",
+    "line": 248217,
+    "col": 47,
+    "snippet": "4.6 You agree that you are solely responsible for (and that Google has no responsibility to you or to any third party for) any breach of your obligations under the License Agreement, any applicable third party contract or Terms of Service, or any applicable law or regulation, and for the consequences (including any loss or damage which Google or any third party may suffer) of any such breach."
+  },
+  {
+    "file": "frontend\\release\\win-unpacked\\LICENSES.chromium.html",
+    "pattern": "loops",
+    "hint": "Heavy synchronous loops can freeze UI; consider chunking or Web Worker.",
+    "match": "for (",
+    "line": 254521,
+    "col": 47,
+    "snippet": "4.5 You agree that you are solely responsible for (and that Google has no responsibility to you or to any third party for) any data, content, or resources that you create, transmit or display through Android and/or applications for Android, and for the consequences of your actions (including any loss or damage which Google may suffer) by doing so."
+  },
+  {
+    "file": "frontend\\release\\win-unpacked\\LICENSES.chromium.html",
+    "pattern": "loops",
+    "hint": "Heavy synchronous loops can freeze UI; consider chunking or Web Worker.",
+    "match": "for (",
+    "line": 254523,
+    "col": 47,
+    "snippet": "4.6 You agree that you are solely responsible for (and that Google has no responsibility to you or to any third party for) any breach of your obligations under the License Agreement, any applicable third party contract or Terms of Service, or any applicable law or regulation, and for the consequences (including any loss or damage which Google or any third party may suffer) of any such breach."
+  },
+  {
+    "file": "frontend\\release\\win-unpacked\\LICENSES.chromium.html",
+    "pattern": "loops",
+    "hint": "Heavy synchronous loops can freeze UI; consider chunking or Web Worker.",
+    "match": "for (",
+    "line": 255984,
+    "col": 47,
+    "snippet": "4.5 You agree that you are solely responsible for (and that Google has no responsibility to you or to any third party for) any data, content, or resources that you create, transmit or display through Android and/or applications for Android, and for the consequences of your actions (including any loss or damage which Google may suffer) by doing so."
+  },
+  {
+    "file": "frontend\\release\\win-unpacked\\LICENSES.chromium.html",
+    "pattern": "loops",
+    "hint": "Heavy synchronous loops can freeze UI; consider chunking or Web Worker.",
+    "match": "for (",
+    "line": 255986,
+    "col": 47,
+    "snippet": "4.6 You agree that you are solely responsible for (and that Google has no responsibility to you or to any third party for) any breach of your obligations under the License Agreement, any applicable third party contract or Terms of Service, or any applicable law or regulation, and for the consequences (including any loss or damage which Google or any third party may suffer) of any such breach."
+  },
+  {
+    "file": "frontend\\release\\win-unpacked\\LICENSES.chromium.html",
+    "pattern": "loops",
+    "hint": "Heavy synchronous loops can freeze UI; consider chunking or Web Worker.",
+    "match": "for (",
+    "line": 257076,
+    "col": 47,
+    "snippet": "4.5 You agree that you are solely responsible for (and that Google has no responsibility to you or to any third party for) any data, content, or resources that you create, transmit or display through Android and/or applications for Android, and for the consequences of your actions (including any loss or damage which Google may suffer) by doing so."
+  },
+  {
+    "file": "frontend\\release\\win-unpacked\\LICENSES.chromium.html",
+    "pattern": "loops",
+    "hint": "Heavy synchronous loops can freeze UI; consider chunking or Web Worker.",
+    "match": "for (",
+    "line": 257078,
+    "col": 47,
+    "snippet": "4.6 You agree that you are solely responsible for (and that Google has no responsibility to you or to any third party for) any breach of your obligations under the License Agreement, any applicable third party contract or Terms of Service, or any applicable law or regulation, and for the consequences (including any loss or damage which Google or any third party may suffer) of any such breach."
+  },
+  {
+    "file": "frontend\\release\\win-unpacked\\LICENSES.chromium.html",
+    "pattern": "loops",
+    "hint": "Heavy synchronous loops can freeze UI; consider chunking or Web Worker.",
+    "match": "for (",
+    "line": 262609,
+    "col": 47,
+    "snippet": "4.5 You agree that you are solely responsible for (and that Google has no responsibility to you or to any third party for) any data, content, or resources that you create, transmit or display through Android and/or applications for Android, and for the consequences of your actions (including any loss or damage which Google may suffer) by doing so."
+  },
+  {
+    "file": "frontend\\release\\win-unpacked\\LICENSES.chromium.html",
+    "pattern": "loops",
+    "hint": "Heavy synchronous loops can freeze UI; consider chunking or Web Worker.",
+    "match": "for (",
+    "line": 262611,
+    "col": 47,
+    "snippet": "4.6 You agree that you are solely responsible for (and that Google has no responsibility to you or to any third party for) any breach of your obligations under the License Agreement, any applicable third party contract or Terms of Service, or any applicable law or regulation, and for the consequences (including any loss or damage which Google or any third party may suffer) of any such breach."
+  },
+  {
+    "file": "frontend\\release\\win-unpacked\\LICENSES.chromium.html",
+    "pattern": "loops",
+    "hint": "Heavy synchronous loops can freeze UI; consider chunking or Web Worker.",
+    "match": "for (",
+    "line": 264074,
+    "col": 47,
+    "snippet": "4.5 You agree that you are solely responsible for (and that Google has no responsibility to you or to any third party for) any data, content, or resources that you create, transmit or display through Android and/or applications for Android, and for the consequences of your actions (including any loss or damage which Google may suffer) by doing so."
+  },
+  {
+    "file": "frontend\\release\\win-unpacked\\LICENSES.chromium.html",
+    "pattern": "loops",
+    "hint": "Heavy synchronous loops can freeze UI; consider chunking or Web Worker.",
+    "match": "for (",
+    "line": 264076,
+    "col": 47,
+    "snippet": "4.6 You agree that you are solely responsible for (and that Google has no responsibility to you or to any third party for) any breach of your obligations under the License Agreement, any applicable third party contract or Terms of Service, or any applicable law or regulation, and for the consequences (including any loss or damage which Google or any third party may suffer) of any such breach."
+  },
+  {
+    "file": "frontend\\release\\win-unpacked\\LICENSES.chromium.html",
+    "pattern": "loops",
+    "hint": "Heavy synchronous loops can freeze UI; consider chunking or Web Worker.",
+    "match": "for (",
+    "line": 270377,
+    "col": 47,
+    "snippet": "4.5 You agree that you are solely responsible for (and that Google has no responsibility to you or to any third party for) any data, content, or resources that you create, transmit or display through Android and/or applications for Android, and for the consequences of your actions (including any loss or damage which Google may suffer) by doing so."
+  },
+  {
+    "file": "frontend\\release\\win-unpacked\\LICENSES.chromium.html",
+    "pattern": "loops",
+    "hint": "Heavy synchronous loops can freeze UI; consider chunking or Web Worker.",
+    "match": "for (",
+    "line": 270379,
+    "col": 47,
+    "snippet": "4.6 You agree that you are solely responsible for (and that Google has no responsibility to you or to any third party for) any breach of your obligations under the License Agreement, any applicable third party contract or Terms of Service, or any applicable law or regulation, and for the consequences (including any loss or damage which Google or any third party may suffer) of any such breach."
+  },
+  {
+    "file": "frontend\\release\\win-unpacked\\LICENSES.chromium.html",
+    "pattern": "loops",
+    "hint": "Heavy synchronous loops can freeze UI; consider chunking or Web Worker.",
+    "match": "for (",
+    "line": 276395,
+    "col": 47,
+    "snippet": "4.5 You agree that you are solely responsible for (and that Google has no responsibility to you or to any third party for) any data, content, or resources that you create, transmit or display through Android and/or applications for Android, and for the consequences of your actions (including any loss or damage which Google may suffer) by doing so."
+  },
+  {
+    "file": "frontend\\release\\win-unpacked\\LICENSES.chromium.html",
+    "pattern": "loops",
+    "hint": "Heavy synchronous loops can freeze UI; consider chunking or Web Worker.",
+    "match": "for (",
+    "line": 276397,
+    "col": 47,
+    "snippet": "4.6 You agree that you are solely responsible for (and that Google has no responsibility to you or to any third party for) any breach of your obligations under the License Agreement, any applicable third party contract or Terms of Service, or any applicable law or regulation, and for the consequences (including any loss or damage which Google or any third party may suffer) of any such breach."
+  },
+  {
+    "file": "frontend\\release\\win-unpacked\\LICENSES.chromium.html",
+    "pattern": "loops",
+    "hint": "Heavy synchronous loops can freeze UI; consider chunking or Web Worker.",
+    "match": "for (",
+    "line": 277657,
+    "col": 47,
+    "snippet": "4.5 You agree that you are solely responsible for (and that Google has no responsibility to you or to any third party for) any data, content, or resources that you create, transmit or display through Android and/or applications for Android, and for the consequences of your actions (including any loss or damage which Google may suffer) by doing so."
+  },
+  {
+    "file": "frontend\\release\\win-unpacked\\LICENSES.chromium.html",
+    "pattern": "loops",
+    "hint": "Heavy synchronous loops can freeze UI; consider chunking or Web Worker.",
+    "match": "for (",
+    "line": 277659,
+    "col": 47,
+    "snippet": "4.6 You agree that you are solely responsible for (and that Google has no responsibility to you or to any third party for) any breach of your obligations under the License Agreement, any applicable third party contract or Terms of Service, or any applicable law or regulation, and for the consequences (including any loss or damage which Google or any third party may suffer) of any such breach."
+  },
+  {
+    "file": "frontend\\release\\win-unpacked\\LICENSES.chromium.html",
+    "pattern": "loops",
+    "hint": "Heavy synchronous loops can freeze UI; consider chunking or Web Worker.",
+    "match": "for (",
+    "line": 279120,
+    "col": 47,
+    "snippet": "4.5 You agree that you are solely responsible for (and that Google has no responsibility to you or to any third party for) any data, content, or resources that you create, transmit or display through Android and/or applications for Android, and for the consequences of your actions (including any loss or damage which Google may suffer) by doing so."
+  },
+  {
+    "file": "frontend\\release\\win-unpacked\\LICENSES.chromium.html",
+    "pattern": "loops",
+    "hint": "Heavy synchronous loops can freeze UI; consider chunking or Web Worker.",
+    "match": "for (",
+    "line": 279122,
+    "col": 47,
+    "snippet": "4.6 You agree that you are solely responsible for (and that Google has no responsibility to you or to any third party for) any breach of your obligations under the License Agreement, any applicable third party contract or Terms of Service, or any applicable law or regulation, and for the consequences (including any loss or damage which Google or any third party may suffer) of any such breach."
+  },
+  {
+    "file": "frontend\\release\\win-unpacked\\LICENSES.chromium.html",
+    "pattern": "loops",
+    "hint": "Heavy synchronous loops can freeze UI; consider chunking or Web Worker.",
+    "match": "for (",
+    "line": 283793,
+    "col": 47,
+    "snippet": "4.5 You agree that you are solely responsible for (and that Google has no responsibility to you or to any third party for) any data, content, or resources that you create, transmit or display through Android and/or applications for Android, and for the consequences of your actions (including any loss or damage which Google may suffer) by doing so."
+  },
+  {
+    "file": "frontend\\release\\win-unpacked\\LICENSES.chromium.html",
+    "pattern": "loops",
+    "hint": "Heavy synchronous loops can freeze UI; consider chunking or Web Worker.",
+    "match": "for (",
+    "line": 283795,
+    "col": 47,
+    "snippet": "4.6 You agree that you are solely responsible for (and that Google has no responsibility to you or to any third party for) any breach of your obligations under the License Agreement, any applicable third party contract or Terms of Service, or any applicable law or regulation, and for the consequences (including any loss or damage which Google or any third party may suffer) of any such breach."
+  },
+  {
+    "file": "frontend\\release\\win-unpacked\\LICENSES.chromium.html",
+    "pattern": "loops",
+    "hint": "Heavy synchronous loops can freeze UI; consider chunking or Web Worker.",
+    "match": "for (",
+    "line": 290919,
+    "col": 47,
+    "snippet": "4.5 You agree that you are solely responsible for (and that Google has no responsibility to you or to any third party for) any data, content, or resources that you create, transmit or display through Android and/or applications for Android, and for the consequences of your actions (including any loss or damage which Google may suffer) by doing so."
+  },
+  {
+    "file": "frontend\\release\\win-unpacked\\LICENSES.chromium.html",
+    "pattern": "loops",
+    "hint": "Heavy synchronous loops can freeze UI; consider chunking or Web Worker.",
+    "match": "for (",
+    "line": 290921,
+    "col": 47,
+    "snippet": "4.6 You agree that you are solely responsible for (and that Google has no responsibility to you or to any third party for) any breach of your obligations under the License Agreement, any applicable third party contract or Terms of Service, or any applicable law or regulation, and for the consequences (including any loss or damage which Google or any third party may suffer) of any such breach."
+  },
+  {
+    "file": "frontend\\release\\win-unpacked\\LICENSES.chromium.html",
+    "pattern": "loops",
+    "hint": "Heavy synchronous loops can freeze UI; consider chunking or Web Worker.",
+    "match": "for (",
+    "line": 292588,
+    "col": 47,
+    "snippet": "4.5 You agree that you are solely responsible for (and that Google has no responsibility to you or to any third party for) any data, content, or resources that you create, transmit or display through Android and/or applications for Android, and for the consequences of your actions (including any loss or damage which Google may suffer) by doing so."
+  },
+  {
+    "file": "frontend\\release\\win-unpacked\\LICENSES.chromium.html",
+    "pattern": "loops",
+    "hint": "Heavy synchronous loops can freeze UI; consider chunking or Web Worker.",
+    "match": "for (",
+    "line": 292590,
+    "col": 47,
+    "snippet": "4.6 You agree that you are solely responsible for (and that Google has no responsibility to you or to any third party for) any breach of your obligations under the License Agreement, any applicable third party contract or Terms of Service, or any applicable law or regulation, and for the consequences (including any loss or damage which Google or any third party may suffer) of any such breach."
+  },
+  {
+    "file": "frontend\\release\\win-unpacked\\LICENSES.chromium.html",
+    "pattern": "loops",
+    "hint": "Heavy synchronous loops can freeze UI; consider chunking or Web Worker.",
+    "match": "for (",
+    "line": 301351,
+    "col": 47,
+    "snippet": "4.5 You agree that you are solely responsible for (and that Google has no responsibility to you or to any third party for) any data, content, or resources that you create, transmit or display through Android and/or applications for Android, and for the consequences of your actions (including any loss or damage which Google may suffer) by doing so."
+  },
+  {
+    "file": "frontend\\release\\win-unpacked\\LICENSES.chromium.html",
+    "pattern": "loops",
+    "hint": "Heavy synchronous loops can freeze UI; consider chunking or Web Worker.",
+    "match": "for (",
+    "line": 301353,
+    "col": 47,
+    "snippet": "4.6 You agree that you are solely responsible for (and that Google has no responsibility to you or to any third party for) any breach of your obligations under the License Agreement, any applicable third party contract or Terms of Service, or any applicable law or regulation, and for the consequences (including any loss or damage which Google or any third party may suffer) of any such breach."
+  },
+  {
+    "file": "frontend\\release\\win-unpacked\\LICENSES.chromium.html",
+    "pattern": "loops",
+    "hint": "Heavy synchronous loops can freeze UI; consider chunking or Web Worker.",
+    "match": "for (",
+    "line": 301574,
+    "col": 47,
+    "snippet": "4.5 You agree that you are solely responsible for (and that Google has no responsibility to you or"
+  },
+  {
+    "file": "frontend\\release\\win-unpacked\\LICENSES.chromium.html",
+    "pattern": "loops",
+    "hint": "Heavy synchronous loops can freeze UI; consider chunking or Web Worker.",
+    "match": "for (",
+    "line": 301579,
+    "col": 47,
+    "snippet": "4.6 You agree that you are solely responsible for (and that Google has no responsibility to you or"
+  },
+  {
+    "file": "frontend\\release\\win-unpacked\\LICENSES.chromium.html",
+    "pattern": "loops",
+    "hint": "Heavy synchronous loops can freeze UI; consider chunking or Web Worker.",
+    "match": "for (",
+    "line": 346202,
+    "col": 47,
+    "snippet": "4.5 You agree that you are solely responsible for (and that Google has no responsibility to you or to any third party for) any data, content, or resources that you create, transmit or display through Android and/or applications for Android, and for the consequences of your actions (including any loss or damage which Google may suffer) by doing so."
+  },
+  {
+    "file": "frontend\\release\\win-unpacked\\LICENSES.chromium.html",
+    "pattern": "loops",
+    "hint": "Heavy synchronous loops can freeze UI; consider chunking or Web Worker.",
+    "match": "for (",
+    "line": 346204,
+    "col": 47,
+    "snippet": "4.6 You agree that you are solely responsible for (and that Google has no responsibility to you or to any third party for) any breach of your obligations under the License Agreement, any applicable third party contract or Terms of Service, or any applicable law or regulation, and for the consequences (including any loss or damage which Google or any third party may suffer) of any such breach."
+  },
+  {
+    "file": "frontend\\release\\win-unpacked\\LICENSES.chromium.html",
+    "pattern": "loops",
+    "hint": "Heavy synchronous loops can freeze UI; consider chunking or Web Worker.",
+    "match": "for (",
+    "line": 346360,
+    "col": 47,
+    "snippet": "4.5 You agree that you are solely responsible for (and that Google has no responsibility to you or to any third party for) any data, content, or resources that you create, transmit or display through Android and/or applications for Android, and for the consequences of your actions (including any loss or damage which Google may suffer) by doing so."
+  },
+  {
+    "file": "frontend\\release\\win-unpacked\\LICENSES.chromium.html",
+    "pattern": "loops",
+    "hint": "Heavy synchronous loops can freeze UI; consider chunking or Web Worker.",
+    "match": "for (",
+    "line": 346362,
+    "col": 47,
+    "snippet": "4.6 You agree that you are solely responsible for (and that Google has no responsibility to you or to any third party for) any breach of your obligations under the License Agreement, any applicable third party contract or Terms of Service, or any applicable law or regulation, and for the consequences (including any loss or damage which Google or any third party may suffer) of any such breach."
+  },
+  {
+    "file": "frontend\\release\\win-unpacked\\LICENSES.chromium.html",
+    "pattern": "loops",
+    "hint": "Heavy synchronous loops can freeze UI; consider chunking or Web Worker.",
+    "match": "for (",
+    "line": 346518,
+    "col": 47,
+    "snippet": "4.5 You agree that you are solely responsible for (and that Google has no responsibility to you or to any third party for) any data, content, or resources that you create, transmit or display through Android and/or applications for Android, and for the consequences of your actions (including any loss or damage which Google may suffer) by doing so."
+  },
+  {
+    "file": "frontend\\release\\win-unpacked\\LICENSES.chromium.html",
+    "pattern": "loops",
+    "hint": "Heavy synchronous loops can freeze UI; consider chunking or Web Worker.",
+    "match": "for (",
+    "line": 346520,
+    "col": 47,
+    "snippet": "4.6 You agree that you are solely responsible for (and that Google has no responsibility to you or to any third party for) any breach of your obligations under the License Agreement, any applicable third party contract or Terms of Service, or any applicable law or regulation, and for the consequences (including any loss or damage which Google or any third party may suffer) of any such breach."
+  },
+  {
+    "file": "frontend\\src\\components\\game\\DPad.jsx",
+    "pattern": "inline-on*",
+    "hint": "Inline event handlers may be harder to manage; check for many inline handlers.",
+    "match": "onPointerDown=",
+    "line": 15,
+    "col": 11,
+    "snippet": "onPointerDown={(e) => { e.currentTarget.setPointerCapture(e.pointerId); onKey(k, true); }} onPointerUp={() => onKey(k, false)} onPointerCancel={() => onKey(k, false)} onLostPointerCapture={() => onKey(k, false)}>"
+  },
+  {
+    "file": "frontend\\src\\components\\game\\DPad.jsx",
+    "pattern": "inline-on*",
+    "hint": "Inline event handlers may be harder to manage; check for many inline handlers.",
+    "match": "onPointerUp=",
+    "line": 15,
+    "col": 102,
+    "snippet": "onPointerDown={(e) => { e.currentTarget.setPointerCapture(e.pointerId); onKey(k, true); }} onPointerUp={() => onKey(k, false)} onPointerCancel={() => onKey(k, false)} onLostPointerCapture={() => onKey(k, false)}>"
+  },
+  {
+    "file": "frontend\\src\\components\\game\\DPad.jsx",
+    "pattern": "inline-on*",
+    "hint": "Inline event handlers may be harder to manage; check for many inline handlers.",
+    "match": "onPointerCancel=",
+    "line": 15,
+    "col": 138,
+    "snippet": "onPointerDown={(e) => { e.currentTarget.setPointerCapture(e.pointerId); onKey(k, true); }} onPointerUp={() => onKey(k, false)} onPointerCancel={() => onKey(k, false)} onLostPointerCapture={() => onKey(k, false)}>"
+  },
+  {
+    "file": "frontend\\src\\components\\game\\DPad.jsx",
+    "pattern": "inline-on*",
+    "hint": "Inline event handlers may be harder to manage; check for many inline handlers.",
+    "match": "onLostPointerCapture=",
+    "line": 15,
+    "col": 178,
+    "snippet": "onPointerDown={(e) => { e.currentTarget.setPointerCapture(e.pointerId); onKey(k, true); }} onPointerUp={() => onKey(k, false)} onPointerCancel={() => onKey(k, false)} onLostPointerCapture={() => onKey(k, false)}>"
+  },
+  {
+    "file": "frontend\\src\\components\\game\\GameCanvas.jsx",
+    "pattern": "requestAnimationFrame",
+    "hint": "Preferred for visual updates — ensure you cancel when not needed.",
+    "match": "requestAnimationFrame(",
+    "line": 40,
+    "col": 13,
+    "snippet": "raf = requestAnimationFrame(loop);"
+  },
+  {
+    "file": "frontend\\src\\components\\game\\GameCanvas.jsx",
+    "pattern": "requestAnimationFrame",
+    "hint": "Preferred for visual updates — ensure you cancel when not needed.",
+    "match": "requestAnimationFrame(",
+    "line": 42,
+    "col": 11,
+    "snippet": "raf = requestAnimationFrame(loop);"
+  },
+  {
+    "file": "frontend\\src\\components\\game\\GameCanvas.jsx",
+    "pattern": "addEventListener",
+    "hint": "Use delegation; debounce/throttle handlers for scroll/resize.",
+    "match": "addEventListener(",
+    "line": 28,
+    "col": 12,
+    "snippet": "window.addEventListener(\"resize\", fit);"
+  },
+  {
+    "file": "frontend\\src\\components\\game\\GameCanvas.jsx",
+    "pattern": "addEventListener",
+    "hint": "Use delegation; debounce/throttle handlers for scroll/resize.",
+    "match": "addEventListener(",
+    "line": 30,
+    "col": 12,
+    "snippet": "canvas.addEventListener(\"webglcontextlost\", contextLost);"
+  },
+  {
+    "file": "frontend\\src\\components\\game\\GameCanvas.jsx",
+    "pattern": "inline-on*",
+    "hint": "Inline event handlers may be harder to manage; check for many inline handlers.",
+    "match": "onPointerMove=",
+    "line": 52,
+    "col": 7,
+    "snippet": "onPointerMove={e => { if (e.pointerType === \"mouse\") onPointer?.(point(e), !!(e.buttons & 2)); }}"
+  },
+  {
+    "file": "frontend\\src\\components\\game\\GameCanvas.jsx",
+    "pattern": "inline-on*",
+    "hint": "Inline event handlers may be harder to manage; check for many inline handlers.",
+    "match": "onPointerLeave=",
+    "line": 53,
+    "col": 7,
+    "snippet": "onPointerLeave={() => { onPointerLeave?.(); onRelease?.(); }}"
+  },
+  {
+    "file": "frontend\\src\\components\\game\\GameCanvas.jsx",
+    "pattern": "inline-on*",
+    "hint": "Inline event handlers may be harder to manage; check for many inline handlers.",
+    "match": "onContextMenu=",
+    "line": 54,
+    "col": 7,
+    "snippet": "onContextMenu={e => e.preventDefault()}"
+  },
+  {
+    "file": "frontend\\src\\components\\game\\GameCanvas.jsx",
+    "pattern": "inline-on*",
+    "hint": "Inline event handlers may be harder to manage; check for many inline handlers.",
+    "match": "onPointerDown=",
+    "line": 55,
+    "col": 7,
+    "snippet": "onPointerDown={e => {"
+  },
+  {
+    "file": "frontend\\src\\components\\game\\GameCanvas.jsx",
+    "pattern": "inline-on*",
+    "hint": "Inline event handlers may be harder to manage; check for many inline handlers.",
+    "match": "onPointerUp=",
+    "line": 60,
+    "col": 7,
+    "snippet": "onPointerUp={e => { if (e.button === 0) onRelease?.(); if (e.button === 2) onPointerLeave?.(); }}"
+  },
+  {
+    "file": "frontend\\src\\components\\game\\GameCanvas.jsx",
+    "pattern": "inline-on*",
+    "hint": "Inline event handlers may be harder to manage; check for many inline handlers.",
+    "match": "onPointerCancel=",
+    "line": 61,
+    "col": 7,
+    "snippet": "onPointerCancel={() => { onPointerLeave?.(); onRelease?.(); }}"
+  },
+  {
+    "file": "frontend\\src\\components\\game\\GameCanvas.jsx",
+    "pattern": "inline-on*",
+    "hint": "Inline event handlers may be harder to manage; check for many inline handlers.",
+    "match": "onLostPointerCapture=",
+    "line": 62,
+    "col": 7,
+    "snippet": "onLostPointerCapture={() => onRelease?.()}"
+  },
+  {
+    "file": "frontend\\src\\components\\game\\GameCanvas.jsx",
+    "pattern": "inline-on*",
+    "hint": "Inline event handlers may be harder to manage; check for many inline handlers.",
+    "match": "onClick=",
+    "line": 65,
+    "col": 59,
+    "snippet": "<p>{error}</p><button data-testid=\"webgl-retry-btn\" onClick={() => setRetry(n => n + 1)} className=\"btn-volt flex items-center gap-2 rounded-full px-5 py-3\"><RotateCcw size={16} />Retry 3D</button>"
+  },
+  {
+    "file": "frontend\\src\\components\\game\\MatchEndModal.jsx",
+    "pattern": "inline-on*",
+    "hint": "Inline event handlers may be harder to manage; check for many inline handlers.",
+    "match": "onClick=",
+    "line": 21,
+    "col": 78,
+    "snippet": "<button data-testid=\"match-end-replay-btn\" disabled={!canReplay} onClick={onReplay} className=\"btn-ghost flex items-center gap-2 rounded-full px-3 py-2 text-xs disabled:opacity-40\"><Film size={14} />Final point</button>"
+  },
+  {
+    "file": "frontend\\src\\components\\game\\MatchEndModal.jsx",
+    "pattern": "inline-on*",
+    "hint": "Inline event handlers may be harder to manage; check for many inline handlers.",
+    "match": "onClick=",
+    "line": 31,
+    "col": 86,
+    "snippet": "{saveState === \"error\" && <button data-testid=\"match-end-retry-save-btn\" onClick={onRetry} className=\"btn-ghost flex items-center gap-1 rounded-full px-3 py-1 text-xs\"><RotateCcw size={12} />Retry</button>}"
+  },
+  {
+    "file": "frontend\\src\\components\\game\\MatchEndModal.jsx",
+    "pattern": "inline-on*",
+    "hint": "Inline event handlers may be harder to manage; check for many inline handlers.",
+    "match": "onClick=",
+    "line": 34,
+    "col": 57,
+    "snippet": "<button data-testid=\"match-end-rematch-btn\" onClick={onRematch} className=\"btn-volt rounded-full py-3 font-display text-lg font-extrabold uppercase\">Rematch</button>"
+  },
+  {
+    "file": "frontend\\src\\components\\game\\MatchEndModal.jsx",
+    "pattern": "inline-on*",
+    "hint": "Inline event handlers may be harder to manage; check for many inline handlers.",
+    "match": "onClick=",
+    "line": 35,
+    "col": 61,
+    "snippet": "<button data-testid=\"match-end-leaderboard-btn\" onClick={onLeaderboard} className=\"btn-ghost rounded-full py-3 font-display text-lg font-bold uppercase\">Ranks</button>"
+  },
+  {
+    "file": "frontend\\src\\components\\game\\MatchEndModal.jsx",
+    "pattern": "inline-on*",
+    "hint": "Inline event handlers may be harder to manage; check for many inline handlers.",
+    "match": "onClick=",
+    "line": 36,
+    "col": 55,
+    "snippet": "<button data-testid=\"match-end-setup-btn\" onClick={onSetup} className=\"btn-ghost rounded-full py-3 font-display text-lg font-bold uppercase\">Setup</button>"
+  },
+  {
+    "file": "frontend\\src\\components\\game\\MatchIntro.jsx",
+    "pattern": "setTimeout",
+    "hint": "Avoid tight repeated timeouts; consider throttling/debouncing.",
+    "match": "setTimeout(",
+    "line": 30,
+    "col": 7,
+    "snippet": "setTimeout(() => { setStep(1); audio.sting(); audio.say(`${cfg.name}, versus the ${DIFFICULTY[cfg.difficulty].label} ${STYLES[cfg.style].label} A I`); }, STEPS[1]),"
+  },
+  {
+    "file": "frontend\\src\\components\\game\\MatchIntro.jsx",
+    "pattern": "setTimeout",
+    "hint": "Avoid tight repeated timeouts; consider throttling/debouncing.",
+    "match": "setTimeout(",
+    "line": 31,
+    "col": 7,
+    "snippet": "setTimeout(() => { setStep(2); audio.sting(); audio.say(\"Quiet please. Play!\"); }, STEPS[2]),"
+  },
+  {
+    "file": "frontend\\src\\components\\game\\MatchIntro.jsx",
+    "pattern": "setTimeout",
+    "hint": "Avoid tight repeated timeouts; consider throttling/debouncing.",
+    "match": "setTimeout(",
+    "line": 32,
+    "col": 7,
+    "snippet": "setTimeout(onDone, STEPS[3]),"
+  },
+  {
+    "file": "frontend\\src\\components\\game\\MatchIntro.jsx",
+    "pattern": "addEventListener",
+    "hint": "Use delegation; debounce/throttle handlers for scroll/resize.",
+    "match": "addEventListener(",
+    "line": 35,
+    "col": 12,
+    "snippet": "window.addEventListener(\"keydown\", key);"
+  },
+  {
+    "file": "frontend\\src\\components\\game\\MatchIntro.jsx",
+    "pattern": "inline-on*",
+    "hint": "Inline event handlers may be harder to manage; check for many inline handlers.",
+    "match": "onClick=",
+    "line": 67,
+    "col": 44,
+    "snippet": "<button data-testid=\"intro-skip-btn\" onClick={() => { window.speechSynthesis?.cancel(); onDone(); }}"
+  },
+  {
+    "file": "frontend\\src\\components\\game\\PauseModal.jsx",
+    "pattern": "inline-on*",
+    "hint": "Inline event handlers may be harder to manage; check for many inline handlers.",
+    "match": "onOpenChange=",
+    "line": 10,
+    "col": 23,
+    "snippet": "<Dialog.Root open onOpenChange={(open) => !open && onResume()}>"
+  },
+  {
+    "file": "frontend\\src\\components\\game\\PauseModal.jsx",
+    "pattern": "inline-on*",
+    "hint": "Inline event handlers may be harder to manage; check for many inline handlers.",
+    "match": "onClick=",
+    "line": 18,
+    "col": 52,
+    "snippet": "<button data-testid=\"pause-resume-btn\" onClick={onResume} className=\"btn-volt w-full rounded-full py-3 font-display text-xl font-extrabold uppercase\">Resume</button>"
+  },
+  {
+    "file": "frontend\\src\\components\\game\\PauseModal.jsx",
+    "pattern": "inline-on*",
+    "hint": "Inline event handlers may be harder to manage; check for many inline handlers.",
+    "match": "onOpenChange=",
+    "line": 19,
+    "col": 53,
+    "snippet": "<AlertDialog.Root open={confirmRestart} onOpenChange={setConfirmRestart}>"
+  },
+  {
+    "file": "frontend\\src\\components\\game\\PauseModal.jsx",
+    "pattern": "inline-on*",
+    "hint": "Inline event handlers may be harder to manage; check for many inline handlers.",
+    "match": "onClick=",
+    "line": 33,
+    "col": 71,
+    "snippet": "<button data-testid=\"pause-restart-confirm-btn\" onClick={onRestart} className=\"btn-volt rounded-full px-4 py-2 text-sm font-bold uppercase\">Restart</button>"
+  },
+  {
+    "file": "frontend\\src\\components\\game\\PauseModal.jsx",
+    "pattern": "inline-on*",
+    "hint": "Inline event handlers may be harder to manage; check for many inline handlers.",
+    "match": "onClick=",
+    "line": 39,
+    "col": 50,
+    "snippet": "<button data-testid=\"pause-quit-btn\" onClick={onQuit} className=\"btn-ghost w-full rounded-full py-3 font-display text-lg font-bold uppercase\">Quit to setup</button>"
+  },
+  {
+    "file": "frontend\\src\\components\\game\\PauseModal.jsx",
+    "pattern": "inline-on*",
+    "hint": "Inline event handlers may be harder to manage; check for many inline handlers.",
+    "match": "onClick=",
+    "line": 42,
+    "col": 75,
+    "snippet": "<button data-testid=\"pause-sound-toggle\" aria-pressed={sound} onClick={onSound} className=\"btn-ghost flex flex-1 items-center justify-center gap-2 rounded-lg py-2 text-sm\">"
+  },
+  {
+    "file": "frontend\\src\\components\\game\\PauseModal.jsx",
+    "pattern": "inline-on*",
+    "hint": "Inline event handlers may be harder to manage; check for many inline handlers.",
+    "match": "onClick=",
+    "line": 45,
+    "col": 75,
+    "snippet": "<button data-testid=\"pause-voice-toggle\" aria-pressed={voice} onClick={onVoice} className=\"btn-ghost flex flex-1 items-center justify-center gap-2 rounded-lg py-2 text-sm\">"
+  },
+  {
+    "file": "frontend\\src\\components\\game\\PauseModal.jsx",
+    "pattern": "inline-on*",
+    "hint": "Inline event handlers may be harder to manage; check for many inline handlers.",
+    "match": "onClick=",
+    "line": 49,
+    "col": 77,
+    "snippet": "<button data-testid=\"pause-replays-toggle\" aria-pressed={replays} onClick={onReplays} className={`btn-ghost mt-2 flex w-full items-center justify-center gap-2 rounded-lg py-2 text-sm ${replays ? \"text-[#00F0FF]\" : \"text-slate-500\"}`}>"
+  },
+  {
+    "file": "frontend\\src\\components\\game\\ShotPad.jsx",
+    "pattern": "inline-on*",
+    "hint": "Inline event handlers may be harder to manage; check for many inline handlers.",
+    "match": "onPointerDown=",
+    "line": 11,
+    "col": 13,
+    "snippet": "onPointerDown={(e) => {"
+  },
+  {
+    "file": "frontend\\src\\components\\game\\ShotPad.jsx",
+    "pattern": "inline-on*",
+    "hint": "Inline event handlers may be harder to manage; check for many inline handlers.",
+    "match": "onPointerUp=",
+    "line": 18,
+    "col": 13,
+    "snippet": "onPointerUp={() => onRelease?.(s.id)}"
+  },
+  {
+    "file": "frontend\\src\\components\\game\\ShotPad.jsx",
+    "pattern": "inline-on*",
+    "hint": "Inline event handlers may be harder to manage; check for many inline handlers.",
+    "match": "onPointerCancel=",
+    "line": 19,
+    "col": 13,
+    "snippet": "onPointerCancel={() => onRelease?.(s.id)}"
+  },
+  {
+    "file": "frontend\\src\\components\\game\\ShotPad.jsx",
+    "pattern": "inline-on*",
+    "hint": "Inline event handlers may be harder to manage; check for many inline handlers.",
+    "match": "onLostPointerCapture=",
+    "line": 20,
+    "col": 13,
+    "snippet": "onLostPointerCapture={() => onRelease?.(s.id)}"
+  },
+  {
+    "file": "frontend\\src\\components\\game\\ShotPad.jsx",
+    "pattern": "inline-on*",
+    "hint": "Inline event handlers may be harder to manage; check for many inline handlers.",
+    "match": "onClick=",
+    "line": 21,
+    "col": 13,
+    "snippet": "onClick={(e) => {"
+  },
+  {
+    "file": "frontend\\src\\components\\LegendCard.jsx",
+    "pattern": "inline-on*",
+    "hint": "Inline event handlers may be harder to manage; check for many inline handlers.",
+    "match": "onClick=",
+    "line": 5,
+    "col": 61,
+    "snippet": "<button type=\"button\" data-testid=\"setup-legend-toggle\" onClick={onToggle}"
+  },
+  {
+    "file": "frontend\\src\\components\\OptionGroup.jsx",
+    "pattern": "inline-on*",
+    "hint": "Inline event handlers may be harder to manage; check for many inline handlers.",
+    "match": "onValueChange=",
+    "line": 10,
+    "col": 9,
+    "snippet": "onValueChange={onChange}"
+  },
+  {
+    "file": "frontend\\src\\components\\ui\\carousel.jsx",
+    "pattern": "inline-on*",
+    "hint": "Inline event handlers may be harder to manage; check for many inline handlers.",
+    "match": "onSelect =",
+    "line": 39,
+    "col": 9,
+    "snippet": "const onSelect = React.useCallback((api) => {"
+  },
+  {
+    "file": "frontend\\src\\components\\ui\\carousel.jsx",
+    "pattern": "inline-on*",
+    "hint": "Inline event handlers may be harder to manage; check for many inline handlers.",
+    "match": "onKeyDownCapture=",
+    "line": 103,
+    "col": 9,
+    "snippet": "onKeyDownCapture={handleKeyDown}"
+  },
+  {
+    "file": "frontend\\src\\components\\ui\\carousel.jsx",
+    "pattern": "inline-on*",
+    "hint": "Inline event handlers may be harder to manage; check for many inline handlers.",
+    "match": "onClick=",
+    "line": 163,
+    "col": 7,
+    "snippet": "onClick={scrollPrev}"
+  },
+  {
+    "file": "frontend\\src\\components\\ui\\carousel.jsx",
+    "pattern": "inline-on*",
+    "hint": "Inline event handlers may be harder to manage; check for many inline handlers.",
+    "match": "onClick=",
+    "line": 184,
+    "col": 7,
+    "snippet": "onClick={scrollNext}"
+  },
+  {
+    "file": "frontend\\src\\game\\audio.js",
+    "pattern": "setTimeout",
+    "hint": "Avoid tight repeated timeouts; consider throttling/debouncing.",
+    "match": "setTimeout(",
+    "line": 52,
+    "col": 16,
+    "snippet": "musicTimer = setTimeout(scheduleMusic, 220);"
+  },
+  {
+    "file": "frontend\\src\\game\\audio.js",
+    "pattern": "setTimeout",
+    "hint": "Avoid tight repeated timeouts; consider throttling/debouncing.",
+    "match": "setTimeout(",
+    "line": 205,
+    "col": 5,
+    "snippet": "setTimeout(() => this.cheer(1.6), 1700);"
+  },
+  {
+    "file": "frontend\\src\\game\\audio.js",
+    "pattern": "loops",
+    "hint": "Heavy synchronous loops can freeze UI; consider chunking or Web Worker.",
+    "match": "while (",
+    "line": 48,
+    "col": 3,
+    "snippet": "while (nextMusicBar < horizon) {"
+  },
+  {
+    "file": "frontend\\src\\game\\audio.js",
+    "pattern": "loops",
+    "hint": "Heavy synchronous loops can freeze UI; consider chunking or Web Worker.",
+    "match": "for (",
+    "line": 90,
+    "col": 5,
+    "snippet": "for (let i = 0; i < d.length; i++) d[i] = Math.random() * 2 - 1;"
+  },
+  {
+    "file": "frontend\\src\\game\\engine.js",
+    "pattern": "loops",
+    "hint": "Heavy synchronous loops can freeze UI; consider chunking or Web Worker.",
+    "match": "while (",
+    "line": 275,
+    "col": 5,
+    "snippet": "while (this.simCarry >= PHYSICS_STEP && steps < MAX_CATCHUP_STEPS) {"
+  },
+  {
+    "file": "frontend\\src\\game\\engine.js",
+    "pattern": "loops",
+    "hint": "Heavy synchronous loops can freeze UI; consider chunking or Web Worker.",
+    "match": "for (",
+    "line": 407,
+    "col": 5,
+    "snippet": "for (let i = 0; i < 2; i++) {"
+  },
+  {
+    "file": "frontend\\src\\game\\engine.js",
+    "pattern": "loops",
+    "hint": "Heavy synchronous loops can freeze UI; consider chunking or Web Worker.",
+    "match": "for (",
+    "line": 456,
+    "col": 5,
+    "snippet": "for (const st of this.stats) st.longest_rally = Math.max(st.longest_rally, this.rally);"
+  },
+  {
+    "file": "frontend\\src\\game\\engine.js",
+    "pattern": "inline-on*",
+    "hint": "Inline event handlers may be harder to manage; check for many inline handlers.",
+    "match": "onEvent =",
+    "line": 19,
+    "col": 10,
+    "snippet": "this.onEvent = onEvent || (() => {});"
+  },
+  {
+    "file": "frontend\\src\\game\\physics.js",
+    "pattern": "loops",
+    "hint": "Heavy synchronous loops can freeze UI; consider chunking or Web Worker.",
+    "match": "for (",
+    "line": 49,
+    "col": 3,
+    "snippet": "for (let i = 0; i < 30 && speed > h * 0.4; i++) {"
+  },
+  {
+    "file": "frontend\\src\\game\\physics.js",
+    "pattern": "loops",
+    "hint": "Heavy synchronous loops can freeze UI; consider chunking or Web Worker.",
+    "match": "for (",
+    "line": 77,
+    "col": 3,
+    "snippet": "for (let i = 1; i <= 220; i++) {"
+  },
+  {
+    "file": "frontend\\src\\game\\physics.js",
+    "pattern": "inline-on*",
+    "hint": "Inline event handlers may be harder to manage; check for many inline handlers.",
+    "match": "onSide =",
+    "line": 62,
+    "col": 9,
+    "snippet": "const onSide = side < 0 ? b.z < 0 : b.z > 0;"
+  },
+  {
+    "file": "frontend\\src\\game\\render.js",
+    "pattern": "loops",
+    "hint": "Heavy synchronous loops can freeze UI; consider chunking or Web Worker.",
+    "match": "for (",
+    "line": 17,
+    "col": 5,
+    "snippet": "for (let z = -COURT.halfLen; z < COURT.halfLen; z += 2.4) ctx.fillRect(ix, P(0, z)[1], 2 * COURT.doublesHalfW * S, 1.2 * S);"
+  },
+  {
+    "file": "frontend\\src\\game\\replay.js",
+    "pattern": "loops",
+    "hint": "Heavy synchronous loops can freeze UI; consider chunking or Web Worker.",
+    "match": "while (",
+    "line": 6,
+    "col": 3,
+    "snippet": "while (e.frames.length > 1 && e.time - e.frames[0].t > 8) e.frames.shift();"
+  },
+  {
+    "file": "frontend\\src\\game\\replay.js",
+    "pattern": "loops",
+    "hint": "Heavy synchronous loops can freeze UI; consider chunking or Web Worker.",
+    "match": "while (",
+    "line": 30,
+    "col": 3,
+    "snippet": "while (e.replayI < frames.length - 2 && frames[e.replayI + 1].t <= e.replayTime) e.replayI++;"
+  },
+  {
+    "file": "frontend\\src\\game\\replay.js",
+    "pattern": "loops",
+    "hint": "Heavy synchronous loops can freeze UI; consider chunking or Web Worker.",
+    "match": "for (",
+    "line": 35,
+    "col": 5,
+    "snippet": "for (const axis of [\"x\", \"y\", \"z\"]) {"
+  },
+  {
+    "file": "frontend\\src\\game\\three\\anatomy.js",
+    "pattern": "createElement",
+    "hint": "Use DocumentFragment for many inserts.",
+    "match": "createElement(",
+    "line": 48,
+    "col": 22,
+    "snippet": "const c = document.createElement(\"canvas\");"
+  },
+  {
+    "file": "frontend\\src\\game\\three\\anatomy.js",
+    "pattern": "loops",
+    "hint": "Heavy synchronous loops can freeze UI; consider chunking or Web Worker.",
+    "match": "for (",
+    "line": 7,
+    "col": 5,
+    "snippet": "for (let i = 0; i <= segments; i++) {"
+  },
+  {
+    "file": "frontend\\src\\game\\three\\anatomy.js",
+    "pattern": "loops",
+    "hint": "Heavy synchronous loops can freeze UI; consider chunking or Web Worker.",
+    "match": "for (",
+    "line": 52,
+    "col": 3,
+    "snippet": "for (let i = 0; i < 128; i += 2) {"
+  },
+  {
+    "file": "frontend\\src\\game\\three\\anatomy.js",
+    "pattern": "loops",
+    "hint": "Heavy synchronous loops can freeze UI; consider chunking or Web Worker.",
+    "match": "for (",
+    "line": 66,
+    "col": 3,
+    "snippet": "for (let i = 0; i < 7; i++) {"
+  },
+  {
+    "file": "frontend\\src\\game\\three\\anatomy.js",
+    "pattern": "loops",
+    "hint": "Heavy synchronous loops can freeze UI; consider chunking or Web Worker.",
+    "match": "for (",
+    "line": 77,
+    "col": 3,
+    "snippet": "for (let n = -7; n <= 7; n++) {"
+  },
+  {
+    "file": "frontend\\src\\game\\three\\parts.js",
+    "pattern": "createElement",
+    "hint": "Use DocumentFragment for many inserts.",
+    "match": "createElement(",
+    "line": 4,
+    "col": 22,
+    "snippet": "const c = document.createElement(\"canvas\");"
+  },
+  {
+    "file": "frontend\\src\\game\\three\\player.js",
+    "pattern": "loops",
+    "hint": "Heavy synchronous loops can freeze UI; consider chunking or Web Worker.",
+    "match": "for (",
+    "line": 53,
+    "col": 3,
+    "snippet": "for (let i = 0; i < 4; i++) ellipsoid(hand, m.skin, [-0.025 + i * 0.016, -0.056, -0.012], [0.009, 0.03, 0.012], 8);"
+  },
+  {
+    "file": "frontend\\src\\game\\three\\player.js",
+    "pattern": "loops",
+    "hint": "Heavy synchronous loops can freeze UI; consider chunking or Web Worker.",
+    "match": "for (",
+    "line": 70,
+    "col": 3,
+    "snippet": "for (let i = 0; i < 4; i++) {"
+  },
+  {
+    "file": "frontend\\src\\game\\three\\stadium.js",
+    "pattern": "createElement",
+    "hint": "Use DocumentFragment for many inserts.",
+    "match": "createElement(",
+    "line": 28,
+    "col": 22,
+    "snippet": "const c = document.createElement(\"canvas\");"
+  },
+  {
+    "file": "frontend\\src\\game\\three\\stadium.js",
+    "pattern": "createElement",
+    "hint": "Use DocumentFragment for many inserts.",
+    "match": "createElement(",
+    "line": 247,
+    "col": 27,
+    "snippet": "const canvas = document.createElement(\"canvas\");"
+  },
+  {
+    "file": "frontend\\src\\game\\three\\stadium.js",
+    "pattern": "loops",
+    "hint": "Heavy synchronous loops can freeze UI; consider chunking or Web Worker.",
+    "match": "for (",
+    "line": 34,
+    "col": 3,
+    "snippet": "for (let i = 0; i <= 64; i += 10) {"
+  },
+  {
+    "file": "frontend\\src\\game\\three\\stadium.js",
+    "pattern": "loops",
+    "hint": "Heavy synchronous loops can freeze UI; consider chunking or Web Worker.",
+    "match": "for (",
+    "line": 148,
+    "col": 5,
+    "snippet": "for (let r = 0; r < 7; r++) {"
+  },
+  {
+    "file": "frontend\\src\\game\\three\\stadium.js",
+    "pattern": "loops",
+    "hint": "Heavy synchronous loops can freeze UI; consider chunking or Web Worker.",
+    "match": "for (",
+    "line": 160,
+    "col": 7,
+    "snippet": "for (let z = -14; z <= 14 && n < 850; z += 0.55) {"
+  },
+  {
+    "file": "frontend\\src\\game\\three\\stadium.js",
+    "pattern": "loops",
+    "hint": "Heavy synchronous loops can freeze UI; consider chunking or Web Worker.",
+    "match": "for (",
+    "line": 180,
+    "col": 5,
+    "snippet": "for (let r = 0; r < 4; r++) {"
+  },
+  {
+    "file": "frontend\\src\\game\\three\\stadium.js",
+    "pattern": "loops",
+    "hint": "Heavy synchronous loops can freeze UI; consider chunking or Web Worker.",
+    "match": "for (",
+    "line": 186,
+    "col": 7,
+    "snippet": "for (let x = -7; x <= 7 && n < 850; x += 0.6) {"
+  },
+  {
+    "file": "frontend\\src\\game\\three\\stadium.js",
+    "pattern": "loops",
+    "hint": "Heavy synchronous loops can freeze UI; consider chunking or Web Worker.",
+    "match": "for (",
+    "line": 256,
+    "col": 3,
+    "snippet": "for (let i = 0; i < 16; i++) {"
+  },
+  {
+    "file": "frontend\\src\\game\\three\\stadium.js",
+    "pattern": "loops",
+    "hint": "Heavy synchronous loops can freeze UI; consider chunking or Web Worker.",
+    "match": "for (",
+    "line": 268,
+    "col": 3,
+    "snippet": "for (let i = 0; i < 900; i++) {"
+  },
+  {
+    "file": "frontend\\src\\game\\three\\ThreeView.js",
+    "pattern": "loops",
+    "hint": "Heavy synchronous loops can freeze UI; consider chunking or Web Worker.",
+    "match": "for (",
+    "line": 184,
+    "col": 5,
+    "snippet": "for (let i = 0; i < 13; i++) {"
+  },
+  {
+    "file": "frontend\\src\\game\\__tests__\\gameplay_stability.test.js",
+    "pattern": "loops",
+    "hint": "Heavy synchronous loops can freeze UI; consider chunking or Web Worker.",
+    "match": "for (",
+    "line": 13,
+    "col": 3,
+    "snippet": "for (let i = 0; i < 60; i++) a.update(1 / 60);"
+  },
+  {
+    "file": "frontend\\src\\game\\__tests__\\gameplay_stability.test.js",
+    "pattern": "loops",
+    "hint": "Heavy synchronous loops can freeze UI; consider chunking or Web Worker.",
+    "match": "for (",
+    "line": 14,
+    "col": 3,
+    "snippet": "for (let i = 0; i < 20; i++) b.update(1 / 20);"
+  },
+  {
+    "file": "frontend\\src\\game\\__tests__\\gameplay_stability.test.js",
+    "pattern": "loops",
+    "hint": "Heavy synchronous loops can freeze UI; consider chunking or Web Worker.",
+    "match": "for (",
+    "line": 36,
+    "col": 3,
+    "snippet": "for (let game = 0; game < 3; game++)"
+  },
+  {
+    "file": "frontend\\src\\game\\__tests__\\gameplay_stability.test.js",
+    "pattern": "loops",
+    "hint": "Heavy synchronous loops can freeze UI; consider chunking or Web Worker.",
+    "match": "for (",
+    "line": 37,
+    "col": 5,
+    "snippet": "for (let point = 0; point < 4; point++) awardPoint(s, 0);"
+  },
+  {
+    "file": "frontend\\src\\game\\__tests__\\gameplay_stability.test.js",
+    "pattern": "loops",
+    "hint": "Heavy synchronous loops can freeze UI; consider chunking or Web Worker.",
+    "match": "for (",
+    "line": 45,
+    "col": 3,
+    "snippet": "for (let i = 0; i < 6; i++) { awardPoint(s, 0); awardPoint(s, 1); }"
+  },
+  {
+    "file": "frontend\\src\\hooks\\use-toast.js",
+    "pattern": "setTimeout",
+    "hint": "Avoid tight repeated timeouts; consider throttling/debouncing.",
+    "match": "setTimeout(",
+    "line": 29,
+    "col": 19,
+    "snippet": "const timeout = setTimeout(() => {"
+  },
+  {
+    "file": "frontend\\src\\index.jsx",
+    "pattern": "getElement",
+    "hint": "Prefer cached references or scoped queries.",
+    "match": "getElementById(",
+    "line": 16,
+    "col": 43,
+    "snippet": "const root = ReactDOM.createRoot(document.getElementById(\"root\"));"
+  },
+  {
+    "file": "frontend\\src\\lib\\api.js",
+    "pattern": "localStorage",
+    "hint": "LocalStorage is sync — avoid heavy reads/writes during UI events.",
+    "match": "localStorage",
+    "line": 8,
+    "col": 29,
+    "snippet": "const rows = JSON.parse(localStorage.getItem(MATCHES_KEY) || \"[]\");"
+  },
+  {
+    "file": "frontend\\src\\lib\\api.js",
+    "pattern": "localStorage",
+    "hint": "LocalStorage is sync — avoid heavy reads/writes during UI events.",
+    "match": "localStorage",
+    "line": 27,
+    "col": 3,
+    "snippet": "localStorage.setItem(MATCHES_KEY, JSON.stringify(rows));"
+  },
+  {
+    "file": "frontend\\src\\lib\\api.js",
+    "pattern": "localStorage",
+    "hint": "LocalStorage is sync — avoid heavy reads/writes during UI events.",
+    "match": "localStorage",
+    "line": 83,
+    "col": 41,
+    "snippet": "try { return validateSetup(JSON.parse(localStorage.getItem(SETUP_KEY) || \"{}\")); }"
+  },
+  {
+    "file": "frontend\\src\\lib\\api.js",
+    "pattern": "localStorage",
+    "hint": "LocalStorage is sync — avoid heavy reads/writes during UI events.",
+    "match": "localStorage",
+    "line": 86,
+    "col": 34,
+    "snippet": "export const storeSetup = (s) => localStorage.setItem(SETUP_KEY, JSON.stringify(s));"
+  },
+  {
+    "file": "frontend\\src\\lib\\api.js",
+    "pattern": "JSON",
+    "hint": "Large JSON parse/stringify may block — consider streaming or Web Worker.",
+    "match": "JSON.parse(",
+    "line": 8,
+    "col": 18,
+    "snippet": "const rows = JSON.parse(localStorage.getItem(MATCHES_KEY) || \"[]\");"
+  },
+  {
+    "file": "frontend\\src\\lib\\api.js",
+    "pattern": "JSON",
+    "hint": "Large JSON parse/stringify may block — consider streaming or Web Worker.",
+    "match": "JSON.stringify(",
+    "line": 27,
+    "col": 37,
+    "snippet": "localStorage.setItem(MATCHES_KEY, JSON.stringify(rows));"
+  },
+  {
+    "file": "frontend\\src\\lib\\api.js",
+    "pattern": "JSON",
+    "hint": "Large JSON parse/stringify may block — consider streaming or Web Worker.",
+    "match": "JSON.parse(",
+    "line": 83,
+    "col": 30,
+    "snippet": "try { return validateSetup(JSON.parse(localStorage.getItem(SETUP_KEY) || \"{}\")); }"
+  },
+  {
+    "file": "frontend\\src\\lib\\api.js",
+    "pattern": "JSON",
+    "hint": "Large JSON parse/stringify may block — consider streaming or Web Worker.",
+    "match": "JSON.stringify(",
+    "line": 86,
+    "col": 66,
+    "snippet": "export const storeSetup = (s) => localStorage.setItem(SETUP_KEY, JSON.stringify(s));"
+  },
+  {
+    "file": "frontend\\src\\lib\\api.js",
+    "pattern": "loops",
+    "hint": "Heavy synchronous loops can freeze UI; consider chunking or Web Worker.",
+    "match": "for (",
+    "line": 41,
+    "col": 3,
+    "snippet": "for (const match of readLocalMatches()) {"
+  },
+  {
+    "file": "frontend\\src\\lib\\api.js",
+    "pattern": "loops",
+    "hint": "Heavy synchronous loops can freeze UI; consider chunking or Web Worker.",
+    "match": "for (",
+    "line": 68,
+    "col": 3,
+    "snippet": "for (const attr of [\"power\", \"stamina\", \"accuracy\"]) {"
+  },
+  {
+    "file": "frontend\\src\\pages\\History.jsx",
+    "pattern": "setTimeout",
+    "hint": "Avoid tight repeated timeouts; consider throttling/debouncing.",
+    "match": "setTimeout(",
+    "line": 46,
+    "col": 15,
+    "snippet": "const t = setTimeout(() => {"
+  },
+  {
+    "file": "frontend\\src\\pages\\History.jsx",
+    "pattern": "localStorage",
+    "hint": "LocalStorage is sync — avoid heavy reads/writes during UI events.",
+    "match": "localStorage",
+    "line": 10,
+    "col": 18,
+    "snippet": "try { return localStorage.getItem(storageKey) === \"open\"; } catch { return false; }"
+  },
+  {
+    "file": "frontend\\src\\pages\\History.jsx",
+    "pattern": "localStorage",
+    "hint": "LocalStorage is sync — avoid heavy reads/writes during UI events.",
+    "match": "localStorage",
+    "line": 15,
+    "col": 21,
+    "snippet": "try { if (open) localStorage.setItem(storageKey, \"open\"); else localStorage.removeItem(storageKey); } catch { /* Storage may be disabled. */ }"
+  },
+  {
+    "file": "frontend\\src\\pages\\History.jsx",
+    "pattern": "localStorage",
+    "hint": "LocalStorage is sync — avoid heavy reads/writes during UI events.",
+    "match": "localStorage",
+    "line": 15,
+    "col": 68,
+    "snippet": "try { if (open) localStorage.setItem(storageKey, \"open\"); else localStorage.removeItem(storageKey); } catch { /* Storage may be disabled. */ }"
+  },
+  {
+    "file": "frontend\\src\\pages\\History.jsx",
+    "pattern": "inline-on*",
+    "hint": "Inline event handlers may be harder to manage; check for many inline handlers.",
+    "match": "onToggle=",
+    "line": 32,
+    "col": 88,
+    "snippet": "{m.opponent_stats && <details data-testid={`history-stats-${i}`} open={expanded} onToggle={rememberExpanded} className=\"w-full border-t border-white/10 pt-3\">"
+  },
+  {
+    "file": "frontend\\src\\pages\\History.jsx",
+    "pattern": "inline-on*",
+    "hint": "Inline event handlers may be harder to manage; check for many inline handlers.",
+    "match": "onChange=",
+    "line": 57,
+    "col": 98,
+    "snippet": "<input data-testid=\"history-player-filter\" placeholder=\"Filter by player\" value={player} onChange={(e) => setPlayer(e.target.value)}"
+  },
+  {
+    "file": "frontend\\src\\pages\\History.jsx",
+    "pattern": "inline-on*",
+    "hint": "Inline event handlers may be harder to manage; check for many inline handlers.",
+    "match": "onClick=",
+    "line": 60,
+    "col": 84,
+    "snippet": "<button key={id || \"all\"} data-testid={`history-surface-${id || \"all\"}`} onClick={() => setSurface(id)}"
+  },
+  {
+    "file": "frontend\\src\\pages\\Leaderboard.jsx",
+    "pattern": "inline-on*",
+    "hint": "Inline event handlers may be harder to manage; check for many inline handlers.",
+    "match": "onClick=",
+    "line": 37,
+    "col": 111,
+    "snippet": "<button type=\"button\" data-testid=\"leaderboard-competitive-tab\" aria-pressed={mode === \"competitive\"} onClick={() => setMode(\"competitive\")} className={`rounded-full border px-4 py-2 font-mono text-xs uppercase tracking-wider transition ${mode === \"competitive\" ? \"border-[#DFFF00]/60 bg-[#DFFF00]/10 text-[#DFFF00]\" : \"border-white/15 text-slate-400 hover:border-white/30\"}`}>Competitive</button>"
+  },
+  {
+    "file": "frontend\\src\\pages\\Leaderboard.jsx",
+    "pattern": "inline-on*",
+    "hint": "Inline event handlers may be harder to manage; check for many inline handlers.",
+    "match": "onClick=",
+    "line": 38,
+    "col": 101,
+    "snippet": "<button type=\"button\" data-testid=\"leaderboard-legend-tab\" aria-pressed={mode === \"legend\"} onClick={() => setMode(\"legend\")} className={`rounded-full border px-4 py-2 font-mono text-xs uppercase tracking-wider transition ${mode === \"legend\" ? \"border-[#FFC828]/60 bg-[#FFC828]/10 text-[#FFC828]\" : \"border-white/15 text-slate-400 hover:border-white/30\"}`}>Legend</button>"
+  },
+  {
+    "file": "frontend\\src\\pages\\Play.jsx",
+    "pattern": "setInterval",
+    "hint": "Check frequency; clear timers on teardown; consider requestAnimationFrame for animations.",
+    "match": "setInterval(",
+    "line": 98,
+    "col": 16,
+    "snippet": "const iv = setInterval(() => setSnap(eng.snapshot()), 100);"
+  },
+  {
+    "file": "frontend\\src\\pages\\Play.jsx",
+    "pattern": "setTimeout",
+    "hint": "Avoid tight repeated timeouts; consider throttling/debouncing.",
+    "match": "setTimeout(",
+    "line": 102,
+    "col": 39,
+    "snippet": "useEffect(() => { const t = call && setTimeout(() => setCall(null), 1600); return () => clearTimeout(t); }, [call]);"
+  },
+  {
+    "file": "frontend\\src\\pages\\Play.jsx",
+    "pattern": "setTimeout",
+    "hint": "Avoid tight repeated timeouts; consider throttling/debouncing.",
+    "match": "setTimeout(",
+    "line": 103,
+    "col": 42,
+    "snippet": "useEffect(() => { const t = quality && setTimeout(() => setQuality(null), 650); return () => clearTimeout(t); }, [quality]);"
+  },
+  {
+    "file": "frontend\\src\\pages\\Play.jsx",
+    "pattern": "requestAnimationFrame",
+    "hint": "Preferred for visual updates — ensure you cancel when not needed.",
+    "match": "requestAnimationFrame(",
+    "line": 95,
+    "col": 13,
+    "snippet": "raf = requestAnimationFrame(loop);"
+  },
+  {
+    "file": "frontend\\src\\pages\\Play.jsx",
+    "pattern": "requestAnimationFrame",
+    "hint": "Preferred for visual updates — ensure you cancel when not needed.",
+    "match": "requestAnimationFrame(",
+    "line": 97,
+    "col": 11,
+    "snippet": "raf = requestAnimationFrame(loop);"
+  },
+  {
+    "file": "frontend\\src\\pages\\Play.jsx",
+    "pattern": "addEventListener",
+    "hint": "Use delegation; debounce/throttle handlers for scroll/resize.",
+    "match": "addEventListener(",
+    "line": 162,
+    "col": 12,
+    "snippet": "window.addEventListener(\"keydown\", down);"
+  },
+  {
+    "file": "frontend\\src\\pages\\Play.jsx",
+    "pattern": "addEventListener",
+    "hint": "Use delegation; debounce/throttle handlers for scroll/resize.",
+    "match": "addEventListener(",
+    "line": 163,
+    "col": 12,
+    "snippet": "window.addEventListener(\"keyup\", up);"
+  },
+  {
+    "file": "frontend\\src\\pages\\Play.jsx",
+    "pattern": "addEventListener",
+    "hint": "Use delegation; debounce/throttle handlers for scroll/resize.",
+    "match": "addEventListener(",
+    "line": 164,
+    "col": 12,
+    "snippet": "window.addEventListener(\"blur\", blur);"
+  },
+  {
+    "file": "frontend\\src\\pages\\Play.jsx",
+    "pattern": "inline-on*",
+    "hint": "Inline event handlers may be harder to manage; check for many inline handlers.",
+    "match": "onEvent =",
+    "line": 65,
+    "col": 9,
+    "snippet": "const onEvent = useCallback((e) => {"
+  },
+  {
+    "file": "frontend\\src\\pages\\Play.jsx",
+    "pattern": "inline-on*",
+    "hint": "Inline event handlers may be harder to manage; check for many inline handlers.",
+    "match": "onQuality =",
+    "line": 187,
+    "col": 9,
+    "snippet": "const onQuality = useCallback(() => toast(\"3D effects reduced for smoother play\", { id: \"3d-quality\" }), []);"
+  },
+  {
+    "file": "frontend\\src\\pages\\Play.jsx",
+    "pattern": "inline-on*",
+    "hint": "Inline event handlers may be harder to manage; check for many inline handlers.",
+    "match": "onAvailability =",
+    "line": 188,
+    "col": 9,
+    "snippet": "const onAvailability = useCallback(ready => { graphicsReady.current = ready; }, []);"
+  },
+  {
+    "file": "frontend\\src\\pages\\Play.jsx",
+    "pattern": "inline-on*",
+    "hint": "Inline event handlers may be harder to manage; check for many inline handlers.",
+    "match": "onSwing=",
+    "line": 216,
+    "col": 51,
+    "snippet": "<GameCanvas eng={eng} wrapRef={wrapRef} onSwing={mouseSwing} onRelease={() => eng.releaseShot(eng.p.heldShot)} onPointer={pointerMove} onPointerLeave={() => eng.clearPointer()} onQuality={onQuality} onAvailability={onAvailability} />"
+  },
+  {
+    "file": "frontend\\src\\pages\\Play.jsx",
+    "pattern": "inline-on*",
+    "hint": "Inline event handlers may be harder to manage; check for many inline handlers.",
+    "match": "onRelease=",
+    "line": 216,
+    "col": 72,
+    "snippet": "<GameCanvas eng={eng} wrapRef={wrapRef} onSwing={mouseSwing} onRelease={() => eng.releaseShot(eng.p.heldShot)} onPointer={pointerMove} onPointerLeave={() => eng.clearPointer()} onQuality={onQuality} onAvailability={onAvailability} />"
+  },
+  {
+    "file": "frontend\\src\\pages\\Play.jsx",
+    "pattern": "inline-on*",
+    "hint": "Inline event handlers may be harder to manage; check for many inline handlers.",
+    "match": "onPointer=",
+    "line": 216,
+    "col": 122,
+    "snippet": "<GameCanvas eng={eng} wrapRef={wrapRef} onSwing={mouseSwing} onRelease={() => eng.releaseShot(eng.p.heldShot)} onPointer={pointerMove} onPointerLeave={() => eng.clearPointer()} onQuality={onQuality} onAvailability={onAvailability} />"
+  },
+  {
+    "file": "frontend\\src\\pages\\Play.jsx",
+    "pattern": "inline-on*",
+    "hint": "Inline event handlers may be harder to manage; check for many inline handlers.",
+    "match": "onPointerLeave=",
+    "line": 216,
+    "col": 146,
+    "snippet": "<GameCanvas eng={eng} wrapRef={wrapRef} onSwing={mouseSwing} onRelease={() => eng.releaseShot(eng.p.heldShot)} onPointer={pointerMove} onPointerLeave={() => eng.clearPointer()} onQuality={onQuality} onAvailability={onAvailability} />"
+  },
+  {
+    "file": "frontend\\src\\pages\\Play.jsx",
+    "pattern": "inline-on*",
+    "hint": "Inline event handlers may be harder to manage; check for many inline handlers.",
+    "match": "onQuality=",
+    "line": 216,
+    "col": 188,
+    "snippet": "<GameCanvas eng={eng} wrapRef={wrapRef} onSwing={mouseSwing} onRelease={() => eng.releaseShot(eng.p.heldShot)} onPointer={pointerMove} onPointerLeave={() => eng.clearPointer()} onQuality={onQuality} onAvailability={onAvailability} />"
+  },
+  {
+    "file": "frontend\\src\\pages\\Play.jsx",
+    "pattern": "inline-on*",
+    "hint": "Inline event handlers may be harder to manage; check for many inline handlers.",
+    "match": "onAvailability=",
+    "line": 216,
+    "col": 210,
+    "snippet": "<GameCanvas eng={eng} wrapRef={wrapRef} onSwing={mouseSwing} onRelease={() => eng.releaseShot(eng.p.heldShot)} onPointer={pointerMove} onPointerLeave={() => eng.clearPointer()} onQuality={onQuality} onAvailability={onAvailability} />"
+  },
+  {
+    "file": "frontend\\src\\pages\\Play.jsx",
+    "pattern": "inline-on*",
+    "hint": "Inline event handlers may be harder to manage; check for many inline handlers.",
+    "match": "onClick=",
+    "line": 222,
+    "col": 53,
+    "snippet": "<button data-testid=\"camera-toggle-btn\" onClick={() => { eng.clearPointer(); setCameraMode(c => c === \"court\" ? \"broadcast\" : \"court\"); }} title=\"Change gameplay camera\" className=\"btn-ghost flex items-center gap-1.5 rounded-full bg-[#0B0E14]/85 px-3 py-2 font-mono text-[10px]\"><Camera size={14} /><span>{cameraMode === \"court\" ? \"Court\" : \"Broadcast\"}</span></button>"
+  },
+  {
+    "file": "frontend\\src\\pages\\Play.jsx",
+    "pattern": "inline-on*",
+    "hint": "Inline event handlers may be harder to manage; check for many inline handlers.",
+    "match": "onClick=",
+    "line": 223,
+    "col": 84,
+    "snippet": "<button data-testid=\"mouse-control-toggle\" aria-pressed={mouseEnabled} onClick={() => setMouseEnabled(v => !v)} title=\"Mouse movement optional · hold right button to aim · hold left button to prepare a shot\" aria-label=\"Mouse movement\" className={`btn-ghost flex items-center gap-1.5 rounded-full bg-[#0B0E14]/85 px-3 py-2 font-mono text-[10px] ${mouseEnabled ? \"text-[#DFFF00]\" : \"text-slate-400\"}`}><MousePointer2 size={14} />Mouse {mouseEnabled ? \"on\" : \"off\"}</button>"
+  },
+  {
+    "file": "frontend\\src\\pages\\Play.jsx",
+    "pattern": "inline-on*",
+    "hint": "Inline event handlers may be harder to manage; check for many inline handlers.",
+    "match": "onClick=",
+    "line": 224,
+    "col": 104,
+    "snippet": "<button data-testid=\"replay-last-point-btn\" disabled={!snap?.canReplay || paused || intro} onClick={() => engRef.current?.startReplay(true)} title=\"Replay last point\" aria-label=\"Replay last point\" className=\"btn-ghost rounded-full bg-[#0B0E14]/85 p-2 disabled:opacity-30\"><Film size={14} /></button>"
+  },
+  {
+    "file": "frontend\\src\\pages\\Play.jsx",
+    "pattern": "inline-on*",
+    "hint": "Inline event handlers may be harder to manage; check for many inline handlers.",
+    "match": "onClick=",
+    "line": 225,
+    "col": 70,
+    "snippet": "<button data-testid=\"pause-btn\" aria-label=\"Pause match\" onClick={togglePause} className=\"rounded-full border border-white/15 bg-[#0B0E14]/70 p-2 backdrop-blur hover:border-[#DFFF00]\">"
+  },
+  {
+    "file": "frontend\\src\\pages\\Play.jsx",
+    "pattern": "inline-on*",
+    "hint": "Inline event handlers may be harder to manage; check for many inline handlers.",
+    "match": "onDone=",
+    "line": 230,
+    "col": 68,
+    "snippet": "{intro && <MatchIntro key={seed} cfg={cfg} names={names} onDone={endIntro} />}"
+  },
+  {
+    "file": "frontend\\src\\pages\\Play.jsx",
+    "pattern": "inline-on*",
+    "hint": "Inline event handlers may be harder to manage; check for many inline handlers.",
+    "match": "onClick=",
+    "line": 235,
+    "col": 53,
+    "snippet": "<button data-testid=\"replay-skip-btn\" onClick={() => engRef.current?.endReplay()} className=\"btn-ghost pointer-events-auto rounded-full px-3 py-1 font-mono text-[10px]\">Skip</button>"
+  },
+  {
+    "file": "frontend\\src\\pages\\Play.jsx",
+    "pattern": "inline-on*",
+    "hint": "Inline event handlers may be harder to manage; check for many inline handlers.",
+    "match": "onResume=",
+    "line": 240,
+    "col": 25,
+    "snippet": "<PauseModal onResume={togglePause} onRestart={() => setSeed((s) => s + 1)} onQuit={() => nav(\"/setup\")}"
+  },
+  {
+    "file": "frontend\\src\\pages\\Play.jsx",
+    "pattern": "inline-on*",
+    "hint": "Inline event handlers may be harder to manage; check for many inline handlers.",
+    "match": "onRestart=",
+    "line": 240,
+    "col": 48,
+    "snippet": "<PauseModal onResume={togglePause} onRestart={() => setSeed((s) => s + 1)} onQuit={() => nav(\"/setup\")}"
+  },
+  {
+    "file": "frontend\\src\\pages\\Play.jsx",
+    "pattern": "inline-on*",
+    "hint": "Inline event handlers may be harder to manage; check for many inline handlers.",
+    "match": "onQuit=",
+    "line": 240,
+    "col": 88,
+    "snippet": "<PauseModal onResume={togglePause} onRestart={() => setSeed((s) => s + 1)} onQuit={() => nav(\"/setup\")}"
+  },
+  {
+    "file": "frontend\\src\\pages\\Play.jsx",
+    "pattern": "inline-on*",
+    "hint": "Inline event handlers may be harder to manage; check for many inline handlers.",
+    "match": "onSound=",
+    "line": 241,
+    "col": 43,
+    "snippet": "sound={sound} voice={voice} onSound={toggleSound} onVoice={toggleVoice} replays={replays} onReplays={toggleReplays} />"
+  },
+  {
+    "file": "frontend\\src\\pages\\Play.jsx",
+    "pattern": "inline-on*",
+    "hint": "Inline event handlers may be harder to manage; check for many inline handlers.",
+    "match": "onVoice=",
+    "line": 241,
+    "col": 65,
+    "snippet": "sound={sound} voice={voice} onSound={toggleSound} onVoice={toggleVoice} replays={replays} onReplays={toggleReplays} />"
+  },
+  {
+    "file": "frontend\\src\\pages\\Play.jsx",
+    "pattern": "inline-on*",
+    "hint": "Inline event handlers may be harder to manage; check for many inline handlers.",
+    "match": "onReplays=",
+    "line": 241,
+    "col": 105,
+    "snippet": "sound={sound} voice={voice} onSound={toggleSound} onVoice={toggleVoice} replays={replays} onReplays={toggleReplays} />"
+  },
+  {
+    "file": "frontend\\src\\pages\\Play.jsx",
+    "pattern": "inline-on*",
+    "hint": "Inline event handlers may be harder to manage; check for many inline handlers.",
+    "match": "onReplay=",
+    "line": 245,
+    "col": 43,
+    "snippet": "canReplay={snap?.canReplay} onReplay={() => engRef.current?.startReplay(true)} onRetry={() => persistResult(result)}"
+  },
+  {
+    "file": "frontend\\src\\pages\\Play.jsx",
+    "pattern": "inline-on*",
+    "hint": "Inline event handlers may be harder to manage; check for many inline handlers.",
+    "match": "onRetry=",
+    "line": 245,
+    "col": 94,
+    "snippet": "canReplay={snap?.canReplay} onReplay={() => engRef.current?.startReplay(true)} onRetry={() => persistResult(result)}"
+  },
+  {
+    "file": "frontend\\src\\pages\\Play.jsx",
+    "pattern": "inline-on*",
+    "hint": "Inline event handlers may be harder to manage; check for many inline handlers.",
+    "match": "onRematch=",
+    "line": 246,
+    "col": 15,
+    "snippet": "onRematch={() => setSeed((s) => s + 1)} onLeaderboard={() => nav(\"/leaderboard\")} onSetup={() => nav(\"/setup\")} />"
+  },
+  {
+    "file": "frontend\\src\\pages\\Play.jsx",
+    "pattern": "inline-on*",
+    "hint": "Inline event handlers may be harder to manage; check for many inline handlers.",
+    "match": "onLeaderboard=",
+    "line": 246,
+    "col": 55,
+    "snippet": "onRematch={() => setSeed((s) => s + 1)} onLeaderboard={() => nav(\"/leaderboard\")} onSetup={() => nav(\"/setup\")} />"
+  },
+  {
+    "file": "frontend\\src\\pages\\Play.jsx",
+    "pattern": "inline-on*",
+    "hint": "Inline event handlers may be harder to manage; check for many inline handlers.",
+    "match": "onSetup=",
+    "line": 246,
+    "col": 97,
+    "snippet": "onRematch={() => setSeed((s) => s + 1)} onLeaderboard={() => nav(\"/leaderboard\")} onSetup={() => nav(\"/setup\")} />"
+  },
+  {
+    "file": "frontend\\src\\pages\\Play.jsx",
+    "pattern": "inline-on*",
+    "hint": "Inline event handlers may be harder to manage; check for many inline handlers.",
+    "match": "onShot=",
+    "line": 251,
+    "col": 18,
+    "snippet": "<ShotPad onShot={shot} onHold={hold} onRelease={release} selectedShot={snap?.selectedShot} onSelect={id => { eng.selectedShot = id; }} />"
+  },
+  {
+    "file": "frontend\\src\\pages\\Play.jsx",
+    "pattern": "inline-on*",
+    "hint": "Inline event handlers may be harder to manage; check for many inline handlers.",
+    "match": "onHold=",
+    "line": 251,
+    "col": 32,
+    "snippet": "<ShotPad onShot={shot} onHold={hold} onRelease={release} selectedShot={snap?.selectedShot} onSelect={id => { eng.selectedShot = id; }} />"
+  },
+  {
+    "file": "frontend\\src\\pages\\Play.jsx",
+    "pattern": "inline-on*",
+    "hint": "Inline event handlers may be harder to manage; check for many inline handlers.",
+    "match": "onRelease=",
+    "line": 251,
+    "col": 46,
+    "snippet": "<ShotPad onShot={shot} onHold={hold} onRelease={release} selectedShot={snap?.selectedShot} onSelect={id => { eng.selectedShot = id; }} />"
+  },
+  {
+    "file": "frontend\\src\\pages\\Play.jsx",
+    "pattern": "inline-on*",
+    "hint": "Inline event handlers may be harder to manage; check for many inline handlers.",
+    "match": "onSelect=",
+    "line": 251,
+    "col": 100,
+    "snippet": "<ShotPad onShot={shot} onHold={hold} onRelease={release} selectedShot={snap?.selectedShot} onSelect={id => { eng.selectedShot = id; }} />"
+  },
+  {
+    "file": "frontend\\src\\pages\\Play.jsx",
+    "pattern": "inline-on*",
+    "hint": "Inline event handlers may be harder to manage; check for many inline handlers.",
+    "match": "onKey=",
+    "line": 252,
+    "col": 15,
+    "snippet": "<DPad onKey={(k, d) => { if (!pausedRef.current && !introRef.current) engRef.current?.setKey(k, d); }} />"
+  },
+  {
+    "file": "frontend\\src\\pages\\Setup.jsx",
+    "pattern": "inline-on*",
+    "hint": "Inline event handlers may be harder to manage; check for many inline handlers.",
+    "match": "onValueChange=",
+    "line": 20,
+    "col": 220,
+    "snippet": "<Slider thumbProps={{ \"aria-labelledby\": labelId, \"aria-valuetext\": `${value} out of 10` }} data-testid={`setup-attr-${attr}-slider`} className=\"mt-2\" min={1} max={10} step={1} value={[value]} disabled={disabled} onValueChange={([v]) => onChange(v)} />"
+  },
+  {
+    "file": "frontend\\src\\pages\\Setup.jsx",
+    "pattern": "inline-on*",
+    "hint": "Inline event handlers may be harder to manage; check for many inline handlers.",
+    "match": "onToggle=",
+    "line": 50,
+    "col": 43,
+    "snippet": "<LegendCard active={cfg.legend} onToggle={toggleLegend} />"
+  },
+  {
+    "file": "frontend\\src\\pages\\Setup.jsx",
+    "pattern": "inline-on*",
+    "hint": "Inline event handlers may be harder to manage; check for many inline handlers.",
+    "match": "onChange=",
+    "line": 53,
+    "col": 116,
+    "snippet": "<input id=\"pname\" data-testid=\"setup-name-input\" value={cfg.name} disabled={cfg.legend} maxLength={24} onChange={(e) => set(\"name\", e.target.value)}"
+  },
+  {
+    "file": "frontend\\src\\pages\\Setup.jsx",
+    "pattern": "inline-on*",
+    "hint": "Inline event handlers may be harder to manage; check for many inline handlers.",
+    "match": "onChange=",
+    "line": 56,
+    "col": 99,
+    "snippet": "{ATTRS.map((a) => <AttrSlider key={a} attr={a} value={cfg[a]} disabled={cfg.legend} onChange={(v) => setAttr(a, v)} />)}"
+  },
+  {
+    "file": "frontend\\src\\pages\\Setup.jsx",
+    "pattern": "inline-on*",
+    "hint": "Inline event handlers may be harder to manage; check for many inline handlers.",
+    "match": "onChange=",
+    "line": 64,
+    "col": 192,
+    "snippet": "<OptionGroup label=\"AI difficulty\" options={Object.values(DIFFICULTY).map((d) => ({ ...d, desc: `${Math.round(d.error * 100)}% error · ${d.move}x speed` }))} value={cfg.difficulty} onChange={(v) => set(\"difficulty\", v)} testPrefix=\"setup-difficulty\" />"
+  },
+  {
+    "file": "frontend\\src\\pages\\Setup.jsx",
+    "pattern": "inline-on*",
+    "hint": "Inline event handlers may be harder to manage; check for many inline handlers.",
+    "match": "onChange=",
+    "line": 65,
+    "col": 96,
+    "snippet": "<OptionGroup label=\"AI play style\" options={Object.values(STYLES)} value={cfg.style} onChange={(v) => set(\"style\", v)} testPrefix=\"setup-style\" />"
+  },
+  {
+    "file": "frontend\\src\\pages\\Setup.jsx",
+    "pattern": "inline-on*",
+    "hint": "Inline event handlers may be harder to manage; check for many inline handlers.",
+    "match": "onChange=",
+    "line": 66,
+    "col": 109,
+    "snippet": "<OptionGroup label=\"Court surface\" cols={5} options={Object.values(SURFACES)} value={cfg.surface} onChange={(v) => set(\"surface\", v)} testPrefix=\"setup-surface\" />"
+  },
+  {
+    "file": "frontend\\src\\pages\\Setup.jsx",
+    "pattern": "inline-on*",
+    "hint": "Inline event handlers may be harder to manage; check for many inline handlers.",
+    "match": "onChange=",
+    "line": 68,
+    "col": 106,
+    "snippet": "<OptionGroup label=\"Match format\" cols={2} options={Object.values(FORMATS)} value={cfg.format} onChange={(v) => set(\"format\", v)} testPrefix=\"setup-format\" />"
+  },
+  {
+    "file": "frontend\\src\\pages\\Setup.jsx",
+    "pattern": "inline-on*",
+    "hint": "Inline event handlers may be harder to manage; check for many inline handlers.",
+    "match": "onClick=",
+    "line": 73,
+    "col": 69,
+    "snippet": "<button type=\"button\" data-testid=\"setup-start-match-btn\" onClick={start}"
+  }
+]

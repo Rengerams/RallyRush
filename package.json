@@ -180,6 +180,6 @@
   "description": "Arcade-style 3D tennis game for desktop and browser.",
   "author": "Renffr",
   "allowScripts": {
-    "electron-winstaller@5.4.0": true
+    "electron-winstaller": true
   }
 }
