@@ -1,10 +1,11 @@
 import { motion, AnimatePresence, useReducedMotion } from "framer-motion";
 
-const Q = { perfect: ["PERFECT!", "#DFFF00"], good: ["GOOD", "#00F0FF"], late: ["LATE", "#F59E0B"], miss: ["MISS", "#E05A47"] };
+const Q = { perfect: ["PERFECT!", "#DFFF00"], good: ["GOOD", "#00F0FF"], early: ["EARLY", "#F59E0B"], late: ["LATE", "#F59E0B"], miss: ["MISS", "#E05A47"] };
 
 export default function Callouts({ call, quality, reducedMotion = false }) {
   const systemReducedMotion = useReducedMotion();
   const reduceMotion = reducedMotion || systemReducedMotion;
+  const qualityCallout = quality && Q[quality.q];
   return (
     <>
       <AnimatePresence>
@@ -18,11 +19,11 @@ export default function Callouts({ call, quality, reducedMotion = false }) {
         )}
       </AnimatePresence>
       <AnimatePresence>
-        {quality && (
+        {qualityCallout && (
           <motion.output key={quality.id} data-testid="shot-quality" aria-live="polite" aria-atomic="true"
             initial={reduceMotion ? false : { opacity: 0, scale: 1.4 }} animate={reduceMotion ? { opacity: 1 } : { opacity: 1, scale: 1 }} exit={{ opacity: 0 }}
-            className="font-display pointer-events-none absolute bottom-[14%] left-1/2 -translate-x-1/2 text-4xl font-black italic" style={{ color: Q[quality.q][1] }}>
-            {Q[quality.q][0]}
+            className="font-display pointer-events-none absolute bottom-[14%] left-1/2 -translate-x-1/2 text-4xl font-black italic" style={{ color: qualityCallout[1] }}>
+            {qualityCallout[0]}
           </motion.output>
         )}
       </AnimatePresence>

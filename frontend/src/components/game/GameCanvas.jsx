@@ -1,6 +1,15 @@
 import { useEffect, useRef, useState } from "react";
 import { RotateCcw } from "lucide-react";
 
+export function fitCanvas(canvas, wrapper, view, fallbackWidth, fallbackHeight) {
+  if (!canvas || !view) return;
+  const width = wrapper?.clientWidth || fallbackWidth;
+  const height = wrapper?.clientHeight || fallbackHeight;
+  canvas.style.width = `${width}px`;
+  canvas.style.height = `${height}px`;
+  view.setSize(width, height);
+}
+
 export default function GameCanvas({ eng, wrapRef, renderActive = true, reducedEffects = false, reducedMotion = false, onSwing, onRelease, onPointer, onPointerLeave, onQuality, onAvailability }) {
   const ref = useRef(null), viewRef = useRef(null);
   const [error, setError] = useState(null), [retry, setRetry] = useState(0), [viewGeneration, setViewGeneration] = useState(0), [loading, setLoading] = useState(true);
@@ -19,11 +28,9 @@ export default function GameCanvas({ eng, wrapRef, renderActive = true, reducedE
     setError(null);
     setLoading(true);
     const fit = () => {
-      const width = wrapRef.current.clientWidth || window.innerWidth;
-      const height = wrapRef.current.clientHeight || window.innerHeight;
-      canvas.style.width = `${width}px`;
-      canvas.style.height = `${height}px`;
-      view.setSize(width, height);
+      const wrapper = wrapRef?.current;
+      if (cancelled) return;
+      fitCanvas(canvas, wrapper, view, window.innerWidth, window.innerHeight);
     };
 
     import("@/game/three/ThreeView").then(({ ThreeView }) => {
@@ -37,7 +44,7 @@ export default function GameCanvas({ eng, wrapRef, renderActive = true, reducedE
         onAvailability?.(true);
         fit();
         resize = new ResizeObserver(fit);
-        resize.observe(wrapRef.current);
+        if (wrapRef?.current) resize.observe(wrapRef.current);
         window.addEventListener("resize", fit);
         contextLost = (event) => { event.preventDefault(); onAvailability?.(false); setError("The 3D connection was interrupted. Your match is preserved."); };
         canvas.addEventListener("webglcontextlost", contextLost);
