@@ -1,14 +1,14 @@
 import { useEffect, useState } from "react";
-import { motion, AnimatePresence } from "framer-motion";
+import { motion, AnimatePresence, useReducedMotion } from "framer-motion";
 import { Crown } from "lucide-react";
 import { audio } from "@/game/audio";
 import { SURFACES, DIFFICULTY, STYLES, FORMATS } from "@/game/constants";
 
 const STEPS = [0, 1900, 3900, 5900];
 
-function Card({ name, sub, color, from, legend, testId }) {
+function Card({ name, sub, color, from, legend, testId, reducedMotion }) {
   return (
-    <motion.div data-testid={testId} initial={{ x: from * 220, opacity: 0 }} animate={{ x: 0, opacity: 1 }} transition={{ type: "spring", stiffness: 120, damping: 16 }}
+    <motion.div data-testid={testId} initial={reducedMotion ? false : { x: from * 220, opacity: 0 }} animate={reducedMotion ? undefined : { x: 0, opacity: 1 }} transition={reducedMotion ? { duration: 0 } : { type: "spring", stiffness: 120, damping: 16 }}
       className="w-full rounded-2xl border bg-[#121824]/90 p-4 text-center backdrop-blur-xl" style={{ borderColor: color }}>
       {legend && <Crown className="mx-auto text-[#FFC828]" size={20} />}
       <p className={`font-display truncate text-3xl font-black uppercase italic ${legend ? "gold-shimmer" : ""}`} style={legend ? undefined : { color }}>{name}</p>
@@ -17,8 +17,10 @@ function Card({ name, sub, color, from, legend, testId }) {
   );
 }
 
-export default function MatchIntro({ cfg, names, onDone }) {
+export default function MatchIntro({ cfg, names, onDone, reducedMotion = false }) {
   const [step, setStep] = useState(0);
+  const systemReducedMotion = useReducedMotion();
+  const motionReduced = Boolean(reducedMotion || systemReducedMotion);
   const surf = SURFACES[cfg.surface];
 
   useEffect(() => {
@@ -37,28 +39,28 @@ export default function MatchIntro({ cfg, names, onDone }) {
 
   return (
     <div data-testid="match-intro" className="absolute inset-0 z-30 flex flex-col items-center justify-center overflow-hidden rounded-2xl bg-[#0B0E14]/90 p-5">
-      <motion.div className="absolute inset-0" initial={{ opacity: 0 }} animate={{ opacity: [0, 0.5, 0.15] }} transition={{ duration: 1.6 }}
+      <motion.div className="absolute inset-0" initial={motionReduced ? false : { opacity: 0 }} animate={motionReduced ? { opacity: 0.15 } : { opacity: [0, 0.5, 0.15] }} transition={motionReduced ? { duration: 0 } : { duration: 1.6 }}
         style={{ background: "radial-gradient(circle at 50% 30%, rgba(223,255,0,0.25), transparent 60%)" }} />
-      <AnimatePresence mode="wait">
+      <AnimatePresence mode="wait" initial={!motionReduced}>
         {step === 0 && (
-          <motion.div key="welcome" className="relative text-center" initial={{ opacity: 0, scale: 0.8 }} animate={{ opacity: 1, scale: 1 }} exit={{ opacity: 0, y: -30 }}>
+          <motion.div key="welcome" className="relative text-center" initial={motionReduced ? false : { opacity: 0, scale: 0.8 }} animate={motionReduced ? undefined : { opacity: 1, scale: 1 }} exit={motionReduced ? undefined : { opacity: 0, y: -30 }}>
             <p className="font-mono text-[11px] uppercase tracking-[0.35em] text-[#00F0FF]">Ladies & gentlemen</p>
             <p className="font-display mt-2 text-2xl font-bold uppercase text-slate-300">welcome to the</p>
-            <motion.p initial={{ letterSpacing: "0.4em" }} animate={{ letterSpacing: "-0.01em" }} transition={{ duration: 1.2, ease: "easeOut" }}
+            <motion.p initial={motionReduced ? false : { letterSpacing: "0.4em" }} animate={motionReduced ? undefined : { letterSpacing: "-0.01em" }} transition={motionReduced ? { duration: 0 } : { duration: 1.2, ease: "easeOut" }}
               className="font-display text-6xl font-black uppercase italic leading-none text-[#DFFF00] sm:text-7xl">Rally<br />Rush</motion.p>
           </motion.div>
         )}
         {step === 1 && (
-          <motion.div key="vs" className="relative flex w-full max-w-[300px] flex-col items-center gap-3" exit={{ opacity: 0, scale: 0.9 }}>
-            <Card testId="intro-player-card" name={names[0]} legend={cfg.legend} color="#00F0FF" from={-1} sub={`PWR ${cfg.power} · STA ${cfg.stamina} · ACC ${cfg.accuracy}`} />
-            <motion.p initial={{ scale: 3, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} transition={{ delay: 0.35 }} className="font-display text-5xl font-black italic text-white">VS</motion.p>
-            <Card testId="intro-ai-card" name={names[1]} color="#E05A47" from={1} sub={`${STYLES[cfg.style].label} · ${Math.round(DIFFICULTY[cfg.difficulty].error * 100)}% error`} />
+          <motion.div key="vs" className="relative flex w-full max-w-[300px] flex-col items-center gap-3" exit={motionReduced ? undefined : { opacity: 0, scale: 0.9 }}>
+            <Card testId="intro-player-card" reducedMotion={motionReduced} name={names[0]} legend={cfg.legend} color="#00F0FF" from={-1} sub={`PWR ${cfg.power} · STA ${cfg.stamina} · ACC ${cfg.accuracy}`} />
+            <motion.p initial={motionReduced ? false : { scale: 3, opacity: 0 }} animate={motionReduced ? undefined : { scale: 1, opacity: 1 }} transition={motionReduced ? { duration: 0 } : { delay: 0.35 }} className="font-display text-5xl font-black italic text-white">VS</motion.p>
+            <Card testId="intro-ai-card" reducedMotion={motionReduced} name={names[1]} color="#E05A47" from={1} sub={`${STYLES[cfg.style].label} · ${Math.round(DIFFICULTY[cfg.difficulty].error * 100)}% error`} />
           </motion.div>
         )}
         {step === 2 && (
-          <motion.div key="play" className="relative text-center" initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }}>
+          <motion.div key="play" className="relative text-center" initial={motionReduced ? false : { opacity: 0, y: 30 }} animate={motionReduced ? undefined : { opacity: 1, y: 0 }}>
             <p className="font-mono text-[11px] uppercase tracking-[0.3em] text-slate-400">{surf.label} · {FORMATS[cfg.format].desc}</p>
-            <motion.p initial={{ scale: 0.6 }} animate={{ scale: [0.6, 1.15, 1] }} transition={{ duration: 0.6 }} className="font-display mt-3 text-7xl font-black uppercase italic text-white">Play!</motion.p>
+            <motion.p initial={motionReduced ? false : { scale: 0.6 }} animate={motionReduced ? undefined : { scale: [0.6, 1.15, 1] }} transition={motionReduced ? { duration: 0 } : { duration: 0.6 }} className="font-display mt-3 text-7xl font-black uppercase italic text-white">Play!</motion.p>
             <p className="mt-2 font-mono text-[11px] uppercase tracking-[0.2em] text-[#DFFF00]">Quiet please</p>
           </motion.div>
         )}

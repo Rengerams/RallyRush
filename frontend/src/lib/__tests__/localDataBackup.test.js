@@ -84,8 +84,35 @@ describe("local data backup", () => {
   });
 
   it("rejects an oversized backup before parsing", () => {
-    expect(() => importLocalData(" ".repeat(1_000_001), storage)).toThrow(/too large/i);
+    expect(() => importLocalData(" ".repeat(10_000_001), storage)).toThrow(/too large/i);
     expect(values.size).toBe(0);
+  });
+
+  it("accepts representative exports larger than the former import limit", () => {
+    const manyMatches = Array.from({ length: 1_000 }, (_, index) => ({
+      ...match,
+      match_id: `history-${index}`,
+      rally_lengths: Array.from({ length: 100 }, (_, rally) => rally + index),
+      stats: { aces: 4, winners: 8, errors: 3, double_faults: 1, perfect_shots: 10, total_shots: 40, longest_rally: 24, points_won: 12 },
+    }));
+    values.set(SETUP_KEY, JSON.stringify(DEFAULT_SETUP));
+    values.set(MATCHES_KEY, JSON.stringify(manyMatches));
+    const backup = exportLocalData(storage);
+    expect(new TextEncoder().encode(backup).byteLength).toBeGreaterThan(1_000_000);
+    expect(() => importLocalData(backup, storage)).not.toThrow();
+  });
+
+  it.each([
+    { total_shots: "many" },
+    { errors: -1 },
+    { winners: 1.5 },
+  ])("rejects malformed fields consumed by match history: %o", (stats) => {
+    const backupText = JSON.stringify({
+      format: BACKUP_FORMAT, version: BACKUP_VERSION, setup: DEFAULT_SETUP,
+      matches: [{ ...match, stats }],
+      displayPreferences: { hudSize: "normal", reducedEffects: false, reducedMotion: false },
+    });
+    expect(() => importLocalData(backupText, storage)).toThrow(/unsupported format/i);
   });
 
   it("deletes only Rally Rush keys and legacy history disclosure state", () => {

@@ -1,16 +1,18 @@
 import { SETUP_KEY, DEFAULT_SETUP, SURFACES, DIFFICULTY, STYLES, FORMATS } from "@/game/constants";
+import { getSafeStorage } from "@/lib/safeStorage";
 
 export const MATCHES_KEY = "renffr-tennis-matches";
 export const DISPLAY_PREFERENCES_KEY = "rally-rush.match-display-preferences";
 export const BACKUP_FORMAT = "rally-rush-local-data";
 export const BACKUP_VERSION = 1;
-export const MAX_BACKUP_BYTES = 1_000_000;
+export const MAX_BACKUP_BYTES = 10_000_000;
 export const STORAGE_VERSION_KEY = "rally-rush.storage-version";
 const STORAGE_VERSION = 1;
 const LEGACY_HISTORY_PREFIX = "renffr-breakdown-";
 const RATING_POINTS = Object.freeze({ easy: 10, medium: 20, hard: 35, pro: 60 });
+let memorySetupFallback = null;
 
-function readLocalMatches(storage = globalThis.localStorage) {
+function readLocalMatches(storage = getSafeStorage()) {
   migrateLocalStorage(storage);
   try {
     const rows = JSON.parse(storage.getItem(MATCHES_KEY) || "[]");
@@ -20,7 +22,7 @@ function readLocalMatches(storage = globalThis.localStorage) {
   }
 }
 
-export function migrateLocalStorage(storage = globalThis.localStorage) {
+export function migrateLocalStorage(storage = getSafeStorage()) {
   if (!storage) return;
   try {
     const version = Number.parseInt(storage.getItem(STORAGE_VERSION_KEY) || "0", 10);
@@ -34,7 +36,8 @@ export function migrateLocalStorage(storage = globalThis.localStorage) {
 }
 
 function saveLocalMatch(payload) {
-  const rows = readLocalMatches();
+  const storage = getSafeStorage();
+  const rows = readLocalMatches(storage);
   const row = {
     ...payload,
     id: payload.match_id || `local-${Date.now()}-${Math.random().toString(36).slice(2)}`,
@@ -45,7 +48,8 @@ function saveLocalMatch(payload) {
   const index = rows.findIndex((match) => match.match_id && match.match_id === payload.match_id);
   if (index >= 0) rows[index] = { ...rows[index], ...row };
   else rows.unshift(row);
-  localStorage.setItem(MATCHES_KEY, JSON.stringify(rows));
+  if (!storage) return row;
+  storage.setItem(MATCHES_KEY, JSON.stringify(rows));
   return row;
 }
 
@@ -116,13 +120,22 @@ function validateBackupMatch(match) {
   if (match.surface != null && !Object.hasOwn(SURFACES, match.surface)) return false;
   if (match.ai_style != null && !Object.hasOwn(STYLES, match.ai_style)) return false;
   if (match.match_format != null && !Object.hasOwn(FORMATS, match.match_format)) return false;
+  const statFields = ["aces", "winners", "errors", "double_faults", "perfect_shots", "total_shots", "longest_rally", "points_won"];
   const isValidStats = (stats) => stats == null || (isPlainRecord(stats) &&
-    ["aces", "longest_rally", "perfect_shots"].every((key) =>
-      !Object.hasOwn(stats, key) || (typeof stats[key] === "number" && Number.isFinite(stats[key]) && stats[key] >= 0)));
+    statFields.every((key) => !Object.hasOwn(stats, key) ||
+      (Number.isSafeInteger(stats[key]) && stats[key] >= 0 && stats[key] <= 1_000_000)));
   if (!isValidStats(match.stats) || !isValidStats(match.opponent_stats)) return false;
   if (match.opponent_stats != null && (!isPlainRecord(match.opponent_stats) || !Object.hasOwn(DIFFICULTY, match.difficulty))) return false;
   if (match.sets != null && (!Array.isArray(match.sets) || match.sets.some((set) =>
     !Array.isArray(set) || set.length !== 2 || set.some((score) => !Number.isInteger(score) || score < 0 || score > 99)))) return false;
+  if (match.match_id != null && (typeof match.match_id !== "string" || match.match_id.length > 160)) return false;
+  if (match.id != null && (typeof match.id !== "string" || match.id.length > 160)) return false;
+  if (match.created_at != null && (typeof match.created_at !== "string" || !Number.isFinite(Date.parse(match.created_at)))) return false;
+  if (match.duration_sec != null && (!Number.isFinite(match.duration_sec) || match.duration_sec < 0 || match.duration_sec > 86_400)) return false;
+  if (match.rating_points != null && (!Number.isFinite(match.rating_points) || match.rating_points < 0 || match.rating_points > 1_000_000)) return false;
+  if (match.legend != null && typeof match.legend !== "boolean") return false;
+  if (match.rally_lengths != null && (!Array.isArray(match.rally_lengths) || match.rally_lengths.length > 100_000 ||
+      match.rally_lengths.some((length) => !Number.isSafeInteger(length) || length < 0 || length > 1_000_000))) return false;
   try { JSON.stringify(match); return true; } catch { return false; }
 }
 
@@ -169,7 +182,7 @@ export function parseLocalDataBackup(text) {
   };
 }
 
-export function exportLocalData(storage = globalThis.localStorage) {
+export function exportLocalData(storage = getSafeStorage()) {
   if (!storage) throw new Error("Local storage is unavailable.");
   let setup = { ...DEFAULT_SETUP };
   try { setup = validateSetup(JSON.parse(storage.getItem(SETUP_KEY) || "{}")); } catch { /* Keep defaults. */ }
@@ -186,7 +199,7 @@ export function exportLocalData(storage = globalThis.localStorage) {
   }, null, 2);
 }
 
-export function importLocalData(text, storage = globalThis.localStorage) {
+export function importLocalData(text, storage = getSafeStorage()) {
   if (!storage) throw new Error("Local storage is unavailable.");
   const backup = parseLocalDataBackup(text);
   const keys = [SETUP_KEY, MATCHES_KEY, DISPLAY_PREFERENCES_KEY, STORAGE_VERSION_KEY];
@@ -215,10 +228,11 @@ export function importLocalData(text, storage = globalThis.localStorage) {
     if (!restored) throw new Error("The backup could not be saved, and some existing data could not be restored.");
     throw new Error("The backup could not be saved. Your existing data was kept.");
   }
+  memorySetupFallback = null;
   return { matchCount: backup.matches.length, setup: backup.setup };
 }
 
-export function deleteLocalData(storage = globalThis.localStorage) {
+export function deleteLocalData(storage = getSafeStorage()) {
   if (!storage) return;
   const keys = [];
   for (let index = 0; index < storage.length; index++) {
@@ -231,8 +245,25 @@ export function deleteLocalData(storage = globalThis.localStorage) {
 }
 
 export const loadSetup = () => {
-  migrateLocalStorage();
-  try { return validateSetup(JSON.parse(localStorage.getItem(SETUP_KEY) || "{}")); }
+  if (memorySetupFallback) return { ...memorySetupFallback };
+  const storage = getSafeStorage();
+  migrateLocalStorage(storage);
+  try { return validateSetup(JSON.parse(storage?.getItem(SETUP_KEY) || "{}")); }
   catch { return { ...DEFAULT_SETUP }; }
 };
-export const storeSetup = (s) => localStorage.setItem(SETUP_KEY, JSON.stringify(s));
+export const storeSetup = (s) => {
+  const safeSetup = validateSetup(s);
+  try {
+    const storage = getSafeStorage();
+    if (!storage) {
+      memorySetupFallback = safeSetup;
+      return false;
+    }
+    storage.setItem(SETUP_KEY, JSON.stringify(safeSetup));
+    memorySetupFallback = null;
+    return true;
+  } catch {
+    memorySetupFallback = safeSetup;
+    return false;
+  }
+};

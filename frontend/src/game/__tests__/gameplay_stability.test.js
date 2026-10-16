@@ -35,6 +35,14 @@ test("simulation advances almost equally at 20 and 60 FPS", () => {
   expect(a.p.x).toBeCloseTo(b.p.x, 5);
 });
 
+test("match duration measures real active time rather than scaled physics time", () => {
+  const e = new TennisEngine(cfg);
+  for (let i = 0; i < 60; i++) e.update(1 / 60);
+
+  expect(e.activeSeconds).toBeCloseTo(1, 2);
+  expect(e.time).toBeCloseTo(ENGINE_TUNING.simulationScale, 2);
+});
+
 test("simulation rejects nonfinite frame intervals", () => {
   const e = new TennisEngine(cfg);
   e.update(NaN); e.update(Infinity); e.update(-1);

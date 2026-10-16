@@ -1,6 +1,6 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { DEFAULT_SETUP, SETUP_KEY } from "@/game/constants";
-import { fetchLeaderboard, fetchMatches, loadSetup } from "../api";
+import { fetchLeaderboard, fetchMatches, loadSetup, storeSetup } from "../api";
 
 const MATCHES_KEY = "renffr-tennis-matches";
 const values = new Map();
@@ -62,5 +62,19 @@ describe("local data validation", () => {
     }));
 
     expect(loadSetup()).toEqual(DEFAULT_SETUP);
+  });
+
+  it("keeps setup and lets the player continue when local storage is unavailable or full", () => {
+    const setup = { ...DEFAULT_SETUP, name: "Local player" };
+    vi.stubGlobal("localStorage", null);
+    expect(storeSetup(setup)).toBe(false);
+    expect(loadSetup()).toEqual(setup);
+
+    vi.stubGlobal("localStorage", {
+      getItem: () => null,
+      setItem: () => { throw new Error("quota exceeded"); },
+    });
+    expect(storeSetup({ ...setup, name: "Still playable" })).toBe(false);
+    expect(loadSetup().name).toBe("Still playable");
   });
 });

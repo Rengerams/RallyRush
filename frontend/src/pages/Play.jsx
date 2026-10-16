@@ -191,7 +191,7 @@ export default function Play() {
         </div>
 
         <Callouts call={call} quality={quality} reducedMotion={displayPrefs.reducedMotion} />
-        {intro && <MatchIntro key={seed} cfg={cfg} names={names} onDone={endIntro} />}
+        {intro && <MatchIntro key={seed} cfg={cfg} names={names} onDone={endIntro} reducedMotion={displayPrefs.reducedMotion} />}
         {replay && !paused && (
           <div data-testid="replay-banner" className="pointer-events-none absolute inset-x-3 bottom-24 z-20 flex flex-wrap items-center justify-between gap-2 border border-white/10 bg-[#0B0E14]/90 px-3 py-2 sm:bottom-20">
             <span className="font-display text-base font-black uppercase italic text-[#00F0FF]">Replay · {replay}</span>

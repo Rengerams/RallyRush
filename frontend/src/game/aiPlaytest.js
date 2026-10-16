@@ -1,4 +1,4 @@
-import { FORMATS } from "./constants";
+import { ATTR_BUDGET, FORMATS } from "./constants";
 import { TennisEngine } from "./engine";
 import { ENGINE_TUNING } from "./tuning";
 import { predictIntercept } from "./physics";
@@ -11,6 +11,8 @@ export const PLAYTEST_PROFILES = Object.freeze({
   club: Object.freeze({ reaction: 0.2, releaseDistance: 0.72, serveContactHeight: 2.15 }),
   sharp: Object.freeze({ reaction: 0.1, releaseDistance: 0.52, serveContactHeight: 2.3 }),
 });
+
+export const PLAYTEST_BUILD = Object.freeze({ power: 6, stamina: 6, accuracy: 6 });
 
 function seededRandom(seed) {
   let state = seed >>> 0;
@@ -98,15 +100,16 @@ export function simulatePlaytestMatch({ seed, difficulty, style, surface = "hard
   if (!profile) throw new Error(`Unknown playtest profile: ${player}`);
   const config = {
     name: `Playtest ${player}`,
-    power: 6,
-    stamina: 7,
-    accuracy: 6,
+    ...PLAYTEST_BUILD,
     difficulty,
     style,
     surface,
     format: "quick",
   };
   const engine = new TennisEngine(config, undefined, { rng: seededRandom(seed) });
+  if (PLAYTEST_BUILD.power + PLAYTEST_BUILD.stamina + PLAYTEST_BUILD.accuracy > ATTR_BUDGET) {
+    throw new Error("The standard playtest build exceeds the selectable attribute budget.");
+  }
   engine.score.fmt = FORMATS.quick;
   engine.replays = false;
   const bot = { incomingRally: null, reactionUntil: 0, nextPlanAt: 0, target: { x: 0, z: 11.5 } };
