@@ -1,6 +1,7 @@
 import { defineConfig } from "vitest/config";
 import react from "@vitejs/plugin-react";
 import tailwindcss from "@tailwindcss/vite";
+import { playwright } from "@vitest/browser-playwright";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 
@@ -28,5 +29,15 @@ export default defineConfig({
   },
   build: {
     outDir: "dist",
+  },
+  test: {
+    browser: {
+      enabled: true,
+      headless: true, // Zorgt ervoor dat er geen browserinterface opent
+      provider: playwright(),
+      instances: [
+        { browser: "chromium" },
+      ],
+    },
   },
 });
