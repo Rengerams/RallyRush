@@ -1,5 +1,4 @@
 const path = require("node:path");
-const { app, BrowserWindow, shell } = require("electron");
 
 function createWindow() {
   const window = new BrowserWindow({
@@ -29,6 +28,7 @@ function createWindow() {
 }
 
 app.whenReady().then(() => {
+  applyContentSecurityPolicy();
   createWindow();
   app.on("activate", () => {
     if (BrowserWindow.getAllWindows().length === 0) createWindow();
