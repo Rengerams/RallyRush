@@ -42,6 +42,8 @@ export class TennisEngine {
     this.lastPointFrames = [];
     this.rallyLengths = [];
     this.replayFrames = [];
+    this.replayPaused = false;
+    this.replaySpeed = 0.65;
     this.cameraMode = "court";
     this.replays = true;
     this.startedAt = Date.now();
@@ -327,11 +329,16 @@ export class TennisEngine {
     const { dx, dz } = this.moveDir();
     const moving = dx !== 0 || dz !== 0;
     p.sprint = moving && this.keys.sprint && p.stamina > 0.5 && p.sliding <= 0;
-    p.stamina = clamp(p.stamina + (p.sprint ? -ENGINE_TUNING.sprintStaminaDrain : ENGINE_TUNING.staminaRecovery) * dt, 0, p.cap);
+    const staminaChange = p.sprint
+      ? -ENGINE_TUNING.sprintStaminaDrain
+      : moving ? ENGINE_TUNING.walkingStaminaRecovery : ENGINE_TUNING.staminaRecovery;
+    p.stamina = clamp(p.stamina + staminaChange * dt, 0, p.cap);
     if (p.sliding > 0) p.sliding -= dt;
     const speed = ENGINE_TUNING.playerMoveSpeed * this.surf.speed * lerp(1, 0.72, this.fatigue()) * (p.sprint ? ENGINE_TUNING.sprintSpeedMultiplier : 1);
-    const tvx = p.sliding > 0 ? p.sdx * ENGINE_TUNING.slideSpeed : dx * speed;
-    const tvz = p.sliding > 0 ? p.sdz * ENGINE_TUNING.slideSpeed : dz * speed;
+    const slideProgress = p.sliding > 0 ? p.sliding / ENGINE_TUNING.slideDuration : 0;
+    const slideSpeed = ENGINE_TUNING.slideSpeed * this.surf.speed * slideProgress;
+    const tvx = p.sliding > 0 ? p.sdx * slideSpeed : dx * speed;
+    const tvz = p.sliding > 0 ? p.sdz * slideSpeed : dz * speed;
     const rate = (tvx * tvx + tvz * tvz > p.vx * p.vx + p.vz * p.vz ? ENGINE_TUNING.playerAcceleration : ENGINE_TUNING.playerBraking) * dt;
     const ddx = tvx - p.vx, ddz = tvz - p.vz;
     const dm = Math.hypot(ddx, ddz);
@@ -509,6 +516,7 @@ export class TennisEngine {
       canReplay: this.lastPointFrames.length > 1 && (this.state === "pointOver" || this.state === "matchOver" || (this.state === "serve" && this.serveStage === "hold")),
       replayProgress: this.state === "replay" ? this.replayI / Math.max(1, this.replayFrames.length - 1) : 0,
       replaySpeed: this.replaySpeed,
+      replayPaused: this.replayPaused,
     };
   }
 }
