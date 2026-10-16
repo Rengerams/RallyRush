@@ -1,5 +1,5 @@
 {
-  "name": "frontend",
+  "name": "rally-rush",
   "version": "0.2.0",
   "private": true,
   "dependencies": {
@@ -55,10 +55,10 @@
     "vaul": "1.1.2"
   },
   "scripts": {
-    "start": "vite",
-    "build": "vite build",
-    "test": "vitest run",
-    "desktop": "node scripts/desktop-dev.cjs",
+    "start": "vite --config frontend/vite.config.mjs",
+    "build": "vite build --config frontend/vite.config.mjs",
+    "test": "vitest run --config frontend/vite.config.mjs",
+    "desktop": "node frontend/scripts/desktop-dev.cjs",
     "desktop:dist": "npm run build && electron-builder --win nsis"
   },
   "devDependencies": {
@@ -72,16 +72,16 @@
   },
   "license": "MIT",
   "homepage": ".",
-  "main": "desktop/main.cjs",
+  "main": "frontend/desktop/main.cjs",
   "build": {
     "appId": "com.renffr.open",
     "productName": "Rally Rush",
     "directories": {
-      "output": "release"
+      "output": "frontend/release"
     },
     "files": [
-      "dist/**/*",
-      "desktop/**/*",
+      "frontend/dist/**/*",
+      "frontend/desktop/**/*",
       "package.json",
       "!node_modules/**/*"
     ],

@@ -2,7 +2,7 @@ const { spawn } = require("node:child_process");
 const http = require("node:http");
 const path = require("node:path");
 
-const root = path.resolve(__dirname, "..");
+const root = path.resolve(__dirname, "../..");
 const url = "http://127.0.0.1:3000";
 const isWindows = process.platform === "win32";
 const npm = isWindows ? "npm.cmd" : "npm";
