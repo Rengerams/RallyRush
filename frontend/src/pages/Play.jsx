@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { Pause, Camera, Film, MousePointer2 } from "lucide-react";
+import { Pause, Play as PlayIcon, Camera, Film, MousePointer2 } from "lucide-react";
 import { TennisEngine } from "@/game/engine";
 import { attachPlayKeyboardControls } from "@/game/playKeyboardControls";
 import { audio } from "@/game/audio";
@@ -190,12 +190,25 @@ export default function Play() {
           <button data-testid="pause-btn" aria-label="Pause match" onClick={togglePause} className="rounded-full border border-white/15 bg-[#0B0E14]/85 p-2 backdrop-blur hover:border-[#DFFF00]"><Pause size={16} /></button>
         </div>
 
-        <Callouts call={call} quality={quality} />
+        <Callouts call={call} quality={quality} reducedMotion={displayPrefs.reducedMotion} />
         {intro && <MatchIntro key={seed} cfg={cfg} names={names} onDone={endIntro} />}
         {replay && !paused && (
           <div data-testid="replay-banner" className="pointer-events-none absolute inset-x-3 bottom-24 z-20 flex flex-wrap items-center justify-between gap-2 border border-white/10 bg-[#0B0E14]/90 px-3 py-2 sm:bottom-20">
             <span className="font-display text-base font-black uppercase italic text-[#00F0FF]">Replay · {replay}</span>
             <span data-testid="replay-speed" className="font-mono text-[10px] text-white">{snap?.replaySpeed ?? 0.65}×</span>
+            <button data-testid="replay-pause-btn" aria-label={snap?.replayPaused ? "Resume replay" : "Pause replay"}
+              onClick={() => { const engine = engRef.current; if (engine) { engine.replayPaused = !engine.replayPaused; setSnap(engine.snapshot()); } }}
+              className="btn-ghost pointer-events-auto flex items-center gap-1 rounded-full px-3 py-1 font-mono text-[10px]">
+              {snap?.replayPaused ? <PlayIcon size={12} /> : <Pause size={12} />}{snap?.replayPaused ? "Resume" : "Pause"}
+            </button>
+            <label className="pointer-events-auto flex items-center gap-1 font-mono text-[10px] text-slate-300">
+              <span>Speed</span>
+              <select data-testid="replay-speed-select" aria-label="Replay speed" value={snap?.replaySpeed ?? 0.65}
+                onChange={(event) => { const engine = engRef.current; if (engine) { engine.replaySpeed = Number(event.target.value); setSnap(engine.snapshot()); } }}
+                className="rounded bg-[#0B0E14] px-2 py-1 text-white outline-none focus-visible:ring-2 focus-visible:ring-[#00F0FF]">
+                <option value="0.5">0.5×</option><option value="0.65">0.65×</option><option value="1">1×</option><option value="2">2×</option>
+              </select>
+            </label>
             <button data-testid="replay-skip-btn" onClick={() => engRef.current?.endReplay()} className="btn-ghost pointer-events-auto rounded-full px-3 py-1 font-mono text-[10px]">Skip</button>
             <div data-testid="replay-progress" role="progressbar" aria-valuenow={Math.round((snap?.replayProgress || 0) * 100)} aria-valuemin={0} aria-valuemax={100} aria-label="Replay progress" className="h-0.5 w-full bg-white/15"><div className="h-full bg-[#00F0FF]" style={{ width: `${(snap?.replayProgress || 0) * 100}%` }} /></div>
           </div>
