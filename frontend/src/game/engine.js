@@ -419,6 +419,7 @@ export class TennisEngine {
       if (this.isServe) return this.fault("Net · Fault");
       return this.endPoint(1 - this.lastHitter, "Net", true);
     }
+    this.emit({ type: "bounce", who: this.lastHitter, x: b.x, z: b.z, in: isIn(b, this.lastHitter === 0 ? -1 : 1, this.isServe ? this.boxSign : 0) });
     this.marks.push({ x: b.x, z: b.z, life: 1 });
     audio.bounce();
     if (this.state !== "rally") return;

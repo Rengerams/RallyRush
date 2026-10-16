@@ -1,6 +1,7 @@
 import { expect, test } from "vitest";
 import { TennisEngine } from "../engine";
 import { SURFACES, FORMATS, SHOTS } from "../constants";
+import { audio } from "../audio";
 import { stepBall } from "../physics";
 import { createScore, awardPoint, pointLabels } from "../scoring";
 
@@ -165,6 +166,24 @@ test("a timed player serve has repeatable quality and trajectory for a fixed see
   expect(first.quality).toBe("perfect");
   expect(first.velocity.every(Number.isFinite)).toBe(true);
   expect(first).toEqual(playTimedServe(0x52a7e));
+});
+
+test("player bounce events expose the actual landing lane", () => {
+  const events = [];
+  const sound = audio.sound;
+  audio.sound = false;
+  try {
+    const e = new TennisEngine(cfg, (event) => events.push(event));
+    e.state = "rally";
+    e.lastHitter = 0;
+    e.isServe = false;
+    e.ball.x = 0;
+    e.ball.z = -8;
+    e.handleBallEvent("bounce");
+    expect(events.find((event) => event.type === "bounce")).toMatchObject({ who: 0, x: 0, z: -8, in: true });
+  } finally {
+    audio.sound = sound;
+  }
 });
 
 test("advantage scoreboard shows forty on the other side", () => {

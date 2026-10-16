@@ -9,6 +9,10 @@ export function isServeLaunchEvent(event) {
   return event?.type === "shot" && event.who === 0 && event.shot === "Serve";
 }
 
+export function practiceServer(mode) {
+  return mode === "serve" ? 0 : 1;
+}
+
 export function isTargetHit(x, lane) {
   if (!Number.isFinite(x)) return false;
   if (lane === "left") return x <= -1.1;
