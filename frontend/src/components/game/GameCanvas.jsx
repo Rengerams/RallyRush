@@ -2,7 +2,7 @@ import { useEffect, useRef, useState } from "react";
 import { RotateCcw } from "lucide-react";
 import { ThreeView } from "@/game/three/ThreeView";
 
-export default function GameCanvas({ eng, wrapRef, renderActive = true, reducedEffects = false, onSwing, onRelease, onPointer, onPointerLeave, onQuality, onAvailability }) {
+export default function GameCanvas({ eng, wrapRef, renderActive = true, reducedEffects = false, reducedMotion = false, onSwing, onRelease, onPointer, onPointerLeave, onQuality, onAvailability }) {
   const ref = useRef(null), viewRef = useRef(null);
   const [error, setError] = useState(null), [retry, setRetry] = useState(0);
   const [pageVisible, setPageVisible] = useState(() => typeof document === "undefined" || document.visibilityState !== "hidden");
@@ -40,6 +40,16 @@ export default function GameCanvas({ eng, wrapRef, renderActive = true, reducedE
       canvas.removeEventListener("webglcontextlost", contextLost); view.dispose(); viewRef.current = null; onAvailability?.(false);
     };
   }, [eng, wrapRef, onQuality, onAvailability, retry]);
+
+  useEffect(() => {
+    const view = viewRef.current;
+    if (!view) return undefined;
+    const preference = window.matchMedia?.("(prefers-reduced-motion: reduce)");
+    const syncMotion = () => view.setReducedMotion(Boolean(reducedMotion || preference?.matches));
+    syncMotion();
+    preference?.addEventListener?.("change", syncMotion);
+    return () => preference?.removeEventListener?.("change", syncMotion);
+  }, [reducedMotion, retry]);
 
   useEffect(() => {
     if (reducedEffects) viewRef.current?.reduceEffects();
