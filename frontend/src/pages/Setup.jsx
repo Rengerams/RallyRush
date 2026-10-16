@@ -78,7 +78,7 @@ export default function Setup() {
             Controls guide
           </button>
           <button type="button" data-testid="setup-start-match-btn" onClick={start}
-            className="btn-volt w-full rounded-full py-4 font-display text-xl font-black uppercase italic tracking-wide md:w-auto md:px-16">
+            className="btn-volt flex-1 rounded-full py-4 font-display text-xl font-black uppercase italic tracking-wide md:flex-none md:px-16">
             Start match
           </button>
         </div>
