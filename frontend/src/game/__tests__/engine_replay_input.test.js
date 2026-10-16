@@ -184,4 +184,24 @@ describe("replay controls", () => {
 
     expect(e.p.serveSwing).toBe(true);
   });
+
+  test("replay pause freezes the frame and selected speed controls playback", () => {
+    const e = new TennisEngine(cfg);
+    e.state = "pointOver";
+    recordFrame(e);
+    e.time += 2;
+    recordFrame(e);
+    e.lastPointFrames = [...e.frames];
+    expect(startReplay(e, true)).toBe(true);
+
+    e.replayPaused = true;
+    stepReplay(e, 0.1);
+    expect(e.replayTime).toBe(0);
+
+    e.replayPaused = false;
+    e.replaySpeed = 2;
+    stepReplay(e, 0.1);
+    expect(e.replayTime).toBeCloseTo(0.2);
+    expect(e.snapshot().replaySpeed).toBe(2);
+  });
 });
