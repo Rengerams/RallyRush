@@ -9,9 +9,9 @@ const PADS = [
 
 export default function DPad({ onKey }) {
   return (
-    <div className="mx-auto grid w-44 grid-cols-3 grid-rows-2 gap-1.5 lg:hidden">
+    <div className="play-dpad grid grid-cols-3 grid-rows-2 gap-1">
       {PADS.map(({ k, icon: Icon, cls }) => (
-        <button key={k} type="button" aria-label={`Move ${k}`} data-testid={`dpad-${k}`} className={`${cls} flex h-12 touch-none items-center justify-center rounded-lg border border-white/15 bg-white/5 active:bg-[#DFFF00]/20`}
+        <button key={k} type="button" aria-label={`Move ${k}`} data-testid={`dpad-${k}`} className={`${cls} flex h-11 w-11 touch-none items-center justify-center rounded-lg border border-white/15 bg-[#0B0E14]/80 backdrop-blur-md active:bg-[#DFFF00]/20`}
           onPointerDown={(e) => { e.currentTarget.setPointerCapture(e.pointerId); onKey(k, true); }} onPointerUp={() => onKey(k, false)} onPointerCancel={() => onKey(k, false)} onLostPointerCapture={() => onKey(k, false)}>
           <Icon size={20} />
         </button>

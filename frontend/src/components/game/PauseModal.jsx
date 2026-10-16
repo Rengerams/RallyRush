@@ -1,17 +1,20 @@
 import { useState } from "react";
 import * as AlertDialog from "@radix-ui/react-alert-dialog";
 import * as Dialog from "@radix-ui/react-dialog";
-import { Volume2, VolumeX, Mic, MicOff, Film } from "lucide-react";
+import { Volume2, VolumeX, Mic, MicOff, Film, BookOpen } from "lucide-react";
+import FirstSessionGuide from "@/components/game/FirstSessionGuide";
 
-export default function PauseModal({ onResume, onRestart, onQuit, sound, voice, onSound, onVoice, replays, onReplays }) {
+export default function PauseModal({ onResume, onRestart, onQuit, sound, voice, onSound, onVoice, replays, onReplays, displayPrefs, onDisplayPrefChange }) {
   const [confirmRestart, setConfirmRestart] = useState(false);
+  const [guideOpen, setGuideOpen] = useState(false);
 
   return (
+    <>
     <Dialog.Root open onOpenChange={(open) => !open && onResume()}>
       <Dialog.Portal>
         <Dialog.Overlay className="fixed inset-0 z-50 bg-[#0B0E14]/70 backdrop-blur-md" />
         <Dialog.Content data-testid="pause-modal" className="fixed inset-x-4 top-1/2 z-50 max-h-[calc(100dvh-2rem)] w-auto max-w-[320px] -translate-y-1/2 overflow-y-auto rounded-2xl border border-white/10 bg-[#121824] p-6 outline-none fade-up sm:left-1/2 sm:right-auto sm:w-full sm:-translate-x-1/2">
-          <p className="font-mono text-[10px] uppercase tracking-[0.3em] text-[#00F0FF]">Time-out</p>
+          <p className="font-mono text-[10px] uppercase tracking-[0.3em] text-[#00F0FF]">Rally Rush · Time-out</p>
           <Dialog.Title className="font-display mt-1 text-5xl font-black uppercase italic">Paused</Dialog.Title>
           <Dialog.Description className="sr-only">The match is paused. Resume, restart the match, or return to setup.</Dialog.Description>
           <div className="mt-6 space-y-2">
@@ -49,8 +52,27 @@ export default function PauseModal({ onResume, onRestart, onQuit, sound, voice, 
           <button data-testid="pause-replays-toggle" aria-pressed={replays} onClick={onReplays} className={`btn-ghost mt-2 flex w-full items-center justify-center gap-2 rounded-lg py-2 text-sm ${replays ? "text-[#00F0FF]" : "text-slate-500"}`}>
             <Film size={16} /> Replays {replays ? "on" : "off"}
           </button>
+          <section aria-label="Match display preferences" className="mt-4 rounded-xl border border-white/10 bg-black/20 p-3">
+            <h3 className="font-mono text-[10px] uppercase tracking-wider text-slate-300">Accessibility</h3>
+            <div className="mt-2 grid grid-cols-2 gap-2">
+              <button type="button" data-testid="pause-hud-size-toggle" aria-pressed={displayPrefs.hudSize === "large"} onClick={() => onDisplayPrefChange("hudSize", displayPrefs.hudSize === "large" ? "normal" : "large")} className="btn-ghost rounded-lg px-2 py-2 text-xs">
+                HUD text · {displayPrefs.hudSize === "large" ? "Large" : "Normal"}
+              </button>
+              <button type="button" data-testid="pause-reduced-effects-toggle" aria-pressed={displayPrefs.reducedEffects} onClick={() => onDisplayPrefChange("reducedEffects", !displayPrefs.reducedEffects)} className="btn-ghost rounded-lg px-2 py-2 text-xs">
+                Reduced effects · {displayPrefs.reducedEffects ? "On" : "Off"}
+              </button>
+              <button type="button" data-testid="pause-reduced-motion-toggle" aria-pressed={displayPrefs.reducedMotion} onClick={() => onDisplayPrefChange("reducedMotion", !displayPrefs.reducedMotion)} className="btn-ghost col-span-2 rounded-lg px-2 py-2 text-xs">
+                Reduced motion · {displayPrefs.reducedMotion ? "On" : "Off"}
+              </button>
+            </div>
+          </section>
+          <button data-testid="pause-controls-guide-btn" onClick={() => setGuideOpen(true)} className="btn-ghost mt-2 flex w-full items-center justify-center gap-2 rounded-lg py-2 text-sm">
+            <BookOpen size={16} /> Controls guide
+          </button>
         </Dialog.Content>
       </Dialog.Portal>
     </Dialog.Root>
+    <FirstSessionGuide open={guideOpen} onOpenChange={setGuideOpen} />
+    </>
   );
 }

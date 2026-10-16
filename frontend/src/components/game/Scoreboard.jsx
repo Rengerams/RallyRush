@@ -1,26 +1,27 @@
-function Row({ name, labels, games, history, serving, idx, legend }) {
+function Row({ name, labels, games, history, serving, idx, legend, compact }) {
   return (
-    <div className="flex flex-wrap items-center gap-2 px-3 py-3" data-testid={`scoreboard-row-${idx}`}>
-      <span className={`h-2 w-2 rounded-full ${serving ? "bg-[#DFFF00] shadow-[0_0_10px_#DFFF00]" : "bg-transparent"}`} data-testid={`scoreboard-server-${idx}`} />
-      <span data-testid={`scoreboard-name-${idx}`} className={`font-display min-w-0 flex-1 break-words text-base font-extrabold uppercase ${legend ? "gold-shimmer" : ""}`}>{name}</span>
-      {history.map((h, i) => <span key={`set-${i}-${h[0]}-${h[1]}`} className="w-6 text-center font-mono text-sm text-slate-500">{h[idx]}</span>)}
-      <span data-testid={`scoreboard-games-${idx}`} className="w-7 text-center font-mono text-lg font-extrabold">{games[idx]}</span>
-      <span data-testid={`scoreboard-points-${idx}`} className="w-9 rounded bg-[#DFFF00] py-0.5 text-center font-mono text-lg font-extrabold text-[#0B0E14]">{labels[idx] || "\u00a0"}</span>
+    <div className={`scoreboard-row flex min-w-0 items-center gap-1.5 ${compact ? "px-2 py-1" : "px-3 py-2"}`} data-testid={`scoreboard-row-${idx}`} aria-label={`${name}${serving ? ", serving" : ""}`}>
+      <span aria-label={serving ? "Serving" : undefined} className={`h-1.5 w-1.5 shrink-0 rounded-full ${serving ? "bg-[#DFFF00] shadow-[0_0_10px_#DFFF00]" : "bg-transparent"}`} data-testid={`scoreboard-server-${idx}`} />
+      <span data-testid={`scoreboard-name-${idx}`} className={`font-display min-w-0 flex-1 truncate text-sm font-extrabold uppercase ${legend ? "gold-shimmer" : ""}`}>{name}</span>
+      {history.map((h, i) => <span key={`set-${i}-${h[0]}-${h[1]}`} aria-label={`Set ${i + 1}: ${h[0]}-${h[1]}`} className="w-5 shrink-0 text-center font-mono text-[10px] text-slate-500">{h[idx]}</span>)}
+      <span data-testid={`scoreboard-games-${idx}`} aria-label={`Games: ${games[idx]}`} className="w-6 shrink-0 text-center font-mono text-sm font-bold">{games[idx]}</span>
+      <span data-testid={`scoreboard-points-${idx}`} aria-label={`Points: ${labels[idx] || "0"}`} className="w-8 shrink-0 rounded bg-[#DFFF00] py-0.5 text-center font-mono text-sm font-extrabold text-[#0B0E14]">{labels[idx] || "0"}</span>
     </div>
   );
 }
 
-export default function Scoreboard({ snap, names, legend }) {
+export default function Scoreboard({ snap, names, legend, compact = false }) {
   if (!snap) return null;
   return (
-    <div data-testid="scoreboard" className="overflow-hidden rounded-2xl border border-white/10 bg-[#121824]/90 backdrop-blur-xl">
-      <div className="flex items-center justify-between border-b border-white/[0.06] px-4 py-2 font-mono text-[10px] uppercase tracking-[0.25em] text-slate-500">
-        <span>Rally Rush</span>
-        <span>{snap.tiebreak ? "Tie-break" : `Sets ${snap.sets[0]}-${snap.sets[1]}`}</span>
+    <div data-testid="scoreboard" data-compact={compact} role="group" aria-label="Match score" className={`scoreboard-card overflow-hidden rounded-xl border border-white/15 bg-[#0B0E14]/85 shadow-lg backdrop-blur-md ${compact ? "scoreboard-card--compact" : ""}`}>
+      <div className={`flex items-center justify-between border-b border-white/10 font-mono uppercase tracking-wider text-slate-300 ${compact ? "px-2 py-1 text-[9px]" : "px-3 py-1.5 text-[10px]"}`}>
+        <span>Sets {snap.sets[0]}–{snap.sets[1]}</span>
+        {snap.tiebreak && <span className="text-[#DFFF00]">Tie-break</span>}
+        {!snap.tiebreak && <span className="text-slate-500">GAME</span>}
       </div>
-      <Row idx={0} name={names[0]} legend={legend} labels={snap.labels} games={snap.games} history={snap.setHistory} serving={snap.server === 0} />
-      <div className="h-px bg-white/[0.06]" />
-      <Row idx={1} name={names[1]} labels={snap.labels} games={snap.games} history={snap.setHistory} serving={snap.server === 1} />
+      <Row idx={0} name={names[0]} legend={legend} labels={snap.labels} games={snap.games} history={snap.setHistory} serving={snap.server === 0} compact={compact} />
+      <div className="mx-2 h-px bg-white/10" />
+      <Row idx={1} name={names[1]} labels={snap.labels} games={snap.games} history={snap.setHistory} serving={snap.server === 1} compact={compact} />
     </div>
   );
 }

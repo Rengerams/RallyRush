@@ -5,6 +5,7 @@ import { TennisEngine } from "@/game/engine";
 import { audio } from "@/game/audio";
 import { SHOT_BY_KEY, SURFACES, DIFFICULTY, STYLES } from "@/game/constants";
 import { loadSetup, saveMatch } from "@/lib/api";
+import { loadMatchDisplayPreferences, saveMatchDisplayPreferences } from "@/lib/matchDisplayPreferences";
 import { toast } from "sonner";
 import Scoreboard from "@/components/game/Scoreboard";
 import ShotPad from "@/components/game/ShotPad";
@@ -15,7 +16,6 @@ import PauseModal from "@/components/game/PauseModal";
 import MatchEndModal from "@/components/game/MatchEndModal";
 import MatchIntro from "@/components/game/MatchIntro";
 import GameCanvas from "@/components/game/GameCanvas";
-import MobileScore from "@/components/game/MobileScore";
 import { ServeIndicator } from "@/components/game/ServeIndicator";
 
 const KEYMAP = { ArrowLeft: "left", KeyA: "left", ArrowRight: "right", KeyD: "right", ArrowUp: "up", KeyW: "up", ArrowDown: "down", KeyS: "down", ShiftLeft: "sprint", ShiftRight: "sprint" };
@@ -31,6 +31,7 @@ export default function Play() {
   const [snap, setSnap] = useState(null);
   const [call, setCall] = useState(null);
   const [quality, setQuality] = useState(null);
+  const [displayPrefs, setDisplayPrefs] = useState(loadMatchDisplayPreferences);
   const [paused, setPaused] = useState(false);
   const [result, setResult] = useState(null);
   const [saveState, setSaveState] = useState(null);
@@ -105,6 +106,10 @@ export default function Play() {
     audio.setMusicActive(!intro && !paused && !replay && !result);
   }, [intro, paused, replay, result]);
   useEffect(() => () => audio.setMusicActive(false), []);
+  useEffect(() => {
+    document.documentElement.dataset.reducedMotion = displayPrefs.reducedMotion ? "true" : "false";
+    return () => { delete document.documentElement.dataset.reducedMotion; };
+  }, [displayPrefs.reducedMotion]);
 
   // eslint-disable-next-line react-hooks/exhaustive-deps -- pausedRef is a ref, setPaused is a stable setter
   const togglePause = useCallback(() => {
@@ -133,6 +138,8 @@ export default function Play() {
       if (eng.state === "matchOver") return;
       if (e.code === "Escape" || e.code === "KeyP") {
         if (e.repeat) return;
+        // Let the open Radix pause dialog handle Escape so it resumes exactly once.
+        if (e.code === "Escape" && pausedRef.current) return;
         e.preventDefault();
         togglePause();
         return;
@@ -193,64 +200,68 @@ export default function Play() {
     audio.unlock(); eng.holdShot(eng.selectedShot);
   };
   const toggleVoice = () => { audio.voice = !audio.voice; setVoice(audio.voice); };
+  const updateDisplayPref = (key, value) => setDisplayPrefs(current => saveMatchDisplayPreferences({ ...current, [key]: value }));
 
   return (
-    <main className="mx-auto grid max-w-[1840px] grid-cols-1 gap-4 px-3 py-3 sm:px-4 lg:grid-cols-[210px_minmax(0,1fr)_190px] lg:gap-4 lg:px-6 lg:py-4" data-testid="play-page">
-      <aside className="order-3 min-w-0 space-y-4 lg:order-1">
-        <Scoreboard snap={snap} names={names} legend={cfg.legend} />
-        <StaminaBar value={snap?.stamina ?? 1} sprint={snap?.sprint} />
-        <div className="rounded-2xl border border-white/10 bg-[#121824] p-4 font-mono text-xs text-slate-400">
-          <p className="text-[10px] uppercase tracking-[0.25em] text-slate-500">Match info</p>
-          <p className="mt-2">Surface · <span className="text-white">{SURFACES[cfg.surface].label}</span></p>
-          <p>Opponent · <span className="text-white">{DIFFICULTY[cfg.difficulty].label} {STYLES[cfg.style].label}</span></p>
-          <p>Rally · <span data-testid="rally-count" className="text-[#DFFF00]">{snap?.rally ?? 0}</span></p>
-          {snap?.state === "serve" && snap.server === 0 && (
-            <p data-testid="serve-hint" className="mt-3 rounded-lg bg-[#DFFF00]/10 px-3 py-2 text-[#DFFF00]">
-              {snap.serveStage === "hold" ? "Ready to serve" : "Ball in the air"}{snap.faults ? " · 2nd serve" : ""}
-            </p>
-          )}
-        </div>
-      </aside>
-      <section ref={wrapRef} className="relative order-1 min-w-0 lg:order-2" data-testid="game-canvas-wrapper">
-        <div className="relative mx-auto w-fit max-w-full">
-          <GameCanvas eng={eng} wrapRef={wrapRef} renderActive={!intro && !paused && (!result || Boolean(replay))} onSwing={mouseSwing} onRelease={() => eng.releaseShot(eng.p.heldShot)} onPointer={pointerMove} onPointerLeave={() => eng.clearPointer()} onQuality={onQuality} onAvailability={onAvailability} />
-          <div className="flex flex-wrap items-center justify-between gap-2 py-2 lg:absolute lg:bottom-3 lg:right-3 lg:py-0">
-            <MobileScore snap={snap} />
-            {!intro && !paused && <ServeIndicator snap={snap} showFirstServeHint={!firstServeAttempted} />}
-          </div>
-          <div className="absolute inset-x-2 top-2 flex flex-wrap justify-end gap-1.5 sm:inset-x-3 sm:top-3 sm:gap-2">
-            <button data-testid="camera-toggle-btn" onClick={() => { eng.clearPointer(); setCameraMode(c => c === "court" ? "broadcast" : "court"); }} title="Change gameplay camera" className="btn-ghost flex items-center gap-1.5 rounded-full bg-[#0B0E14]/85 px-3 py-2 font-mono text-[10px]"><Camera size={14} /><span>{cameraMode === "court" ? "Court" : "Broadcast"}</span></button>
-            <button data-testid="mouse-control-toggle" aria-pressed={mouseEnabled} onClick={() => setMouseEnabled(v => !v)} title="Mouse movement optional · hold right button to aim · hold left button to prepare a shot" aria-label="Mouse movement" className={`btn-ghost flex items-center gap-1.5 rounded-full bg-[#0B0E14]/85 px-3 py-2 font-mono text-[10px] ${mouseEnabled ? "text-[#DFFF00]" : "text-slate-400"}`}><MousePointer2 size={14} />Mouse {mouseEnabled ? "on" : "off"}</button>
-            <button data-testid="replay-last-point-btn" disabled={!snap?.canReplay || paused || intro} onClick={() => engRef.current?.startReplay(true)} title="Replay last point" aria-label="Replay last point" className="btn-ghost rounded-full bg-[#0B0E14]/85 p-2 disabled:opacity-30"><Film size={14} /></button>
-            <button data-testid="pause-btn" aria-label="Pause match" onClick={togglePause} className="rounded-full border border-white/15 bg-[#0B0E14]/70 p-2 backdrop-blur hover:border-[#DFFF00]">
-              <Pause size={16} />
-            </button>
-          </div>
-          <Callouts call={call} quality={quality} />
-          {intro && <MatchIntro key={seed} cfg={cfg} names={names} onDone={endIntro} />}
-          {replay && !paused && (
-            <div data-testid="replay-banner" className="pointer-events-none absolute inset-x-3 bottom-3 flex flex-wrap items-center justify-between gap-2 border border-white/10 bg-[#0B0E14]/90 px-3 py-2">
-              <span className="font-display text-base font-black uppercase italic text-[#00F0FF]">Replay · {replay}</span>
-              <span data-testid="replay-speed" className="font-mono text-[10px] text-white">{snap?.replaySpeed ?? 0.65}×</span>
-              <button data-testid="replay-skip-btn" onClick={() => engRef.current?.endReplay()} className="btn-ghost pointer-events-auto rounded-full px-3 py-1 font-mono text-[10px]">Skip</button>
-              <div data-testid="replay-progress" role="progressbar" aria-valuenow={Math.round((snap?.replayProgress || 0) * 100)} aria-valuemin={0} aria-valuemax={100} aria-label="Replay progress" className="h-0.5 w-full bg-white/15"><div className="h-full bg-[#00F0FF]" style={{ width: `${(snap?.replayProgress || 0) * 100}%` }} /></div>
+    <main className="play-page fixed inset-0 z-30 h-[100dvh] w-screen overflow-hidden bg-[#0B0E14]" data-testid="play-page" data-hud-size={displayPrefs.hudSize}>
+      <section ref={wrapRef} className="absolute inset-0" data-testid="game-canvas-wrapper">
+        <GameCanvas eng={eng} reducedEffects={displayPrefs.reducedEffects} wrapRef={wrapRef} renderActive={!intro && !paused && (!result || Boolean(replay))} onSwing={mouseSwing} onRelease={() => eng.releaseShot(eng.p.heldShot)} onPointer={pointerMove} onPointerLeave={() => eng.clearPointer()} onQuality={onQuality} onAvailability={onAvailability} />
+        <div className="play-hud-corner absolute left-2 top-2 z-20 flex w-[min(22rem,calc(100vw-1rem))] flex-col gap-2 sm:left-4 sm:top-4 sm:w-[min(22rem,calc(100vw-2rem))]">
+          <Scoreboard snap={snap} names={names} legend={cfg.legend} compact={snap?.state === "rally"} />
+          <StaminaBar value={snap?.stamina ?? 1} sprint={snap?.sprint} />
+          <details className="rounded-xl border border-white/10 bg-[#0B0E14]/80 px-3 py-2 font-mono text-[10px] text-slate-300 backdrop-blur-md">
+            <summary className="cursor-pointer font-semibold uppercase tracking-wider text-[#00F0FF] outline-none focus-visible:ring-2 focus-visible:ring-[#00F0FF]">Match details and controls</summary>
+            <div className="mt-2 grid gap-1 sm:grid-cols-2">
+              <p>Surface · <span className="text-white">{SURFACES[cfg.surface].label}</span></p>
+              <p>Opponent · <span className="text-white">{DIFFICULTY[cfg.difficulty].label} {STYLES[cfg.style].label}</span></p>
+              <p>Rally · <span data-testid="rally-count" className="text-[#DFFF00]">{snap?.rally ?? 0}</span></p>
+              <p>WASD / arrows · move</p>
+              <p>1–7 · hold, release near contact</p>
+              <p>Shift · sprint · Space · slide</p>
+              <p>Esc · pause · Enter · skip replay</p>
+              <p>On-screen arrows move · hold/release a shot button</p>
+              {mouseEnabled && <p>Mouse: move to run · right-click to aim · hold/release left-click to swing</p>}
+              {snap?.state === "serve" && snap.server === 0 && (
+                <p data-testid="serve-hint" className="text-[#DFFF00]">
+                  {snap.serveStage === "hold" ? "Ready to serve" : "Ball in the air"}{snap.faults ? " · 2nd serve" : ""}
+                </p>
+              )}
             </div>
-          )}
-          {paused && (!result || replay) && (
-            <PauseModal onResume={togglePause} onRestart={() => setSeed((s) => s + 1)} onQuit={() => nav("/setup")}
-              sound={sound} voice={voice} onSound={toggleSound} onVoice={toggleVoice} replays={replays} onReplays={toggleReplays} />
-          )}
-          {result && !replay && (
-            <MatchEndModal result={result} names={names} saveState={saveState}
-              canReplay={snap?.canReplay} onReplay={() => engRef.current?.startReplay(true)} onRetry={() => persistResult(result)}
-              onRematch={() => setSeed((s) => s + 1)} onLeaderboard={() => nav("/leaderboard")} onSetup={() => nav("/setup")} />
-          )}
+          </details>
+          {!intro && !paused && <ServeIndicator snap={snap} showFirstServeHint={!firstServeAttempted} />}
+        </div>
+
+        <div className="absolute right-2 top-2 z-20 flex flex-wrap justify-end gap-1.5 sm:right-4 sm:top-4 sm:gap-2">
+          <button data-testid="camera-toggle-btn" onClick={() => { eng.clearPointer(); setCameraMode(c => c === "court" ? "broadcast" : "court"); }} title="Change gameplay camera" className="btn-ghost flex items-center gap-1.5 rounded-full bg-[#0B0E14]/85 px-2.5 py-2 font-mono text-[10px]"><Camera size={14} /><span>{cameraMode === "court" ? "Court" : "Broadcast"}</span></button>
+          <button data-testid="mouse-control-toggle" aria-pressed={mouseEnabled} onClick={() => setMouseEnabled(v => !v)} title="Mouse movement optional · hold right button to aim · hold left button to prepare a shot" aria-label="Mouse movement" className={`btn-ghost flex items-center gap-1.5 rounded-full bg-[#0B0E14]/85 px-2.5 py-2 font-mono text-[10px] ${mouseEnabled ? "text-[#DFFF00]" : "text-slate-400"}`}><MousePointer2 size={14} /><span className="hidden sm:inline">Mouse {mouseEnabled ? "on" : "off"}</span></button>
+          <button data-testid="replay-last-point-btn" disabled={!snap?.canReplay || paused || intro} onClick={() => engRef.current?.startReplay(true)} title="Replay last point" aria-label="Replay last point" className="btn-ghost rounded-full bg-[#0B0E14]/85 p-2 disabled:opacity-30"><Film size={14} /></button>
+          <button data-testid="pause-btn" aria-label="Pause match" onClick={togglePause} className="rounded-full border border-white/15 bg-[#0B0E14]/85 p-2 backdrop-blur hover:border-[#DFFF00]"><Pause size={16} /></button>
+        </div>
+
+        <Callouts call={call} quality={quality} />
+        {intro && <MatchIntro key={seed} cfg={cfg} names={names} onDone={endIntro} />}
+        {replay && !paused && (
+          <div data-testid="replay-banner" className="pointer-events-none absolute inset-x-3 bottom-24 z-20 flex flex-wrap items-center justify-between gap-2 border border-white/10 bg-[#0B0E14]/90 px-3 py-2 sm:bottom-20">
+            <span className="font-display text-base font-black uppercase italic text-[#00F0FF]">Replay · {replay}</span>
+            <span data-testid="replay-speed" className="font-mono text-[10px] text-white">{snap?.replaySpeed ?? 0.65}×</span>
+            <button data-testid="replay-skip-btn" onClick={() => engRef.current?.endReplay()} className="btn-ghost pointer-events-auto rounded-full px-3 py-1 font-mono text-[10px]">Skip</button>
+            <div data-testid="replay-progress" role="progressbar" aria-valuenow={Math.round((snap?.replayProgress || 0) * 100)} aria-valuemin={0} aria-valuemax={100} aria-label="Replay progress" className="h-0.5 w-full bg-white/15"><div className="h-full bg-[#00F0FF]" style={{ width: `${(snap?.replayProgress || 0) * 100}%` }} /></div>
+          </div>
+        )}
+        {paused && (!result || replay) && (
+          <PauseModal onResume={togglePause} onRestart={() => setSeed((s) => s + 1)} onQuit={() => nav("/setup")}
+            sound={sound} voice={voice} onSound={toggleSound} onVoice={toggleVoice} replays={replays} onReplays={toggleReplays} displayPrefs={displayPrefs} onDisplayPrefChange={updateDisplayPref} />
+        )}
+        {result && !replay && (
+          <MatchEndModal result={result} names={names} saveState={saveState}
+            canReplay={snap?.canReplay} onReplay={() => engRef.current?.startReplay(true)} onRetry={() => persistResult(result)}
+            onRematch={() => setSeed((s) => s + 1)} onLeaderboard={() => nav("/leaderboard")} onSetup={() => nav("/setup")} />
+        )}
+        <div className="play-controls absolute inset-x-0 bottom-0 z-20 flex items-end justify-between gap-2 px-2 pb-[max(0.5rem,env(safe-area-inset-bottom))] pt-6 sm:gap-4 sm:px-4 sm:pb-4">
+          <DPad onKey={(k, d) => { if (!pausedRef.current && !introRef.current) engRef.current?.setKey(k, d); }} />
+          <ShotPad onShot={shot} onHold={hold} onRelease={release} selectedShot={snap?.selectedShot} onSelect={id => { eng.selectedShot = id; }} />
         </div>
       </section>
-      <aside className="order-2 min-w-0 space-y-3 lg:order-3 lg:space-y-4">
-        <ShotPad onShot={shot} onHold={hold} onRelease={release} selectedShot={snap?.selectedShot} onSelect={id => { eng.selectedShot = id; }} />
-        <DPad onKey={(k, d) => { if (!pausedRef.current && !introRef.current) engRef.current?.setKey(k, d); }} />
-      </aside>
     </main>
   );
 }
