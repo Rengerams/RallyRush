@@ -27,7 +27,13 @@ describe("responsive match camera framing", () => {
     expect(getCameraDistanceScale(16 / 9, 720)).toBe(1);
     expect(getCameraDistanceScale(16 / 9, 1080)).toBeCloseTo(0.96);
     expect(getCameraDistanceScale(16 / 9, 1440)).toBeCloseTo(0.92);
+    const atSixteenNine = getCameraDistanceScale(2560 / 1440, 1440);
+    const justAboveSixteenNine = getCameraDistanceScale(2561 / 1440, 1440);
+    expect(atSixteenNine).toBeCloseTo(0.92);
+    expect(justAboveSixteenNine).toBeGreaterThan(atSixteenNine);
+    expect(justAboveSixteenNine).toBeCloseTo(atSixteenNine, 3);
     expect(getCameraDistanceScale(21 / 9, 1440)).toBe(1);
+    expect(getCameraDistanceScale(2.1, 1440)).toBe(1);
     expect(getCameraDistanceScale(9 / 16, 1440)).toBeCloseTo(0.92);
   });
 });
