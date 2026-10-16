@@ -3,6 +3,7 @@ import { buildStadium } from "./stadium";
 import { makeLabel } from "./parts";
 import { createAthlete } from "./player";
 import { animatePlayer } from "./animatePlayer";
+import { getCameraDistanceScale, getCameraFovForAspect } from "./cameraFraming";
 
 const BALL_R = 0.125;
 
@@ -146,7 +147,8 @@ export class ThreeView {
   setSize(w, h) {
     this.renderer.setSize(w, h, false);
     this.camera.aspect = w / h;
-    this.camera.fov = w / h < 1 ? 58 : 46;
+    this.viewportHeight = h;
+    this.camera.fov = getCameraFovForAspect(this.camera.aspect);
     this.camera.updateProjectionMatrix();
   }
 
@@ -168,6 +170,8 @@ export class ThreeView {
       const angled = e.cameraMode === "broadcast";
       this.cameraTarget.set(angled ? 9 : 0, 19 + aspectOffset, 26 + aspectOffset);
       this.lookTarget.set(0, 0, -1);
+      const distanceScale = getCameraDistanceScale(this.camera.aspect, this.viewportHeight);
+      this.cameraTarget.lerp(this.lookTarget, 1 - distanceScale);
     }
     // Snap back from the cinematic angle: no obscured opening serve after a replay.
     const transition = this.wasReplay && e.state !== "replay" ? 1 : 0.08;
