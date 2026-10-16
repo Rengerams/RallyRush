@@ -212,6 +212,8 @@ export default function Play() {
               <p>1–7 · hold, release near contact</p>
               <p>Shift · sprint · Space · slide</p>
               <p>Esc · pause · Enter · skip replay</p>
+              <p>On-screen arrows move · hold/release a shot button</p>
+              {mouseEnabled && <p>Mouse: move to run · right-click to aim · hold/release left-click to swing</p>}
               {snap?.state === "serve" && snap.server === 0 && (
                 <p data-testid="serve-hint" className="text-[#DFFF00]">
                   {snap.serveStage === "hold" ? "Ready to serve" : "Ball in the air"}{snap.faults ? " · 2nd serve" : ""}
