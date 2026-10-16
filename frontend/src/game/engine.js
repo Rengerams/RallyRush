@@ -65,7 +65,9 @@ export class TennisEngine {
     else { a.x = sSign * 1.0; a.z = -12.2; p.x = this.boxSign * 2.4; p.z = 11.6; }
     if (this.faults > 0) Object.assign(p, previousPosition);
     p.vx = p.vz = 0; p.sliding = 0; p.buffered = null; p.heldShot = null;
-    Object.assign(a, { plan: null, homeZ: this.style.homeZ, rolled: false, whiff: false, wild: false, letGo: false });
+    Object.assign(a, { plan: null, homeZ: this.style.homeZ, rolled: false, whiff: false, wild: false, letGo: false, overhead: false, serveSwing: false });
+    p.overhead = false;
+    p.serveSwing = false;
     Object.assign(this.ball, { vx: 0, vy: 0, vz: 0, spin: 0, netHit: false, y: 1 });
     this.serveStage = "hold";
     this.aiServeT = this.rand(...ENGINE_TUNING.aiServeDelay);
@@ -153,7 +155,9 @@ export class TennisEngine {
     this.bounces = 0;
     this.isServe = shot.id === "serve";
     this.rally++;
-    (who === 0 ? this.p : this.a).overhead = ["serve", "smash"].includes(shot.id);
+    const hitter = who === 0 ? this.p : this.a;
+    hitter.overhead = ["serve", "smash"].includes(shot.id);
+    hitter.serveSwing = shot.id === "serve";
     const st = this.stats[who];
     st.total_shots++;
     if (quality === "perfect") st.perfect_shots++;

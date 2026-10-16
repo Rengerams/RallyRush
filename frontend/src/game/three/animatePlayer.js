@@ -34,11 +34,24 @@ export function animatePlayer(mesh, entity, facing, time, context) {
   rightArm.elbow.rotation.x = 0.95 - swing * (backhand ? 0.22 : 0.4);
   rightArm.hand.rotation.set(-0.15, 0, -0.2 + turn * 0.35);
   if (context.serving && context.toss) {
-    leftArm.shoulder.rotation.x = 2.65; leftArm.elbow.rotation.x = 0.2;
-    rightArm.shoulder.rotation.x = -2.1; rightArm.elbow.rotation.x = 1.4;
-    torso.rotation.y = -0.45;
+    const tossRise = clamp((context.ball.y - 1) / 1.38, 0, 1);
+    leftArm.shoulder.rotation.set(2.35 + tossRise * 0.22, -0.08, -0.12);
+    leftArm.elbow.rotation.x = 0.12 + tossRise * 0.08;
+    rightArm.shoulder.rotation.set(2.2 + tossRise * 0.12, -0.28, 0.48);
+    rightArm.elbow.rotation.x = 1.22 - tossRise * 0.18;
+    torso.rotation.set(-0.16, -0.48, stride * 0.035);
+    pelvis.position.y -= Math.sin(tossRise * Math.PI) * 0.045;
   }
-  if (entity.overhead && swing) {
+  if (entity.overhead && swing && entity.serveSwing) {
+    // At contact the racket arm is extended above the shoulder; it then folds
+    // across the body in a short overhead follow-through.
+    rightArm.shoulder.rotation.set(-1.08 + swing * 3.25, 0.18, 0.22 + swing * 0.22);
+    rightArm.elbow.rotation.x = 0.88 - swing * 0.72;
+    leftArm.shoulder.rotation.set(0.55 + swing * 0.75, -0.12, -0.2);
+    leftArm.elbow.rotation.x = 0.55;
+    torso.rotation.set(-0.12 - swing * 0.22, 0.42 - swing * 0.9, stride * 0.035);
+    pelvis.position.y += swing * 0.035;
+  } else if (entity.overhead && swing) {
     rightArm.shoulder.rotation.x = -2.7 + swing * 4;
     rightArm.elbow.rotation.x = 0.2;
   }
