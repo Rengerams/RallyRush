@@ -1,6 +1,6 @@
 # Rally Rush
 
-[![Release](https://img.shields.io/github/v/release/Rengerams/tennnisNL?label=release&style=flat-square)](https://github.com/Rengerams/tennnisNL/releases)
+[![Release](https://img.shields.io/github/v/release/Rengerams/tennnisNL?label=release&style=flat-square)](https://github.com/Rengerams/tennnisNL/releases#release-0.2.0)
 [![Downloads](https://img.shields.io/github/downloads/Rengerams/tennnisNL/total?style=flat-square)](https://github.com/Rengerams/tennnisNL/releases)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg?style=flat-square)](https://opensource.org/licenses/MIT)
 [![Windows 10/11](https://img.shields.io/badge/Windows-10%20%2F%2011-0078D6?style=flat-square&logo=windows&logoColor=white)](#windows-desktop)
