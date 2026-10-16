@@ -74,4 +74,8 @@ server.on("error", (error) => {
   stop();
   process.exitCode = 1;
 });
-start();
+start().catch((error) => {
+  console.error("Could not start the desktop app:", error.message);
+  stop();
+  process.exitCode = 1;
+});

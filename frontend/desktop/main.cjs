@@ -41,14 +41,16 @@ function createWindow() {
   });
 
   window.webContents.setWindowOpenHandler(({ url }) => {
-    if (url.startsWith("https://")) shell.openExternal(url);
+    if (url.startsWith("https://")) {
+      shell.openExternal(url).catch((error) => console.error("Could not open external link:", error));
+    }
     return { action: "deny" };
   });
 
   if (process.env.DESKTOP_START_URL) {
-    window.loadURL(process.env.DESKTOP_START_URL);
+    window.loadURL(process.env.DESKTOP_START_URL).catch((error) => console.error("Could not load desktop start URL:", error));
   } else {
-    window.loadFile(path.join(__dirname, "..", "dist", "index.html"));
+    window.loadFile(path.join(__dirname, "..", "dist", "index.html")).catch((error) => console.error("Could not load the app window:", error));
   }
 }
 
@@ -58,6 +60,9 @@ app.whenReady().then(() => {
   app.on("activate", () => {
     if (BrowserWindow.getAllWindows().length === 0) createWindow();
   });
+}).catch((error) => {
+  console.error("Could not initialize the desktop app:", error);
+  app.quit();
 });
 
 app.on("window-all-closed", () => {

@@ -206,7 +206,8 @@ export function importLocalData(text, storage = globalThis.localStorage) {
       const value = before.get(key);
       try {
         if (storage.getItem(key) !== value) {
-          value == null ? storage.removeItem(key) : storage.setItem(key, value);
+          if (value === null) storage.removeItem(key);
+          else storage.setItem(key, value);
         }
         if (storage.getItem(key) !== value) restored = false;
       } catch { restored = false; }

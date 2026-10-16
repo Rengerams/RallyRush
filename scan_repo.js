@@ -133,4 +133,7 @@ async function scanFile(filePath) {
       console.error('Failed to write output file:', err.message);
     }
   }
-})();
+})().catch((error) => {
+  console.error('Repository scan failed:', error);
+  process.exitCode = 1;
+});

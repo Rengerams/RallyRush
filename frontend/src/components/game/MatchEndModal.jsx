@@ -47,12 +47,12 @@ export default function MatchEndModal({ result, names, saveState, onRematch, onL
             <p className="mt-1 text-sm leading-relaxed text-slate-200">{getCoachingNote(result)}</p>
           </section>
           <div className="mt-5 flex flex-wrap items-center gap-2">
-            <p data-testid="match-end-save-status" role="status" className="flex items-center gap-2 font-mono text-xs text-slate-400">
+            <output data-testid="match-end-save-status" className="flex items-center gap-2 font-mono text-xs text-slate-400">
               {saveState === "saving" && <><Loader2 size={14} className="animate-spin" /> Saving match…</>}
               {saveState === "saved" && <><Check size={14} className="text-[#22C55E]" /> Match saved</>}
               {saveState === "saved-local" && <><Check size={14} className="text-[#22C55E]" /> Match saved on this device</>}
               {saveState === "error" && <><AlertTriangle size={14} className="text-[#E05A47]" /> Could not save match</>}
-            </p>
+            </output>
             {saveState === "error" && <button data-testid="match-end-retry-save-btn" onClick={onRetry} className="btn-ghost flex items-center gap-1 rounded-full px-3 py-1 text-xs"><RotateCcw size={12} />Retry</button>}
           </div>
           <div className="mt-5 grid grid-cols-3 gap-1.5 sm:gap-2">

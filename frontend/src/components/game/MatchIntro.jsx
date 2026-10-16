@@ -28,7 +28,7 @@ export default function MatchIntro({ cfg, names, onDone }) {
     const timers = [
       setTimeout(() => { setStep(1); audio.sting(); audio.say(`${cfg.name}, versus the ${DIFFICULTY[cfg.difficulty].label} ${STYLES[cfg.style].label} A I`); }, STEPS[1]),
       setTimeout(() => { setStep(2); audio.sting(); audio.say("Quiet please. Play!"); }, STEPS[2]),
-      setTimeout(onDone, STEPS[3]),
+      setTimeout(() => onDone(), STEPS[3]),
     ];
     const key = (e) => { if (["Enter", "Escape", "Space"].includes(e.code)) { window.speechSynthesis?.cancel(); onDone(); } };
     window.addEventListener("keydown", key);

@@ -16,6 +16,7 @@ describe("match scoreboard", () => {
     const html = renderToStaticMarkup(<Scoreboard snap={snap} names={["Player", "AI"]} />);
     expect(html).toContain('aria-live="polite"');
     expect(html).toContain('aria-atomic="true"');
+    expect(html).toContain('aria-label="Match score. Sets 1 to 0. Games 4 to 3. Points 30 to 15. Player serving."');
   });
 
   it("labels score columns and makes the serving player obvious", () => {
