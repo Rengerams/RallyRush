@@ -5,6 +5,7 @@ import { TennisEngine } from "@/game/engine";
 import { audio } from "@/game/audio";
 import { SHOT_BY_KEY, SURFACES, DIFFICULTY, STYLES } from "@/game/constants";
 import { loadSetup, saveMatch } from "@/lib/api";
+import { loadMatchDisplayPreferences, saveMatchDisplayPreferences } from "@/lib/matchDisplayPreferences";
 import { toast } from "sonner";
 import Scoreboard from "@/components/game/Scoreboard";
 import ShotPad from "@/components/game/ShotPad";
@@ -30,6 +31,7 @@ export default function Play() {
   const [snap, setSnap] = useState(null);
   const [call, setCall] = useState(null);
   const [quality, setQuality] = useState(null);
+  const [displayPrefs, setDisplayPrefs] = useState(loadMatchDisplayPreferences);
   const [paused, setPaused] = useState(false);
   const [result, setResult] = useState(null);
   const [saveState, setSaveState] = useState(null);
@@ -104,6 +106,10 @@ export default function Play() {
     audio.setMusicActive(!intro && !paused && !replay && !result);
   }, [intro, paused, replay, result]);
   useEffect(() => () => audio.setMusicActive(false), []);
+  useEffect(() => {
+    document.documentElement.dataset.reducedMotion = displayPrefs.reducedMotion ? "true" : "false";
+    return () => { delete document.documentElement.dataset.reducedMotion; };
+  }, [displayPrefs.reducedMotion]);
 
   // eslint-disable-next-line react-hooks/exhaustive-deps -- pausedRef is a ref, setPaused is a stable setter
   const togglePause = useCallback(() => {
@@ -194,11 +200,12 @@ export default function Play() {
     audio.unlock(); eng.holdShot(eng.selectedShot);
   };
   const toggleVoice = () => { audio.voice = !audio.voice; setVoice(audio.voice); };
+  const updateDisplayPref = (key, value) => setDisplayPrefs(current => saveMatchDisplayPreferences({ ...current, [key]: value }));
 
   return (
-    <main className="play-page fixed inset-0 z-30 h-[100dvh] w-screen overflow-hidden bg-[#0B0E14]" data-testid="play-page">
+    <main className="play-page fixed inset-0 z-30 h-[100dvh] w-screen overflow-hidden bg-[#0B0E14]" data-testid="play-page" data-hud-size={displayPrefs.hudSize}>
       <section ref={wrapRef} className="absolute inset-0" data-testid="game-canvas-wrapper">
-        <GameCanvas eng={eng} wrapRef={wrapRef} renderActive={!intro && !paused && (!result || Boolean(replay))} onSwing={mouseSwing} onRelease={() => eng.releaseShot(eng.p.heldShot)} onPointer={pointerMove} onPointerLeave={() => eng.clearPointer()} onQuality={onQuality} onAvailability={onAvailability} />
+        <GameCanvas eng={eng} reducedEffects={displayPrefs.reducedEffects} wrapRef={wrapRef} renderActive={!intro && !paused && (!result || Boolean(replay))} onSwing={mouseSwing} onRelease={() => eng.releaseShot(eng.p.heldShot)} onPointer={pointerMove} onPointerLeave={() => eng.clearPointer()} onQuality={onQuality} onAvailability={onAvailability} />
         <div className="play-hud-corner absolute left-2 top-2 z-20 flex w-[min(22rem,calc(100vw-1rem))] flex-col gap-2 sm:left-4 sm:top-4 sm:w-[min(22rem,calc(100vw-2rem))]">
           <Scoreboard snap={snap} names={names} legend={cfg.legend} compact={snap?.state === "rally"} />
           <StaminaBar value={snap?.stamina ?? 1} sprint={snap?.sprint} />
@@ -243,7 +250,7 @@ export default function Play() {
         )}
         {paused && (!result || replay) && (
           <PauseModal onResume={togglePause} onRestart={() => setSeed((s) => s + 1)} onQuit={() => nav("/setup")}
-            sound={sound} voice={voice} onSound={toggleSound} onVoice={toggleVoice} replays={replays} onReplays={toggleReplays} />
+            sound={sound} voice={voice} onSound={toggleSound} onVoice={toggleVoice} replays={replays} onReplays={toggleReplays} displayPrefs={displayPrefs} onDisplayPrefChange={updateDisplayPref} />
         )}
         {result && !replay && (
           <MatchEndModal result={result} names={names} saveState={saveState}
