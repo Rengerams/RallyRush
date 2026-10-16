@@ -27,6 +27,7 @@ Rally Rush is a single-player, arcade-style 3D tennis game for Windows and the b
 ## Table of contents
 
 - [Features](#features)
+- [What’s new in 0.3.1](#whats-new-in-031)
 - [What’s new in 0.3.0](#whats-new-in-030)
 - [Screenshots](#screenshots)
 - [Download (Windows)](#windows-desktop)
@@ -39,9 +40,37 @@ Rally Rush is a single-player, arcade-style 3D tennis game for Windows and the b
 - [Roadmap](#next-version)
 - [License](#license)
 
+## What’s new in 0.3.1
+
+Rally Rush 0.3.1 focuses on what matters during play: reliable rallies, consistent practice sessions, and safer local saves. It's a polish and stability update for the same fast, offline-first 3D tennis game.
+
+### Smoother matches, clearer feedback
+
+- Shot timing feedback handles early hits more reliably, and the 3D court is less likely to crash when the window is resized.
+- Match duration now reflects real active playing time, rather than the slowed physics clock or time spent in the background.
+- Match introductions respect reduced-motion preferences.
+
+### Practice that feels like the real match
+
+- Practice now follows your saved HUD size, visual effects, motion, and touch shot-timing settings.
+- AI balance testing now covers **1,920 repeatable matches** across difficulty levels, play styles, court surfaces, and player profiles, helping spot balancing problems before they reach players.
+
+### Your matches, your data
+
+- If saving to local storage fails, you can still finish playing and see your results in History and the leaderboard for the current session, clearly marked as **session-only**.
+- Save data and imports are checked more thoroughly, and backup imports now support files up to **10 MB**.
+
+### Reliable controls, more testing
+
+- Cancelling a prepared shot no longer causes an unwanted swing.
+- Browser-based tests now exercise real keyboard and touch interactions, dialog focus, and scrolling on different screen sizes.
+- Desktop security and the Windows build process have received behind-the-scenes improvements, with unused UI code removed.
+
+Read the technical details in [the gameplay and storage fixes (PR #113)](https://github.com/Rengerams/RallyRush/pull/113), [the interaction tests (PR #114)](https://github.com/Rengerams/RallyRush/pull/114), and [the stability fixes (PR #116)](https://github.com/Rengerams/RallyRush/pull/116).
+
 ## What’s new in 0.3.0
 
-Rally Rush 0.3.0 is all about getting into the match faster, seeing more of the court, and making every rally feel clearer. The release is still in validation; these are the features in the 0.3.0 update.
+Rally Rush 0.3.0 is all about getting into the match faster, seeing more of the court, and making every rally feel clearer. These are the features introduced in the 0.3.0 update.
 
 ### Find your feet, then find your game
 
