@@ -1,6 +1,6 @@
 import "@/App.css";
 import { lazy, Suspense } from "react";
-import { HashRouter, Routes, Route } from "react-router-dom";
+import { HashRouter, Routes, Route, useLocation } from "react-router-dom";
 import { Toaster } from "sonner";
 import Nav from "@/components/Nav";
 
@@ -10,23 +10,32 @@ const Play = lazy(() => import("@/pages/Play"));
 const Leaderboard = lazy(() => import("@/pages/Leaderboard"));
 const History = lazy(() => import("@/pages/History"));
 
-function App() {
+function RoutedApp() {
+  const { pathname } = useLocation();
+  const inMatch = pathname === "/play";
+
   return (
-    <div className="App grain min-h-screen">
-      <HashRouter>
-        <Nav />
-        <Suspense fallback={<main className="flex min-h-[60vh] items-center justify-center font-mono text-sm text-slate-400" role="status" aria-live="polite">Loading Rally Rush…</main>}>
-          <Routes>
-            <Route path="/" element={<Home />} />
-            <Route path="/setup" element={<Setup />} />
-            <Route path="/play" element={<Play />} />
-            <Route path="/leaderboard" element={<Leaderboard />} />
-            <Route path="/history" element={<History />} />
-          </Routes>
-        </Suspense>
-      </HashRouter>
+    <div className={`App grain ${inMatch ? "play-shell" : "min-h-screen"}`}>
+      {!inMatch && <Nav />}
+      <Suspense fallback={<main className="flex min-h-[60vh] items-center justify-center font-mono text-sm text-slate-400" role="status" aria-live="polite">Loading Rally Rush…</main>}>
+        <Routes>
+          <Route path="/" element={<Home />} />
+          <Route path="/setup" element={<Setup />} />
+          <Route path="/play" element={<Play />} />
+          <Route path="/leaderboard" element={<Leaderboard />} />
+          <Route path="/history" element={<History />} />
+        </Routes>
+      </Suspense>
       <Toaster theme="dark" position="bottom-right" />
     </div>
+  );
+}
+
+function App() {
+  return (
+    <HashRouter>
+      <RoutedApp />
+    </HashRouter>
   );
 }
 
