@@ -6,6 +6,8 @@ import LegendCard from "@/components/LegendCard";
 import { SurfacePreview } from "@/components/game/SurfacePreview";
 import { DIFFICULTY, STYLES, SURFACES, FORMATS, ATTR_BUDGET, LEGEND, DEFAULT_SETUP } from "@/game/constants";
 import { loadSetup, storeSetup } from "@/lib/api";
+import FirstSessionGuide from "@/components/game/FirstSessionGuide";
+import { hasCompletedTutorial } from "@/lib/tutorial";
 
 const ATTRS = ["power", "stamina", "accuracy"];
 
@@ -25,6 +27,7 @@ function AttrSlider({ attr, value, onChange, disabled }) {
 export default function Setup() {
   const nav = useNavigate();
   const [cfg, setCfg] = useState(loadSetup);
+  const [guideOpen, setGuideOpen] = useState(() => !hasCompletedTutorial());
   const set = (k, v) => setCfg((c) => ({ ...c, [k]: v }));
   const used = ATTRS.reduce((s, a) => s + cfg[a], 0);
 
@@ -69,13 +72,18 @@ export default function Setup() {
         </section>
       </div>
       <div className="fixed inset-x-0 bottom-0 z-40 border-t border-white/10 bg-[#0B0E14]/95 px-5 pt-3 pb-[calc(0.75rem+env(safe-area-inset-bottom))] shadow-[0_-12px_32px_rgba(0,0,0,0.4)] backdrop-blur-xl">
-        <div className="mx-auto flex max-w-[1440px] justify-end">
+        <div className="mx-auto flex max-w-[1440px] items-center justify-between gap-3">
+          <button type="button" data-testid="setup-replay-guide-btn" onClick={() => setGuideOpen(true)}
+            className="btn-ghost rounded-full px-4 py-3 font-mono text-xs font-semibold uppercase">
+            Controls guide
+          </button>
           <button type="button" data-testid="setup-start-match-btn" onClick={start}
             className="btn-volt w-full rounded-full py-4 font-display text-xl font-black uppercase italic tracking-wide md:w-auto md:px-16">
             Start match
           </button>
         </div>
       </div>
+      <FirstSessionGuide open={guideOpen} onOpenChange={setGuideOpen} />
     </main>
   );
 }
