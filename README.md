@@ -82,16 +82,15 @@ Enable "Mouse" in the match controls to move with the pointer. Hold right-click 
 Requirements: Node.js and npm. From the repository root:
 
 ```bash
-cd frontend
 npm ci --legacy-peer-deps
 npm run desktop
 ```
 
-This starts the Vite development server and opens the game in Electron. For browser-based development, run `npm start` from `frontend/` and open the local address printed by Vite.
+This starts the Vite development server and opens the game in Electron. For browser-based development, run `npm start` from the repository root and open the local address printed by Vite.
 
 ## Build and test
 
-From `frontend/`:
+From the repository root:
 
 ```bash
 npm test
